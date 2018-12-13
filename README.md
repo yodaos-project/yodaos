@@ -9,7 +9,7 @@ The project is a group of sub projects open sourced which are:
 **Framework**
 
 - [YodaRT][]: the JavaScript/Web layer for the OS, it provides the application development model.
-- [ShadowNode][]: the [Node.js] runtime that implements most of core APIs and N-API-compatible.
+- [ShadowNode][]: the [Node.js][] runtime that implements most of core APIs and N-API-compatible.
 
 **Core**
 
@@ -97,4 +97,6 @@ Apache 2.0 license.
 [Semver 2.0]: https://semver.org/
 [ShadowNode]: https://github.com/Rokid/ShadowNode
 [Rokid]: https://github.com/Rokid
+[Node.js]: https://github.com/nodejs/node
 
+Apeach 2.0
