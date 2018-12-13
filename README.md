@@ -86,7 +86,7 @@ The agenda of [Yoda Dev Day](#yoda-dev-day) contains:
 
 ## License
 
-Apache 2.0 license.
+Apeach 2.0
 
 [YodaOS]: https://github.com/Rokid/YodaOS
 [YodaRT]: https://github.com/Rokid/YodaRT
@@ -99,4 +99,3 @@ Apache 2.0 license.
 [Rokid]: https://github.com/Rokid
 [Node.js]: https://github.com/nodejs/node
 
-Apeach 2.0
