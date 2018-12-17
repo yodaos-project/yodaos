@@ -2,7 +2,7 @@ YodaOS
 =============================
 
 ![https://img.shields.io/badge/base-linux-green.svg](https://img.shields.io/badge/base-linux-green.svg)
-![https://img.shields.io/badge/build-openwrt-green.svg](https://img.shields.io/badge/build-openwrt-green.svg)
+![https://img.shields.io/badge/build-openwrt-blue.svg](https://img.shields.io/badge/build-openwrt-green.svg)
 
 This is a modern operating system for next generation interactive device, and it embraces Web community,
 uses JavaScript as the application language.
