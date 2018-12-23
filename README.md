@@ -11,7 +11,7 @@ The project is a group of sub projects open sourced which are:
 
 **Framework**
 
-- [YodaRT][]: the JavaScript/Web layer for the OS, it provides the application development model.
+- [yodaos-project/yodart][]: the JavaScript/Web layer for the OS, it provides the application development model.
 - [ShadowNode][]: the [Node.js][] runtime that implements most of core APIs and N-API-compatible.
 
 **Core**
@@ -25,7 +25,7 @@ The project is a group of sub projects open sourced which are:
 
 ## Releases
 
-This section describes how do [YodaOS][] release and its lifecycle.
+This section describes how do [YODAOS][] release and its lifecycle.
 
 #### versions
 
