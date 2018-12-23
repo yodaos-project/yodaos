@@ -1,4 +1,4 @@
-YodaOS
+YODAOS
 =============================
 
 ![https://img.shields.io/badge/base-linux-green.svg](https://img.shields.io/badge/base-linux-green.svg)
@@ -29,7 +29,7 @@ This section describes how do [YodaOS][] release and its lifecycle.
 
 #### versions
 
-[YodaOS][] uses [Semver 2.0][] for versioning management, and we have lifecycles for `major` and `minor`.
+[YODAOS][] uses [Semver 2.0][] for versioning management, and we have lifecycles for `major` and `minor`.
 
 - `major`: one release per 6 month, and all releases are stable.
 - `minor`: one release per 1 month, and only the even ones are __stable__, namely `1.0.x`, `1.2.x`, `1.4.x`.
@@ -66,37 +66,28 @@ candidate branch(`v1.2.x-rc`).
 
 - [YouTube](https://www.youtube.com/channel/UCRvBWIaBcsfvCTC_4EKW4lw)
 
-#### Yoda Dev Day
-
-Yoda Dev Day is the meetup we hold officially every 2 weeks, and it's publicly live or video available.
-The agenda of [Yoda Dev Day](#yoda-dev-day) contains:
-
-- Summary
-- Topic presentation
-- Free talks
-
 ## Contributing
 
-[YodaOS][] is a community-driven project that we accepts any improved proposals, pull requests and issues.
+[YODAOS][] is a community-driven project that we accepts any improved proposals, pull requests and issues.
 
-- For JavaScript development, go [YodaRT][] for details.
-- For proposal, [yoda-evolution][] is the place where someone can submit pull request to propose something.
+- For JavaScript development, go [yodaos-project/yodart][] for details.
+- For proposal, [yodaos-project/evolution][] is the place where someone can submit pull request to propose something.
 
 ## Documentation
 
-- [Yoda Book](https://github.com/Rokid/yoda-book)
-- [API reference](https://yodaos.rokid.com/docs/0.6/)
+- [Yoda Book](https://github.com/yodaos-project/yoda-book)
+- [API reference](https://yodaos.rokid.com/docs/latest/)
 
 ## License
 
 Apeach 2.0
 
-[YodaOS]: https://github.com/Rokid/YodaOS
-[YodaRT]: https://github.com/Rokid/YodaRT
+[YODAOS]: https://github.com/Rokid/YodaOS
+[yodaos-project/yodart]: https://github.com/yodaos-project/yodart
+[yodaos-project/evolution]: https://github.com/yodaos-project/evolution
 [yoda-flora]: https://github.com/Rokid/yoda-flora
 [yoda-flora-dispatcher]: https://github.com/Rokid/yoda-flora-dispatcher
 [yoda-speech-service]: https://github.com/Rokid/yoda-speech-service
-[yoda-evolution]: https://github.com/Rokid/yoda-evolution
 [Semver 2.0]: https://semver.org/
 [ShadowNode]: https://github.com/Rokid/ShadowNode
 [Rokid]: https://github.com/Rokid
