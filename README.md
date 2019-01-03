@@ -62,6 +62,16 @@ For stable version, we preserve 2 weeks at least to take the workload of full te
 branch `v1.2.x-rc`. Once all the full tests are passed, then create a stable branch(`v1.2.x`) from release
 candidate branch(`v1.2.x-rc`).
 
+## Project Team Members
+
+### TSC (Technical Steering Committee)
+
+- [algebrait](https://github.com/algebrait) - **Weigang Xu** <weigang.xu@rokid.com>
+- [lanfly](https://github.com/lanfly) - **Xiaofei Lan** <xiaofei.lan@rokid.com>
+- [legendecas](https://github.com/legendecas) - **Chengzhong Wu** <chengzhong.wu@rokid.com>
+- [mingzc0508](https://github.com/mingzc0508) - **Cheng Zhang** <ceng.zhang@rokid.com>
+- [yorkie](https://github.com/yorkie) - **Yorkie Liu** <yazhong.liu@rokid.com>
+
 ## Community
 
 - [YouTube](https://www.youtube.com/channel/UCRvBWIaBcsfvCTC_4EKW4lw)
