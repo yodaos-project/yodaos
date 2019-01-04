@@ -1,5 +1,8 @@
-YODAOS
-=============================
+<p align="center">
+  <a href="https://yodaos.rokid.com/">
+    <img alt="YODAOS" src="images/logo.png" width="400" />
+  </a>
+</p>
 
 ![https://img.shields.io/badge/base-linux-green.svg](https://img.shields.io/badge/base-linux-green.svg)
 ![https://img.shields.io/badge/build-openwrt-blue.svg](https://img.shields.io/badge/build-openwrt-blue.svg)
