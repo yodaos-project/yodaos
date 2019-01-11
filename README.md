@@ -21,7 +21,7 @@ The project is a group of sub projects open sourced which are:
 
 **Core**
 
-- [yoda-flora][]: the IPC library for [YodaOS][]
+- [flora][]: the IPC library for [YodaOS][]
 
 **Service**
 
@@ -100,7 +100,7 @@ Apeach 2.0
 [YODAOS]: https://github.com/Rokid/YodaOS
 [yodaos-project/yodart]: https://github.com/yodaos-project/yodart
 [yodaos-project/evolution]: https://github.com/yodaos-project/evolution
-[yoda-flora]: https://github.com/Rokid/yoda-flora
+[flora]: https://github.com/yodaos-project/flora
 [yoda-flora-dispatcher]: https://github.com/Rokid/yoda-flora-dispatcher
 [yoda-speech-service]: https://github.com/Rokid/yoda-speech-service
 [Semver 2.0]: https://semver.org/
