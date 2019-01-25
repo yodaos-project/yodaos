@@ -12,6 +12,8 @@
 This is a modern operating system for next generation interactive device, and it embraces Web community,
 uses JavaScript as the application language.
 
+## Architecture
+
 The project is a group of sub projects open sourced which are:
 
 **Framework**
@@ -107,4 +109,3 @@ Apeach 2.0
 [ShadowNode]: https://github.com/Rokid/ShadowNode
 [Rokid]: https://github.com/Rokid
 [Node.js]: https://github.com/nodejs/node
-
