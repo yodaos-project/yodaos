@@ -11,11 +11,11 @@
   <project name="kamino_rokidos/open-platform/embedded-linux/system/property" path="3rd/android_lib/bionic/property" revision="master"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/system/property_service" path="3rd/android_lib/bionic/property_service" revision="master"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/frameworks/native" path="3rd/android_lib/native" revision="master"/>
-  <project name="kamino_rokidos/open-platform/embedded-linux/external/android-kernel-headers" path="3rd/android_lib/external/android-kernel-headers" revision="master"/>
+  <project name="kamino_rokidos/open-platform/embedded-linux/external/android-kernel-headers"
+    path="3rd/android_lib/external/android-kernel-headers" revision="master"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/external/librplayer" path="frameworks/native/libs/librplayer" revision="master"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/external/aliyunlog-lite" path="3rd/linux_lib/aliyunlog-lite" revision="master"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/external/httpdns" path="frameworks/native/libs/httpdns" revision="master"/>
-  <project name="open-platform/client/httpsession" path="frameworks/native/libs/httpsession" revision="master"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/external/system_state" path="frameworks/native/libs/system_state" revision="master"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/external/security" path="frameworks/native/libs/security" revision="master"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/rklog" path="frameworks/native/libs/rklog" revision="master"/>
@@ -23,9 +23,11 @@
   <project name="kamino_rokidos/open-platform/embedded-linux/lumenlight" path="frameworks/native/libs/lumenlight" revision="master"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/external/vol_ctrl" path="frameworks/native/libs/vol_ctrl" revision="master"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/external/libmemcheck" path="frameworks/native/libs/libmemcheck" revision="master"/>
+  <project name="kamino_rokidos/open-platform/embedded-linux/external/eq_ctrl" path="frameworks/native/libs/eq_ctrl" revision="master"/>
+  
+  <project name="open-platform/client/httpsession" path="frameworks/native/libs/httpsession" revision="master"/>
   <project name="open-platform/services/count" path="frameworks/native/services/count" revision="master"/>
   <project name="open-platform/services/display" path="frameworks/native/services/display" revision="master"/>
   <project name="open-platform/services/gsensor_service" path="frameworks/native/services/gsensor_service" revision="master"/>
   <project name="open-platform/services/gmrender" path="frameworks/native/services/gmrender" revision="master"/>
-  <project name="kamino_rokidos/open-platform/embedded-linux/external/eq_ctrl" path="frameworks/native/libs/eq_ctrl" revision="master"/>
 </manifest>
