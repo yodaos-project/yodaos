@@ -17,7 +17,6 @@
   <project name="kamino_rokidos/open-platform/embedded-linux/external/aliyunlog-lite" path="3rd/linux_lib/aliyunlog-lite" revision="master"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/external/httpdns" path="frameworks/native/libs/httpdns" revision="master"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/external/system_state" path="frameworks/native/libs/system_state" revision="master"/>
-  <project name="kamino_rokidos/open-platform/embedded-linux/external/security" path="frameworks/native/libs/security" revision="master"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/rklog" path="frameworks/native/libs/rklog" revision="master"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/input-event" path="frameworks/native/libs/input-event" revision="master"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/lumenlight" path="frameworks/native/libs/lumenlight" revision="master"/>
