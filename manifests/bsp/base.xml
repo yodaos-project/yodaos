@@ -27,7 +27,6 @@
 
   <project name="kamino_rokidos/open-platform/embedded-linux/external/aml_unpack" path="frameworks/native/libs/ota_unpack"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/external/wpa_ctrl" path="frameworks/native/libs/wpa_ctrl"/>
-  <project name="kamino_rokidos/open-platform/embedded-linux/external/libzeromq_handle" path="frameworks/native/libs/libzeromq_handle"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/external/power_ctrl" path="frameworks/native/libs/power_ctrl"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/external/libeloop_mini" path="frameworks/native/libs/libeloop_mini"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/external/audio_capture" path="frameworks/native/libs/audio_capture"/>
