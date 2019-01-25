@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote name="gerrit" fetch="https://openai-corp.rokid.com/" review="https://openai-corp.rokid.com"/>
+  <remote name="github" fetch="https://github.com" review="https://github.com"/>
+  <default revision="master" remote="gerrit" sync-c="true" sync-j="2"/>
+
+  <include name="manifests/bsp/base.xml"/>
+  <include name="manifests/system/base.xml"/>
+  <include name="manifests/aial/base.xml"/>
+  <include name="manifests/yodart/base.xml"/>
+
+  <!-- product -->
+  <project name="kamino_rokidos/open-platform/embedded-linux/products/product_universal"
+    path="products/rokid/dev3.3"/>
+  <project name="kamino_rokidos/open-platform/embedded-linux/products/product_universal3.0"
+    path="products/rokid/universal"/>
+  <project name="kamino_rokidos/open-platform/embedded-linux/products/product_raspberry"
+    path="products/yodaos/rbpi-3b-plus"/>
+  <!-- product -->
+</manifest>
