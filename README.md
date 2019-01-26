@@ -12,23 +12,69 @@
 This is a modern operating system for next generation interactive device, and it embraces Web community,
 uses JavaScript as the application language.
 
-## Architecture
+## Get Started
 
-The project is a group of sub projects open sourced which are:
+To start with compiling [YODAOS][], a Linux is required, we recommand the followings distributions:
+
+- Ubuntu 16.04
+- Centos 7
+
+For Ubuntu:
+
+```sh
+$ apt-get install build-essential subversion libncurses5-dev zlib1g-dev gawk gcc-multilib flex git-core gettext libssl-dev unzip texinfo device-tree-compiler dosfstools libusb
+```
+
+
+For Centos 7, the install command-line is:
+
+```sh
+$ yum install -y unzip bzip2 dosfstools wget gcc gcc-c++ git ncurses-devel zlib-static openssl-devel svn patch perl-Module-Install.noarch perl-Thread-Queue
+```
+
+And the `device-tree-compiler` also needs to install manually:
+
+```sh
+$ wget http://www.rpmfind.net/linux/epel/6/x86_64/Packages/d/dtc-1.4.0-1.el6.x86_64.rpm
+$ rpm -i dtc-1.4.0-1.el6.x86_64.rpm
+```
+
+#### Compiling
+
+When the `repo` cli is ready, follow the instruments to get the complete source of [YODAOS][]:
+
+```sh
+$ repo init -u https://github.com/yodaos-project/yodaos.git -m manifest.xml --repo-url=http://openai-corp.rokid.com/tools/repo --no-repo-verify
+$ repo sync
+```
+
+The above takes few minutes, just be patient. The next step is to build out the OS image, let's take the example of Raspberry board:
+
+```sh
+$ cp -r products/yodaos/rbpi-3b-plus/configs/broadcom_bcm2710_rpi3b_plus_defconfig openwrt/.config
+$ cd openwrt
+$ make defconfig && make
+```
+
+Go [compile & run](https://yodaos-project.github.io/yoda-book/en-us/yodaos-source/system/compile-run.html) for more details.
+
+## Children projects
+
+The [YODAOS][] is a group of children projects open sourced which mainly are:
 
 **Framework**
 
-- [yodaos-project/yodart][]: the JavaScript/Web layer for the OS, it provides the application development model.
-- [ShadowNode][]: the [Node.js][] runtime that implements most of core APIs and N-API-compatible.
+- [yodart][] is the application-layer of YODAOS, it's also the VUI framework for JavaScript.
 
 **Core**
 
-- [flora][]: the IPC library for [YodaOS][]
+- [flora][] is the PUB/SUB messaging library, also supports the request/response model for IPC.
+- [ShadowNode][] is the [Node.js][] runtime that implements most of core APIs and N-API-compatible.
 
 **Service**
 
-- [yoda-speech-service][]: the speech service that talks to [Rokid][] ASR/NLP cloud.
-- [yoda-flora-dispatcher][]: the IPC centered service.
+- [yoda-flora-dispatcher][] is the centered service for [flora][].
+- [yoda-speech-service][] is the speech service that talks to [Rokid][] ASR/NLP cloud.
 
 ## Releases
 
@@ -100,9 +146,9 @@ candidate branch(`v1.2.x-rc`).
 Apeach 2.0
 
 [YODAOS]: https://github.com/Rokid/YodaOS
-[yodaos-project/yodart]: https://github.com/yodaos-project/yodart
-[yodaos-project/evolution]: https://github.com/yodaos-project/evolution
+[yodart]: https://github.com/yodaos-project/yodart
 [flora]: https://github.com/yodaos-project/flora
+[yodaos-project/evolution]: https://github.com/yodaos-project/evolution
 [yoda-flora-dispatcher]: https://github.com/Rokid/yoda-flora-dispatcher
 [yoda-speech-service]: https://github.com/Rokid/yoda-speech-service
 [Semver 2.0]: https://semver.org/
