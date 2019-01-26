@@ -147,7 +147,7 @@ candidate branch(`v1.2.x-rc`).
 
 [YODAOS][] is a community-driven project that we accepts any improved proposals, pull requests and issues.
 
-- For JavaScript development, go [yodaos-project/yodart][] for details.
+- For JavaScript development, go [yodart][] for details.
 - For proposal, [yodaos-project/evolution][] is the place where someone can submit pull request to propose something.
 
 ## Documentation
