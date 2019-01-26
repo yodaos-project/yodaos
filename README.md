@@ -25,7 +25,6 @@ For Ubuntu:
 $ apt-get install build-essential subversion libncurses5-dev zlib1g-dev gawk gcc-multilib flex git-core gettext libssl-dev unzip texinfo device-tree-compiler dosfstools libusb
 ```
 
-
 For Centos 7, the install command-line is:
 
 ```sh
@@ -39,7 +38,22 @@ $ wget http://www.rpmfind.net/linux/epel/6/x86_64/Packages/d/dtc-1.4.0-1.el6.x86
 $ rpm -i dtc-1.4.0-1.el6.x86_64.rpm
 ```
 
-#### Compiling
+#### Install the `repo` cli
+
+[YODAOS][] uses the `repo` command-line to manage the source tree:
+
+> Repo unifies Git repositories when necessary, performs uploads to the Gerrit revision control system, and automates parts of the Android development workflow. Repo is not meant to replace Git, only to make it easier to work with Git in the context of Android. The repo command is an executable Python script that you can put anywhere in your path.
+
+Follow the below commands to install manually:
+
+```sh
+$ curl https://raw.githubusercontent.com/yodaos-project/yodaos/master/tools/repo > /usr/local/bin/repo
+$ chmod 777 /usr/local/bin/repo
+```
+
+And use `repo --help` to test if installation is done.
+
+#### Compile
 
 When the `repo` cli is ready, follow the instruments to get the complete source of [YODAOS][]:
 
