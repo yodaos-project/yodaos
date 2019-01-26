@@ -38,7 +38,7 @@ $ wget http://www.rpmfind.net/linux/epel/6/x86_64/Packages/d/dtc-1.4.0-1.el6.x86
 $ rpm -i dtc-1.4.0-1.el6.x86_64.rpm
 ```
 
-#### Install the `repo` cli
+### Install the `repo` cli
 
 [YODAOS][] uses the `repo` command-line to manage the source tree:
 
@@ -53,7 +53,7 @@ $ chmod 777 /usr/local/bin/repo
 
 And use `repo --help` to test if installation is done.
 
-#### Compile
+### Compile
 
 When the `repo` cli is ready, follow the instruments to get the complete source of [YODAOS][]:
 
@@ -94,7 +94,7 @@ The [YODAOS][] is a group of children projects open sourced which mainly are:
 
 This section describes how do [YODAOS][] release and its lifecycle.
 
-#### versions
+### versions
 
 [YODAOS][] uses [Semver 2.0][] for versioning management, and we have lifecycles for `major` and `minor`.
 
@@ -103,7 +103,7 @@ This section describes how do [YODAOS][] release and its lifecycle.
 
 We assume the 3rd Thursday at every month as [YodaOS][] release date.
 
-#### release requirements
+### release requirements
 
 Every release must contain the following parts:
 
@@ -113,7 +113,7 @@ Every release must contain the following parts:
   - AmLogic A113.
 - Changelog describes what changes this updated.
 
-#### stable and pre-versions
+### stable and pre-versions
 
 Stable version requires the complete tests on:
 
