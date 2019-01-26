@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
-  <remote name="gerrit" fetch="https://openai-corp.rokid.com/" review="https://openai-corp.rokid.com"/>
+  <remote name="gerrit" fetch="ssh://openai-corp.rokid.com:29418" review="https://openai-corp.rokid.com"/>
   <remote name="github" fetch="https://github.com" review="https://github.com"/>
   <default revision="master" remote="gerrit" sync-c="true" sync-j="2"/>
 
