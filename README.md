@@ -67,6 +67,7 @@ When the `repo` cli is ready, follow the instruments to get the complete source 
 
 ```sh
 $ repo init -u https://github.com/yodaos-project/yodaos.git -m manifest.xml --repo-url=http://openai-corp.rokid.com/tools/repo --no-repo-verify
+$ .repo/manifests/tools/repo-username -u {your rokid developer username} # set your username to fetch source from gerrit
 $ repo sync
 ```
 
