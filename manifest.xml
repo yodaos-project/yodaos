@@ -11,10 +11,10 @@
 
   <!-- product -->
   <project name="kamino_rokidos/open-platform/embedded-linux/products/product_universal"
-    path="products/rokid/dev3.3" revision="open"/>
+    path="products/rokid/dev3.3" revision="openai"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/products/product_universal3.0"
-    path="products/rokid/universal" revision="open"/>
+    path="products/rokid/universal" revision="openai"/>
   <project name="kamino_rokidos/open-platform/embedded-linux/products/product_raspberry"
-    path="products/yodaos/rbpi-3b-plus" revision="open"/>
+    path="products/yodaos/rbpi-3b-plus" revision="openai"/>
   <!-- product -->
 </manifest>
