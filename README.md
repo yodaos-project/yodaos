@@ -42,7 +42,7 @@ $ rpm -i dtc-1.4.0-1.el6.x86_64.rpm
 
 Click [http://openai-corp.rokid.com](http://openai-corp.rokid.com), and do register as Rokid Developer.
 
-Then, the go [SSH Settings](https://openai-corp.rokid.com/#/settings/ssh-keys) to config your local public key.
+Then, go [SSH Settings](https://openai-corp.rokid.com/#/settings/ssh-keys) to config your local public key.
 
 > https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
 
