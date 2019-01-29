@@ -22,7 +22,7 @@ To start with compiling [YODAOS][], a Linux is required, we recommend the follow
 For Ubuntu:
 
 ```sh
-$ apt-get install build-essential subversion libncurses5-dev zlib1g-dev gawk gcc-multilib flex git-core gettext libssl-dev unzip texinfo device-tree-compiler dosfstools libusb
+$ apt-get install build-essential subversion libncurses5-dev zlib1g-dev gawk gcc-multilib flex git-core gettext libssl-dev unzip texinfo device-tree-compiler dosfstools libusb-1.0-0-dev
 ```
 
 For Centos 7, the install command-line is:
