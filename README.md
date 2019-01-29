@@ -14,7 +14,7 @@ uses JavaScript as the application language.
 
 ## Get Started
 
-To start with compiling [YODAOS][], a Linux is required, we recommand the followings distributions:
+To start with compiling [YODAOS][], a Linux is required, we recommend the followings distributions:
 
 - Ubuntu 16.04
 - Centos 7
