@@ -143,7 +143,7 @@ Stable version requires the complete tests on:
 The above workload is in usual 2 weeks for the team, therefore we introduce pre-version, namely release
 candidates(RC) to track the stable releasing progress.
 
-For stable version, we preserve 2 weeks at least to take the workload of full tests, and create a pre-version 
+For stable version, we preserve 2 weeks at least to take the workload of full tests, and create a pre-version
 branch `v1.2.x-rc`. Once all the full tests are passed, then create a stable branch(`v1.2.x`) from release
 candidate branch(`v1.2.x-rc`).
 
@@ -175,7 +175,7 @@ candidate branch(`v1.2.x-rc`).
 
 ## License
 
-Apeach 2.0
+Apache 2.0
 
 [YODAOS]: https://github.com/Rokid/YodaOS
 [yodart]: https://github.com/yodaos-project/yodart
