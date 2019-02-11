@@ -22,20 +22,21 @@ To start with compiling [YODAOS][], a Linux is required, we recommend the follow
 For Ubuntu:
 
 ```sh
-$ apt-get install build-essential subversion libncurses5-dev zlib1g-dev gawk gcc-multilib flex git-core gettext libssl-dev unzip texinfo device-tree-compiler dosfstools libusb-1.0-0-dev
+$ apt-get install build-essential subversion libncurses5-dev zlib1g-dev gawk gcc-multilib flex git-core gettext libssl-dev unzip texinfo device-tree-compiler dosfstools libusb-1.0-0-dev alien
 ```
 
 For Centos 7, the install command-line is:
 
 ```sh
-$ yum install -y unzip bzip2 dosfstools wget gcc gcc-c++ git ncurses-devel zlib-static openssl-devel svn patch perl-Module-Install.noarch perl-Thread-Queue
+$ yum install -y unzip bzip2 dosfstools wget gcc gcc-c++ git ncurses-devel zlib-static openssl-devel svn patch perl-Module-Install.noarch perl-Thread-Queue alien
 ```
 
 And the `device-tree-compiler` also needs to install manually:
 
 ```sh
 $ wget http://www.rpmfind.net/linux/epel/6/x86_64/Packages/d/dtc-1.4.0-1.el6.x86_64.rpm
-$ rpm -i dtc-1.4.0-1.el6.x86_64.rpm
+$ alien -d dtc-1.4.0-1.el6.x86_64.rpm # Ubuntu only
+$ alien dtc_1.4.0-2_amd64.deb
 ```
 
 ### Download Source
