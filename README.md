@@ -29,11 +29,7 @@ For Centos 7, the install command-line is:
 
 ```sh
 $ yum install -y unzip bzip2 dosfstools wget gcc gcc-c++ git ncurses-devel zlib-static openssl-devel svn patch perl-Module-Install.noarch perl-Thread-Queue
-```
-
-And the `device-tree-compiler` also needs to install manually:
-
-```sh
+# And the `device-tree-compiler` also needs to install manually:
 $ wget http://www.rpmfind.net/linux/epel/6/x86_64/Packages/d/dtc-1.4.0-1.el6.x86_64.rpm
 $ rpm -i dtc-1.4.0-1.el6.x86_64.rpm
 ```
