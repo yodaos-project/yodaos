@@ -101,7 +101,7 @@ The [YODAOS][] is a group of children projects open sourced which mainly are:
 
 **Service**
 
-- [yoda-flora-dispatcher][] is the centered service for [flora][].
+- [flora-dispatcher][] is the centered service for [flora][].
 - [yoda-speech-service][] is the speech service that talks to [Rokid][] ASR/NLP cloud.
 
 ## Releases
@@ -176,8 +176,8 @@ Apache 2.0
 [YODAOS]: https://github.com/Rokid/YodaOS
 [yodart]: https://github.com/yodaos-project/yodart
 [flora]: https://github.com/yodaos-project/flora
+[flora-dispatcher]: https://github.com/yodaos-project/flora-dispatcher
 [yodaos-project/evolution]: https://github.com/yodaos-project/evolution
-[yoda-flora-dispatcher]: https://github.com/Rokid/yoda-flora-dispatcher
 [yoda-speech-service]: https://github.com/Rokid/yoda-speech-service
 [Semver 2.0]: https://semver.org/
 [ShadowNode]: https://github.com/Rokid/ShadowNode
