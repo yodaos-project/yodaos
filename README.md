@@ -94,19 +94,48 @@ Go [compile & run](https://yodaos-project.github.io/yoda-book/en-us/yodaos-sourc
 
 The [YODAOS][] is a group of children projects open sourced which mainly are:
 
-**Framework**
 
-- [yodart][] is the application-layer of YODAOS, it's also the VUI framework for JavaScript.
+**BSP**
 
-**Core**
+- Kernel
+  - [kamino18](https://openai-corp.rokid.com/#/admin/projects/kamino_rokidos/gx8010/kernel)
+  - [amlogic a113](https://openai-corp.rokid.com/#/admin/projects/amlogic_a113_audio/buildroot-audio/kernel/common)
+- Uboot
+  - [kamino18](https://openai-corp.rokid.com/#/admin/projects/kamino_rokidos/gx8010/uboot)
+  - [amlogic a113](https://openai-corp.rokid.com/#/admin/projects/amlogic_a113_audio/buildroot-audio/uboot)
+  - [raspberry](https://openai-corp.rokid.com/#/admin/projects/kamino_rokidos/gx8010/rpi-uboot)
 
-- [flora][] is the PUB/SUB messaging library, also supports the request/response model for IPC.
-- [ShadowNode][] is the [Node.js][] runtime that implements most of core APIs and N-API-compatible.
+**AIAL**
 
-**Service**
+- [ai-libs-common](https://openai-corp.rokid.com/#/admin/projects/ai-libs-common) includes the common libraries for AIAL.
+
+**System Service**
 
 - [yoda-flora-dispatcher][] is the centered service for [flora][].
 - [yoda-speech-service][] is the speech service that talks to [Rokid][] ASR/NLP cloud.
+- [net_manager](https://openai-corp.rokid.com/#/admin/projects/kamino_rokidos/gx8010/net_manager) manages the networking.
+- [gsensor_service](https://openai-corp.rokid.com/#/admin/projects/open-platform/services/gsensor_service) G-sensor service.
+- [powermanager_service](https://openai-corp.rokid.com/#/admin/projects/kamino_rokidos/open-platform/embedded-linux/powermanager_service) manages the power.
+- [battery_service](https://openai-corp.rokid.com/#/admin/projects/kamino_rokidos/open-platform/embedded-linux/battery_service) manages the battery.
+- Bluetooth
+  - [librokid-bt](https://openai-corp.rokid.com/#/admin/projects/kamino_rokidos/gx8010/librokid-bt)
+  - [librokid-bcmdhd-bt](https://openai-corp.rokid.com/#/admin/projects/kamino_rokidos/gx8010/librokid-bcmdhd-bt)
+  - [bluetooth_service](https://openai-corp.rokid.com/#/admin/projects/frameworks/native/services/bluetooth_service)
+
+**Library**
+
+- [flora][] is the PUB/SUB messaging library, also supports the request/response model for IPC.
+- [httpdns](https://openai-corp.rokid.com/#/admin/projects/kamino_rokidos/open-platform/embedded-linux/external/httpdns) HttpDns library
+- [httpsession](https://openai-corp.rokid.com/#/admin/projects/open-platform/client/httpsession) Http library based on CURL.
+- [librplayer](https://openai-corp.rokid.com/#/admin/projects/kamino_rokidos/open-platform/embedded-linux/external/librplayer) MediaPlayer library based on SDL and ffmpeg.
+- [rklog](https://openai-corp.rokid.com/#/admin/projects/kamino_rokidos/open-platform/embedded-linux/rklog) Rokid log library.
+- [input-event](https://openai-corp.rokid.com/#/admin/projects/kamino_rokidos/open-platform/embedded-linux/input-event) The library controls the keyboard based on linux input API.
+- [lumenlight](https://openai-corp.rokid.com/#/admin/projects/kamino_rokidos/open-platform/embedded-linux/lumenlight) The LED library.
+
+**Framework**
+
+- [ShadowNode][] is the [Node.js][] runtime that implements most of core APIs and N-API-compatible.
+- [yodart][] is the application-layer of YODAOS, it's also the VUI framework for JavaScript.
 
 ## Releases
 
