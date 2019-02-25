@@ -77,10 +77,10 @@ $ make defconfig && make
 
 The `cp` command is to select which board that you would build, the following are the boards config table:
 
-| board             | config |
-|-------------------|--------|
-| Raspberry 3b plus | products/yodaos/rbpi-3b-plus/configs/broadcom_bcm2710_rpi3b_plus_defconfig |
-| Kamino18          | products/rokid/dev3.3/configs/leo_k18_dev33_defconfig |
+| board             | product               | config  |
+|-------------------|-----------------------|---------|
+| Raspberry 3b plus | [product-raspberry][] | products/yodaos/rbpi-3b-plus/configs/broadcom_bcm2710_rpi3b_plus_defconfig |
+| Kamino18          | [product-kamino18][]  | products/rokid/dev3.3/configs/leo_k18_dev33_defconfig |
 
 Remember that `make defconfig` after you redo the copy on the specific board config.
 
@@ -211,3 +211,5 @@ Apache 2.0
 [ShadowNode]: https://github.com/Rokid/ShadowNode
 [Rokid]: https://github.com/Rokid
 [Node.js]: https://github.com/nodejs/node
+[product-raspberry]: https://github.com/yodaos-project/product-raspberry
+[product-kamino18]: https://github.com/yodaos-project/product-kamino18
