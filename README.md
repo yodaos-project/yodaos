@@ -7,6 +7,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/base-linux-green.svg" />
   <img src="https://img.shields.io/badge/build-openwrt-blue.svg" />
+  <img src="https://circleci.com/gh/yodaos-project/yodaos/tree/master.svg?style=shield" />
 </p>
 
 This is a modern operating system for next generation interactive device, and it embraces Web community,
