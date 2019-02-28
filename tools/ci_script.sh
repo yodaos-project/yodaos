@@ -1,4 +1,5 @@
-REPO=./tools/repo
+CWD=`pwd`
+REPO=$CWD/tools/repo
 
 mkdir -p yodaos-source
 cd yodaos-source
