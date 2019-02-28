@@ -2,9 +2,11 @@ CWD=`pwd`
 REPO=$CWD/tools/repo
 REPO_USERNAME=$CWD/tools/repo-username
 
+cat ~/.ssh/config
+cat ~/.ssh/known_hosts
+
 mkdir -p yodaos-source
 cd yodaos-source
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
 
 git config --global user.email "circleci@rokid.com"
 git config --global user.name "circle ci"
