@@ -1,6 +1,5 @@
 CWD=`pwd`
 REPO=$CWD/tools/repo
-REPO_USERNAME=$CWD/tools/repo-username
 
 ssh -o StrictHostKeyChecking=no -p 29418 $ROKID_USERNAME@openai-corp.rokid.com ""
 mkdir -p yodaos-source
@@ -16,5 +15,5 @@ $REPO init \
   --repo-url=http://openai-corp.rokid.com/tools/repo \
   --no-repo-verify
 
-$REPO_USERNAME -u $ROKID_USERNAME
+.repo/manifests/tools/repo-username -u $ROKID_USERNAME
 $REPO sync
