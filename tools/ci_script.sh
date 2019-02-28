@@ -6,6 +6,7 @@ ssh -o StrictHostKeyChecking=no -p 29418 $ROKID_USERNAME@openai-corp.rokid.com "
 mkdir -p yodaos-source
 cd yodaos-source
 
+git config --global color.ui false
 git config --global user.email "circleci@rokid.com"
 git config --global user.name "circle ci"
 
