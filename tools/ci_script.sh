@@ -2,9 +2,7 @@ CWD=`pwd`
 REPO=$CWD/tools/repo
 REPO_USERNAME=$CWD/tools/repo-username
 
-cat ~/.ssh/config
-cat ~/.ssh/known_hosts
-
+ssh -o StrictHostKeyChecking=no $ROKID_USERNAME@openai-corp.rokid.com
 mkdir -p yodaos-source
 cd yodaos-source
 
