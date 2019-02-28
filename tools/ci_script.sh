@@ -2,7 +2,7 @@ CWD=`pwd`
 REPO=$CWD/tools/repo
 REPO_USERNAME=$CWD/tools/repo-username
 
-ssh -o StrictHostKeyChecking=no $ROKID_USERNAME@openai-corp.rokid.com
+ssh -o StrictHostKeyChecking=no -p 29418 $ROKID_USERNAME@openai-corp.rokid.com ""
 mkdir -p yodaos-source
 cd yodaos-source
 
