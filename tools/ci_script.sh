@@ -4,6 +4,7 @@ REPO_USERNAME=$CWD/tools/repo-username
 
 mkdir -p yodaos-source
 cd yodaos-source
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
 
 git config --global user.email "circleci@rokid.com"
 git config --global user.name "circle ci"
