@@ -1,5 +1,6 @@
 CWD=`pwd`
 REPO=$CWD/tools/repo
+REPO_USERNAME=$CWD/tools/repo-username
 
 mkdir -p yodaos-source
 cd yodaos-source
@@ -12,3 +13,6 @@ $REPO init \
   -m manifest.xml \
   --repo-url=http://openai-corp.rokid.com/tools/repo \
   --no-repo-verify
+
+$REPO_USERNAME -u $ROKID_USERNAME
+$REPO sync
