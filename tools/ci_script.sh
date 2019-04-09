@@ -4,6 +4,7 @@ REPO=$CWD/tools/repo
 # upgrade apt-get
 sudo apt-get update -q
 sudo apt-get install -q -y \
+    pkg-config openssl \
     build-essential subversion \
     libncurses5-dev zlib1g-dev \
     gawk gcc-multilib flex git-core \
