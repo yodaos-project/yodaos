@@ -20,6 +20,8 @@
   <!-- toolchain end -->
 
   <project name="kamino_rokidos/gx8010/vendor" path="vendor"/>
+  <project name="kamino_rokidos/open-platform/embedded-linux/external/vold" path="frameworks/native/libs/vold
+"/>
   <project name="kamino_rokidos/gx8010/vsp_firmware" path="hardware/nationalchip/gx8010/vsp_firmware" revision="master"/>
   <project name="kamino_rokidos/gx8010/hardware" path="hardware"/>
   <project name="kamino_rokidos/gx8010/librokid-bt" path="frameworks/native/libs/librokid-bt"/>
