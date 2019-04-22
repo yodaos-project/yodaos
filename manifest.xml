@@ -13,7 +13,7 @@
   <project path="products/yodaos/rbpi-3b-plus"
     name="yodaos-project/product-raspberry" remote="github" revision="refs/tags/v1.0"/>
   <project path="products/rokid/dev3.3"
-    name="yodaos-project/product-kamino18" remote="github" revision="refs/tags/v3.3.0"/>
+    name="yodaos-project/product-kamino18" remote="github" revision="refs/tags/v3.3.1"/>
   <project path="products/rokid/universal"
     name="kamino_rokidos/open-platform/embedded-linux/products/product_universal3.0" revision="openai"/>
   <!-- product -->
