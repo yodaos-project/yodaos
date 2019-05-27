@@ -16,7 +16,5 @@ COPY manifests /opt/codebase/
 WORKDIR /opt/codebase/
 ADD ./tools/download.sh /download.sh
 RUN chmod 755 /download.sh
-RUN chown -R node:0 /opt/codebase
 
-USER node
 CMD ["/download.sh"]

@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-cat /etc/passwd
+set -x
+
+chown -R node:$HOST_UID /opt/codebase
+ls -la /home/
 
 # verify sshkeys
 ssh -tt -o StrictHostKeyChecking=no -p 29418 $ROKID_USERNAME@openai-corp.rokid.com ""
