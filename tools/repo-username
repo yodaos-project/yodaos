@@ -16,9 +16,8 @@ while [ $# -gt 0 ]; do
   shift $(( $# > 0 ? 1 : 0 ))
 done
 
-__dirname="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source="ssh:\/\/openai-corp.rokid.com:29418"
 target="ssh:\/\/${username}@openai-corp.rokid.com:29418"
 
-sed -i -e "s/${source}/${target}/g" ${__dirname}/../manifest.xml
+sed -i -e "s/${source}/${target}/g" .repo/manifest.xml
 
