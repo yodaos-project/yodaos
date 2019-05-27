@@ -3,7 +3,11 @@
 set -x
 
 # verify sshkeys
-ssh -tt -o StrictHostKeyChecking=no -p 29418 $ROKID_USERNAME@openai-corp.rokid.com ""
+echo $HOME
+ls -la ~/.ssh
+ssh -tt -o StrictHostKeyChecking=no \
+  -i /root/.ssh/id_rsa \
+  -p 29418 $ROKID_USERNAME@openai-corp.rokid.com ""
 
 git config --global color.ui false
 git config --global user.email "yodaos@rokid.com"
