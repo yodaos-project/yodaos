@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<manifest>
-  <project path="frameworks/aial/openvoice/ai-libs-common" name="ai-libs-common" revision="open"/>
-  <project path="frameworks/aial/openvoice/speech" name="Rokid/rokid-openvoice-sdk" remote="github"/>
-  <project path="frameworks/aial/openvoice/uWS" name="Rokid/rokid-openvoice-sdk-deps-uWS" remote="github"/>
-</manifest>

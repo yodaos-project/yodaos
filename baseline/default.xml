@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<manifest>
+  <!-- Prevent duplicated default/remote note. -->
+  <!--
+  <remote name="kamino_rokidos/gx8010" fetch="../../" review="https://openai-corp.rokid.com"/>
+  <remote name="github" fetch="https://github.com" review="https://github.com"/>
+  <default revision="master"
+           remote="kamino_rokidos/gx8010"
+           sync-j="4"/>
+  -->
+
+  <project path="toolchains" name="kamino_rokidos/gx8010/toolchains" groups="bsp"/>
+  <project path="vendor" name="kamino_rokidos/gx8010/vendor" groups="bsp"/>
+  <project path="hardware" name="kamino_rokidos/gx8010/hardware" groups="bsp"/>
+  <project path="frameworks/native/libs/libsconfig" name="kamino_rokidos/gx8010/libsconfig" groups="bsp"/>
+  <project path="frameworks/native/libs/ota_unpack" name="kamino_rokidos/open-platform/embedded-linux/external/aml_unpack" groups="bsp"/>
+  <project path="frameworks/native/libs/wpa_ctrl" name="kamino_rokidos/open-platform/embedded-linux/external/wpa_ctrl" groups="bsp"/>
+  <project path="frameworks/native/libs/vold" name="kamino_rokidos/open-platform/embedded-linux/external/vold" groups="bsp"/>
+  <project path="frameworks/native/libs/libeloop_mini" name="kamino_rokidos/open-platform/embedded-linux/external/libeloop_mini" groups="bsp"/>
+  <project path="frameworks/native/libs/libsignv" name="yodaos/native/libs/libsignv" groups="bsp"/>
+  <project path="frameworks/native/libs/libapp_manager" name="yodaos/native/libs/libapp_manager" groups="bsp"/>
+  <project path="frameworks/native/services/net_manager" name="kamino_rokidos/open-platform/embedded-linux/net_manager" groups="bsp"/>
+  <project path="frameworks/native/services/bluetooth_service" name="kamino_rokidos/open-platform/embedded-linux/bt_service" groups="bsp"/>
+  <project path="frameworks/native/services/powermanager_service" name="kamino_rokidos/open-platform/embedded-linux/powermanager_service" groups="bsp"/>
+  <project path="frameworks/native/services/battery_service" name="kamino_rokidos/open-platform/embedded-linux/battery_service" groups="bsp"/>
+  <project path="frameworks/native/services/factory" name="kamino_rokidos/open-platform/embedded-linux/factory" groups="bsp"/>
+
+  <project path="openwrt" name="kamino_rokidos/gx8010/openwrt" groups="sys"/>
+  <project path="products/rokid/common" name="kamino_rokidos/open-platform/embedded-linux/products/product_common" groups="sys">
+    <linkfile dest="build.sh" src="build.sh"/>
+    <linkfile dest="Makefile" src="Makefile"/>
+    <linkfile dest="envsetup.sh" src="envsetup.sh"/>
+    <linkfile dest="products/CMakeLists.txt" src="CMakeLists.txt"/>
+  </project>
+  <project path="3rd/android_lib/system/core" name="kamino_rokidos/open-platform/embedded-linux/system/core" groups="sys"/>
+  <project path="3rd/android_lib/bionic/property" name="kamino_rokidos/open-platform/embedded-linux/system/property" groups="sys"/>
+  <project path="3rd/android_lib/bionic/property_service" name="kamino_rokidos/open-platform/embedded-linux/system/property_service" groups="sys"/>
+  <project path="3rd/android_lib/native" name="kamino_rokidos/open-platform/embedded-linux/frameworks/native" groups="sys"/>
+  <project path="3rd/android_lib/external/android-kernel-headers" name="kamino_rokidos/open-platform/embedded-linux/external/android-kernel-headers" groups="sys"/>
+  <project path="frameworks/native/libs/librplayer" name="kamino_rokidos/open-platform/embedded-linux/external/librplayer" groups="sys"/>
+  <project path="frameworks/native/libs/httpsession" name="open-platform/client/httpsession" groups="sys"/>
+  <project path="frameworks/native/libs/system_state" name="kamino_rokidos/open-platform/embedded-linux/external/system_state" groups="sys"/>
+  <project path="frameworks/native/libs/security" name="kamino_rokidos/open-platform/embedded-linux/external/security" groups="sys"/>
+  <project path="frameworks/native/libs/rklog" name="kamino_rokidos/open-platform/embedded-linux/rklog" groups="sys"/>
+  <project path="frameworks/native/libs/input-event" name="kamino_rokidos/open-platform/embedded-linux/input-event" groups="sys"/>
+  <project path="frameworks/native/libs/lumenlight" name="kamino_rokidos/open-platform/embedded-linux/lumenlight" groups="sys"/>
+  <project path="frameworks/native/libs/vol_ctrl" name="kamino_rokidos/open-platform/embedded-linux/external/vol_ctrl" groups="sys"/>
+  <project path="frameworks/native/libs/libmemcheck" name="kamino_rokidos/open-platform/embedded-linux/external/libmemcheck" groups="sys"/>
+  <project path="frameworks/native/libs/eq_ctrl" name="kamino_rokidos/open-platform/embedded-linux/external/eq_ctrl" groups="sys"/>
+  <project path="frameworks/native/libs/googletest" name="kamino_rokidos/open-platform/embedded-linux/external/googletest" groups="sys"/>
+
+  <project path="frameworks/aial/openvoice/alab-libs" name="kamino_rokidos/core/alab-libs" groups="aial"/>
+  <project path="frameworks/aial/openvoice/ai-libs-common" name="ai-libs-common" groups="aial"/>
+  <project path="frameworks/aial/openvoice/lothalproc" name="kamino_rokidos/gx8010/lothalproc" groups="aial"/>
+
+  <project path="frameworks/allspark/cmake-modules" name="Rokid/aife-cmake-modules" remote="github" groups="spk"/>
+  <project path="frameworks/allspark/mutils" name="Rokid/aife-mutils" remote="github" groups="spk"/>
+  <project path="frameworks/allspark/flora" name="Rokid/yoda-flora" remote="github" groups="spk"/>
+  <project path="frameworks/allspark/flora-dispatcher" name="Rokid/yoda-flora-dispatcher" remote="github" groups="spk"/>
+  <project path="frameworks/allspark/lizard" name="Rokid/yoda-lizard" remote="github" groups="spk"/>
+
+  <project path="frameworks/vm/shadow-node" name="yodaos-project/ShadowNode" remote="github" revision="refs/tags/v0.11.7" groups="rt"/>
+  <project path="frameworks/jsruntime" name="yodaos-project/yoda.js" remote="github" groups="rt"/>
+  <project path="frameworks/hive-proc" name="yodaos-project/hive-proc" remote="github" groups="rt"/>
+
+  <project path="frameworks/node_modules/@yoda/flora" name="yodaos-project/node-flora" remote="github" groups="pkg"/>
+  <project path="frameworks/node_modules/flock" name="yodaos-project/node-flock" remote="github" revision="refs/tags/v1.0.1" groups="pkg"/>
+  <project path="frameworks/node_modules/@yoda/caps" name="shadow-node/node-caps" remote="github" revision="master" groups="pkg"/>
+
+  <!-- apps -->
+  <project path="applications/alarm" name="yodaos-project/yoda-app-alarm" remote="github" groups="app"/>
+  <project path="applications/bluetooth" name="yodaos-project/yoda-app-bluetooth" remote="github" groups="app"/>
+  <project path="applications/cloud-player" name="yodaos-project/yoda-app-cloud-player" remote="github" groups="app"/>
+  <project path="applications/system" name="yodaos-project/yoda-app-system" remote="github" groups="app"/>
+  <project path="applications/timed-sleep" name="yodaos-project/yoda-app-timed-sleep" remote="github" groups="app"/>
+  <project path="applications/timer" name="yodaos-project/yoda-app-timer" remote="github" groups="app"/>
+  <project path="applications/volume" name="yodaos-project/yoda-app-volume" remote="github" groups="app"/>
+  <project path="applications/lothal-launcher" name="kamino_rokidos/applications/lothal-launcher" groups="app"/>
+  <project path="applications/battery" name="kamino_rokidos/applications/battery" groups="app"/>
+  <project path="applications/ota" name="kamino_rokidos/applications/ota" groups="app"/>
+  <project path="applications/do-not-disturb" name="kamino_rokidos/applications/do-not-disturb" groups="app"/>
+  <!-- apps -->
+</manifest>

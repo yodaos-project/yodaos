@@ -131,7 +131,7 @@ The [YODAOS][] is a group of children projects open sourced which mainly are:
 **Framework**
 
 - [ShadowNode][] is the [Node.js][] runtime that implements most of core APIs and N-API-compatible.
-- [yodart][] is the application-layer of YODAOS, it's also the VUI framework for JavaScript.
+- [yoda.js][] is the application-layer of YODAOS, it's also the VUI framework for JavaScript.
 
 ## Releases
 
@@ -172,16 +172,6 @@ For stable version, we preserve 2 weeks at least to take the workload of full te
 branch `v1.2.x-rc`. Once all the full tests are passed, then create a stable branch(`v1.2.x`) from release
 candidate branch(`v1.2.x-rc`).
 
-## Project Team Members
-
-### TSC (Technical Steering Committee)
-
-- [algebrait](https://github.com/algebrait) - **Weigang Xu** <weigang.xu@rokid.com>
-- [lanfly](https://github.com/lanfly) - **Xiaofei Lan** <xiaofei.lan@rokid.com>
-- [legendecas](https://github.com/legendecas) - **Chengzhong Wu** <chengzhong.wu@rokid.com>
-- [mingzc0508](https://github.com/mingzc0508) - **Cheng Zhang** <ceng.zhang@rokid.com>
-- [yorkie](https://github.com/yorkie) - **Yorkie Liu** <yazhong.liu@rokid.com>
-
 ## Community
 
 - [YouTube](https://www.youtube.com/channel/UCRvBWIaBcsfvCTC_4EKW4lw)
@@ -195,22 +185,20 @@ candidate branch(`v1.2.x-rc`).
 
 ## Documentation
 
-- [Yoda Book](https://github.com/yodaos-project/yoda-book)
-- [API reference](https://yodaos.rokid.com/docs/latest/)
+- [YodaOS Book](https://github.com/yodaos-project/yoda-book)
 
 ## License
 
 Apache 2.0
 
-[YODAOS]: https://github.com/Rokid/YodaOS
-[yodart]: https://github.com/yodaos-project/yodart
+[YODAOS]: https://github.com/yodaos-project
+[yoda.js]: https://github.com/yodaos-project/yoda.js
 [flora]: https://github.com/yodaos-project/flora
 [flora-dispatcher]: https://github.com/yodaos-project/flora-dispatcher
 [yodaos-project/evolution]: https://github.com/yodaos-project/evolution
 [yoda-speech-service]: https://github.com/Rokid/yoda-speech-service
 [Semver 2.0]: https://semver.org/
-[ShadowNode]: https://github.com/Rokid/ShadowNode
-[Rokid]: https://github.com/Rokid
+[ShadowNode]: https://github.com/yodaos-project/ShadowNode
 [Node.js]: https://github.com/nodejs/node
 [raspberry]: https://github.com/yodaos-project/product-raspberry
 [kamino18]: https://github.com/yodaos-project/product-kamino18
