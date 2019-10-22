@@ -2,7 +2,7 @@
 <manifest>
   <remote name="gerrit" fetch="ssh://openai-corp.rokid.com:29418" review="https://openai-corp.rokid.com"/>
   <remote name="github" fetch="https://github.com" review="https://github.com"/>
-  <default revision="master" remote="kamino_rokidos/gx8010" sync-c="true" sync-j="4"/>
+  <default revision="master" remote="gerrit" sync-c="true" sync-j="4"/>
 
   <include name="baseline/default.xml"/>
 
