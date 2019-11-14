@@ -1,0 +1,76 @@
+Index: hostapd-2016-06-15/wpa_supplicant/events.c
+===================================================================
+--- hostapd-2016-06-15.orig/wpa_supplicant/events.c	2018-12-05 18:45:44.227415894 +0800
++++ hostapd-2016-06-15/wpa_supplicant/events.c	2018-12-05 18:49:06.635419598 +0800
+@@ -47,6 +47,8 @@
+ #include "mesh_mpm.h"
+ #include "wmm_ac.h"
+ 
++static int is_disable_all_network = 0;
++extern int is_join_network;
+ 
+ #ifndef CONFIG_NO_SCAN_PROCESSING
+ static int wpas_select_network_from_last_scan(struct wpa_supplicant *wpa_s,
+@@ -911,6 +913,7 @@
+ 
+ 	wpa = wpa_ie_len > 0 || rsn_ie_len > 0;
+ 
++    is_disable_all_network = 0;
+ 	for (ssid = group; ssid; ssid = only_first_ssid ? NULL : ssid->pnext) {
+ 		int check_ssid = wpa ? 1 : (ssid->ssid_len != 0);
+ 		int res;
+@@ -918,7 +921,9 @@
+ 		if (wpas_network_disabled(wpa_s, ssid)) {
+ 			wpa_dbg(wpa_s, MSG_DEBUG, "   skip - disabled");
+ 			continue;
+-		}
++		} else {
++            is_disable_all_network = 1;
++        }
+ 
+ 		res = wpas_temp_disabled(wpa_s, ssid);
+ 		if (res > 0) {
+@@ -1725,8 +1730,11 @@
+ 				wpa_supplicant_req_new_scan(wpa_s, timeout_sec,
+ 							    timeout_usec);
+             if (wpa_s->conf->ssid != NULL) {
+-			    wpa_msg_ctrl(wpa_s, MSG_INFO,
+-				         WPA_EVENT_NETWORK_NOT_FOUND);
++                if ((is_disable_all_network) && (is_join_network)) {
++			        wpa_dbg(wpa_s, MSG_DEBUG, "upload not found");
++                    wpa_msg_ctrl(wpa_s, MSG_INFO,
++				             WPA_EVENT_NETWORK_NOT_FOUND);
++                }
+             }
+ 		}
+ 	}
+Index: hostapd-2016-06-15/wpa_supplicant/wpa_supplicant.c
+===================================================================
+--- hostapd-2016-06-15.orig/wpa_supplicant/wpa_supplicant.c	2018-12-05 18:45:44.495415899 +0800
++++ hostapd-2016-06-15/wpa_supplicant/wpa_supplicant.c	2018-12-05 18:50:07.555420713 +0800
+@@ -112,6 +112,8 @@
+ "\n";
+ #endif /* CONFIG_NO_STDOUT_DEBUG */
+ 
++int is_join_network = 0;
++
+ static int hostapd_stop(struct wpa_supplicant *wpa_s)
+ {
+ 	const char *cmd = "STOP_AP";
+@@ -2819,6 +2821,7 @@
+ void wpa_supplicant_enable_network(struct wpa_supplicant *wpa_s,
+ 				   struct wpa_ssid *ssid)
+ {
++    is_join_network = 0;
+ 	if (ssid == NULL) {
+ 		for (ssid = wpa_s->conf->ssid; ssid; ssid = ssid->next)
+ 			wpa_supplicant_enable_one_network(wpa_s, ssid);
+@@ -2909,6 +2912,8 @@
+ 
+ 	struct wpa_ssid *other_ssid;
+ 	int disconnected = 0;
++    
++    is_join_network = 1;
+ 
+ 	if (ssid && ssid != wpa_s->current_ssid && wpa_s->current_ssid) {
+ 		if (wpa_s->wpa_state >= WPA_AUTHENTICATING)

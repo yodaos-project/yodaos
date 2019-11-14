@@ -1,0 +1,24 @@
+{
+  "name": "ota",
+  "version": "1.0.0",
+  "description": "OTA Apps for CMCC",
+  "main": "app.js",
+  "manifest": {
+    "broadcasts": [
+      "yodaos.on-system-booted"
+    ],
+    "hosts": [
+      "ota"
+    ]
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ota",
+    "rokid",
+    "skill"
+  ],
+  "author": "Chengzhong Wu <chengzhong.wu@rokid.com>",
+  "license": "UNLICENSED"
+}

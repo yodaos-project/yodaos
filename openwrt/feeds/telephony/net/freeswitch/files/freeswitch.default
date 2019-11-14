@@ -1,0 +1,11 @@
+#FS_DIR="/opt"
+FS_DIR_ETC="$FS_DIR/etc/freeswitch"
+FS_DIR_MOD="$FS_DIR/usr/lib/freeswitch"
+FS_DIR_DB="$FS_DIR/tmp/freeswitch/db"
+FS_DIR_LOG="$FS_DIR/tmp/freeswitch/log"
+FS_DIR_SCRIPTS="$FS_DIR/usr/share/freeswitch/scripts"
+FS_DIR_HTDOCS="$FS_DIR/usr/share/freeswitch/htdocs"
+FS_DIR_RECORDINGS="/var/lib/freeswitch/recordings" # NOTE: must be changed in config as well
+FS_DIR_VM_STORAGE="/var/lib/freeswitch/storage" # NOTE: must be changed in config as well
+
+OPTIONS="-conf $FS_DIR_ETC -log $FS_DIR_LOG -db $FS_DIR_DB -mod $FS_DIR_MOD -htdocs $FS_DIR_HTDOCS -scripts $FS_DIR_SCRIPTS"

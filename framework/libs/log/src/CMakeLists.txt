@@ -1,0 +1,5 @@
+add_subdirectory(lib)
+if(DEFINED BOARDCONFIG_ALIYUNLOG)
+add_subdirectory(service)
+endif()
+add_subdirectory(tools)

@@ -1,0 +1,23 @@
+--- a/src/spandsp/fast_convert.h
++++ b/src/spandsp/fast_convert.h
+@@ -195,7 +195,7 @@ extern "C"
+     {
+         return (long int) (x);
+     }
+-#elif defined(__ppc__)  ||   defined(__powerpc__)
++#elif defined(THISISNOTDEFINEDYADDAYADDA)
+     static __inline__ long int lfastrint(register double x)
+     {
+         int res[2];
+--- a/configure.ac
++++ b/configure.ac
+@@ -152,9 +152,7 @@ AC_ARG_ENABLE(builtin_tiff,
+ 
+ AC_FUNC_ERROR_AT_LINE
+ AC_FUNC_VPRINTF
+-AC_FUNC_MALLOC
+ AC_FUNC_MEMCMP
+-AC_FUNC_REALLOC
+ AC_FUNC_SELECT_ARGTYPES
+ 
+ AX_C99_FUNC_LRINT

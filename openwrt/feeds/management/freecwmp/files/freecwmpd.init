@@ -1,0 +1,12 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2012-2013 OpenWrt.org
+
+START=90
+
+start() {
+	service_start /usr/sbin/freecwmpd
+}
+
+stop() {
+	service_stop /usr/sbin/freecwmpd
+}

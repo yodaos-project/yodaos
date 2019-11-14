@@ -1,0 +1,11 @@
+--- a/src/mod/endpoints/mod_sofia/conf/sofia.conf.xml
++++ b/src/mod/endpoints/mod_sofia/conf/sofia.conf.xml
+@@ -216,7 +216,7 @@
+         <!-- <param name="unregister-on-options-fail" value="true"/> -->
+         <!-- Send an OPTIONS packet to all registered endpoints -->
+         <!--<param name="all-reg-options-ping" value="true"/>-->
+-        <!-- Send an OPTIONS packet to NATed registered endpoints. Can be 'true' or 'udp-only
++        <!-- Send an OPTIONS packet to NATed registered endpoints. Can be 'true' or 'udp-only -->
+         <!--<param name="nat-options-ping" value="true"/>-->
+ 
+         <!-- TLS: disabled by default, set to "true" to enable -->

@@ -1,0 +1,10 @@
+--- /dev/null
++++ b/build/openwrt_rules.mk
+@@ -0,0 +1,7 @@
++OPENWRT_DIR=$(shell (cd $(BASE)/../../..;pwd))
++STAGING_PREFIX=$(OPENWRT_DIR)/staging_dir/host
++STAGING_DIR=$(OPENWRT_DIR)/staging_dir/$(shell (cd $(BASE)/..;basename `pwd`))
++ARCH="$(shell grep CONFIG_ARCH $(OPENWRT_DIR)/.config|cut -d= -d'"' -f2)"
++GNU_TARGET_NAME=$(ARCH)-openwrt-linux
++
++include $(OPENWRT_DIR)/rules.mk

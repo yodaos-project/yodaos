@@ -1,0 +1,135 @@
+INPUT-EVENT-DAEMON(8)
+=====================
+
+
+NAME
+----
+input-event-daemon - input event handling daemon
+
+
+SYNOPSIS
+--------
+[verse]
+*input-event-daemon* [ [ --monitor | --list | --help | --version ] |
+                     [--config=FILE] [--verbose] [--no-daemon] ]
+
+
+DESCRIPTION
+-----------
+input-event-daemon(1) is a daemon which executes a user-defined command on
+input events, such as keys, mouse buttons and switches. This can be useful
+to handle special keys on laptops or multimedia keyboards without X11.
+
+
+OPTIONS
+-------
+*-m, --monitor*::
+    Start in monitoring mode. In this mode 'input-event-daemon' does not detach
+    to background, but shows every input event and the device file which
+    triggered it.  This option is to be specified exclusively.
+
+*-l, --list*::
+    Lists all available input device files, including their name, supported
+    features and physical path.  This option is to be specified exclusively.
+
+*-c, --config*='FILE'::
+    Use configuration file 'FILE'. This option will be ignored in monitoring
+    mode. See below for syntax information.
+    (default: '/etc/input-event-daemon.conf')
+
+*-v, --verbose*::
+    Verbosely print every event which is handled in the configuration file.
+    This option may be combined with the option *--no-daemon*.
+
+*-D, --no-daemon*::
+    Do not detach from console.
+
+
+*-h, --help*::
+    Print help and quit.
+
+*-V, --version*::
+    Print program version number and quit.
+
+
+FILES
+-----
+'/etc/input-event-daemon.conf'::
+    The default path of the configuration file.
+
+EXAMPLES
+--------
+A common configuration file may look like this:
+----------------
+#
+# /etc/input-event-daemon.conf
+#
+
+[Global]
+listen = /dev/input/event0
+listen = /dev/input/event1
+
+[Keys]
+MUTE         = amixer -q set Master mute
+CTRL+ALT+ESC = shutdown -h now
+
+[Switches]
+RADIO:0 = ifconfig wlan0 down
+
+[Idle]
+1h 30m = vbetool dpms off
+reset  = vbetool dpms on
+----------------
+
+*[Global]*::
+Specifies all devices files to listen to. This option may be used more than
+once.
+
+*[Keys]*::
+All commands in this section are executed when the specified shortcut occurred.
+Modifiers are separated by the plus sign. A shortcut may be defined only once.
+
+*[Switches]*::
+This section defines commands which are executed when a specified switch is set
+to the defined value. Switch name and value are separated by a colon.
+
+*[Idle]*::
+The commands defined in this section are executed after all input devices did
+not send any events in the specified amount of time. The special key 'RESET'
+is triggered when returning from idle.
+
+NOTE: The idle time applies to all events, even such not handled by
+input-event-daemon (e.g. mouse movement).
+
+
+INSTALLATION
+------------
+To build and install input-event-daemon from source use the following commands:
+----------------
+$ make
+$ make install
+----------------
+
+KNOWN BUGS
+----------
+Since the device file paths do change when devices are added or removed, you
+may want to use *udev(7)* to automatically create a symlink for the device.
+
+A custom udev rule which creates '/dev/input/usb-mouse' may look like this:
+----------------
+SUBSYSTEM=="input" ATTRS{name}=="USB Optical Mouse" SYMLINK+="input/usb-mouse"
+----------------
+
+AUTHOR
+------
+Written by Sebastian Wicki, <gandro@gmx.net>
+
+Reviewed by Oliver Reissig.
+
+
+RESOURCES
+---------
+The latest version of this program can be found at: ::
+    <http://github.com/gandro/input-event-daemon>
+
+

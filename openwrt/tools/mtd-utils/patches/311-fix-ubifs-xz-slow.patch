@@ -1,0 +1,11 @@
+--- a/mkfs.ubifs/compr.c	2018-08-17 21:06:47.125199255 +0800
++++ b/mkfs.ubifs/compr.c	2018-08-17 21:02:44.885193743 +0800
+@@ -137,7 +137,7 @@
+ 
+ static struct xz_ctx *xz_ctx;
+ 
+-#define LZMA_COMPRESSION_LEVEL	9
++#define LZMA_COMPRESSION_LEVEL	0
+ 
+ static struct xz_ctx *xz_ctx_init(void)
+ {

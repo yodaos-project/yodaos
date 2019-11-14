@@ -1,0 +1,28 @@
+Index: yate/engine/Mutex.cpp
+===================================================================
+--- yate.orig/engine/Mutex.cpp
++++ yate/engine/Mutex.cpp
+@@ -30,6 +30,10 @@ typedef HANDLE HSEMAPHORE;
+ #include <semaphore.h>
+ #include <time.h>
+ 
++#ifndef PTHREAD_MUTEX_RECURSIVE_NP
++#define PTHREAD_MUTEX_RECURSIVE_NP PTHREAD_MUTEX_RECURSIVE
++#endif
++
+ #ifdef MUTEX_HACK
+ extern "C" {
+ #if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__APPLE__)
+Index: yate/configure.ac
+===================================================================
+--- yate.orig/configure.ac
++++ yate/configure.ac
+@@ -257,7 +257,7 @@ AC_TRY_COMPILE([
+ #include <pthread.h>
+ ],[
+ pthread_mutexattr_t attr;
+-pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE_NP);
++pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE);
+ ],
+ have_mutex_settype="yes",
+ have_mutex_settype="no"

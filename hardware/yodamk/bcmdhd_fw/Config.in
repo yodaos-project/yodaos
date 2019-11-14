@@ -1,0 +1,28 @@
+menu "Broadcom wifi firmware selection"
+     comment "brcmd hardware"
+
+     config BRCMD_AP6255
+          bool "wifi Broadcom firmware 6255"
+          default n
+
+     config BRCMD_AP6236
+          bool "wifi Broadcom firmware 6236"
+          default n
+
+     config BRCMD_NB197
+          bool "wifi Broadcom firmware cypress nb197"
+          default n
+
+     config BRCMD_TEST
+          bool "wifi Broadcom hardware test"
+          default n
+
+     config K18_WIFI_FIRMWARE_SELECTION
+          bool "Select wifi firmware for K18 platform"
+          default n
+
+     config A113_WIFI_FIRMWARE_SELECTION
+          bool "Select wifi firmware for A113 platform"
+          default n
+endmenu
+

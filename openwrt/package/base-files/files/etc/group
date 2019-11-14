@@ -1,0 +1,12 @@
+root:x:0:
+daemon:x:1:
+adm:x:4:
+mail:x:8:
+audio:x:29:root,pulse
+www-data:x:33:
+ftp:x:55:
+users:x:100:
+network:x:101:
+bluetooth:x:121:root
+nogroup:x:65534:
+pulse:x:51:pulse

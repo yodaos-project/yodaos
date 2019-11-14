@@ -1,0 +1,24 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006 OpenWrt.org
+
+START=95
+PULSE_PIDFILE="/var/run/pulse/pid"
+
+boot() {
+	rm -f /sysupgrade.tgz
+	if [ -f "$PULSE_PIDFILE" ]; then
+		PULSE_PID=`cat $PULSE_PIDFILE`
+		echo -17 > /proc/$PULSE_PID/oom_adj
+		echo "set pulse oom not killed ok!"
+	else
+		echo "set pulse oom not killed failed!"
+	fi
+	# process user commands
+	[ -f /etc/rc.local ] && {
+		sh /etc/rc.local
+	}
+
+	# set leds to normal state
+	. /etc/diag.sh
+	set_state done
+}

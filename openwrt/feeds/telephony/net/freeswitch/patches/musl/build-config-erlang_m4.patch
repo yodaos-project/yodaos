@@ -1,0 +1,97 @@
+--- a/build/config/erlang.m4
++++ b/build/config/erlang.m4
+@@ -1,6 +1,6 @@
+ AC_DEFUN([CHECK_ERLANG], [
+ #
+-# Erlang checks for mod_erlang_event
++# Erlang check
+ #
+ AC_ARG_WITH(
+ 	[erlang],
+@@ -20,22 +20,23 @@ then
+ 		if test ! -x "$with_erlang" ; then
+ 			AC_MSG_ERROR([Specified erlang does not exist or is not executable: $with_erlang])
+ 		fi
+-		AC_MSG_RESULT([$with_erlang])
+-		AC_SUBST([ERLANG], ["$with_erlang"])
++		AC_MSG_RESULT(["$with_erlang/bin/erl"])
++		AC_SUBST([ERL],["$with_erlang/bin/erl"])
+ 	else
+-		AC_PATH_PROG([ERLANG], ["erl"], ["no"], ["$PATH:/usr/bin:/usr/local/bin"])
++		AC_ERLANG_NEED_ERL(["$with_erlang/bin"])
+ 	fi
+ 
+-	if test "$ERLANG" != "no" ; then
++	if test "$ERL" != "no" ; then
+ 		AC_MSG_CHECKING([erlang version])
+-		ERLANG_VER="`$ERLANG -version 2>&1 | cut -d' ' -f6`"
++		ERLANG_VER="`$ERL -version 2>&1 | cut -d' ' -f6`"
+ 
+ 		if test -z "$ERLANG_VER" ; then
+ 			AC_MSG_ERROR([Unable to detect erlang version])
++		else
++			AC_MSG_RESULT([$ERLANG_VER])
+ 		fi
+-		AC_MSG_RESULT([$ERLANG_VER])
+ 
+-		ERLANG_LIBDIR=`$ERLANG -noshell -eval 'io:format("~n~s/lib~n", [[code:lib_dir("erl_interface")]]).' -s erlang halt | tail -n 1`
++		ERLANG_LIBDIR=`$ERL -noshell -eval 'io:format("~n~s/lib~n", [[code:lib_dir("erl_interface")]]).' -s erlang halt | tail -n 1`
+ 		AC_MSG_CHECKING([erlang libdir])
+ 		if test -z "`echo $ERLANG_LIBDIR`" ; then
+ 			AC_MSG_ERROR([failed])
+@@ -43,9 +44,16 @@ then
+ 			ERLANG_LDFLAGS="-L$ERLANG_LIBDIR $ERLANG_LDFLAGS"
+ 			LIBS="-L$ERLANG_LIBDIR $LIBS"
+ 		fi
++
++		#
++		# Don't use the above ERLANG_LDFLAGS
++		#
++		ERLANG_LIBDIR="${STAGING_DIR}/usr/lib"
++		ERLANG_LDFLAGS="-L$ERLANG_LIBDIR"
++		LIBS="-L$ERLANG_LIBDIR $LIBS"
+ 		AC_MSG_RESULT([$ERLANG_LIBDIR])
+ 
+-		ERLANG_INCDIR=`$ERLANG -noshell -eval 'io:format("~n~s/include~n", [[code:lib_dir("erl_interface")]]).' -s erlang halt | tail -n 1`
++		ERLANG_INCDIR=`$ERL -noshell -eval 'io:format("~n~s/include~n", [[code:lib_dir("erl_interface")]]).' -s erlang halt | tail -n 1`
+ 		AC_MSG_CHECKING([erlang incdir])
+ 		if test -z "`echo $ERLANG_INCDIR`" ; then
+ 			AC_MSG_ERROR([failed])
+@@ -59,10 +67,11 @@ then
+ 
+ 		ERLANG_LIB="ei"
+ 
+-		# check liei
++		# check libei
+ 		AC_CHECK_LIB([$ERLANG_LIB], [ei_encode_version], [has_libei="yes"], [has_libei="no"])
+ 		# maybe someday ei will actually expose this?
+-		AC_CHECK_LIB([$ERLANG_LIB], [ei_link_unlink], [ERLANG_CFLAGS="$ERLANG_CFLAGS -DEI_LINK_UNLINK"])
++		# until then, we comment it out
++		#AC_CHECK_LIB([$ERLANG_LIB], [ei_link_unlink], [ERLANG_CFLAGS="$ERLANG_CFLAGS -DEI_LINK_UNLINK"])
+ 
+ 		if test "$has_libei" = "no" ; then
+ 			AS_IF([test "$with_erlang" = "try"],
+@@ -76,7 +85,7 @@ then
+ 			)
+ 		else
+ 			ERLANG_LDFLAGS="$ERLANG_LDFLAGS -lei"
+-			AC_MSG_NOTICE([Your erlang seems OK, do not forget to enable mod_erlang_event in modules.conf])
++			AC_MSG_NOTICE([Your erlang seems OK. You can now use ErLang in your codes.])
+ 			AC_SUBST([ERLANG_CFLAGS],  [$ERLANG_CFLAGS])
+ 			AC_SUBST([ERLANG_LDFLAGS], [$ERLANG_LDFLAGS])
+ 			AM_CONDITIONAL([HAVE_ERLANG],[true])
+@@ -87,12 +96,12 @@ then
+ 
+ 	else
+ 		AS_IF([test "$with_erlang" = "try"],
+-			[AC_MSG_WARN([Could not find erlang, mod_erlang_event will not build, use --with-erlang to specify the location])],
++			[AC_MSG_WARN([Could not find erlang, codes depend on erlang will not build, use --with-erlang to specify the location])],
+ 			[AC_MSG_ERROR([Could not find erlang, use --with-erlang to specify the location])]
+ 		)
+ 	fi
+ else
+-	AC_MSG_WARN([erlang support disabled, building mod_erlang_event will fail!])
++	AC_MSG_WARN([erlang support disabled!])
+ fi
+ 
+ ])

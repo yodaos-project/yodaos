@@ -1,0 +1,476 @@
+/* SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause) */
+/*
+ * Copyright (C) STMicroelectronics 2017 - All Rights Reserved
+ * Author: Ludovic Barre <ludovic.barre@st.com> for STMicroelectronics.
+ */
+
+/dts-v1/;
+
+#include "stm32mp157.dtsi"
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/pinctrl/stm32-pinfunc.h>
+#include <dt-bindings/mfd/st,stpmu1.h>
+
+/ {
+	model = "STMicroelectronics STM32MP157C pmic eval daughter";
+	compatible = "st,stm32mp157c-ed1", "st,stm32mp157";
+
+	chosen {
+		bootargs = "earlyprintk console=ttyS3,115200 root=/dev/ram";
+		stdout-path = "serial3:115200n8";
+	};
+
+	memory {
+		reg = <0xC0000000 0x40000000>;
+	};
+
+	sd_switch: regulator-sd_switch {
+		compatible = "regulator-gpio";
+		regulator-name = "sd_switch";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <2900000>;
+		regulator-type = "voltage";
+		regulator-always-on;
+
+		gpios = <&gpiof 14 GPIO_ACTIVE_HIGH>;
+		gpios-states = <0>;
+		states = <1800000 0x1 2900000 0x0>;
+	};
+};
+
+&gpioa {
+	status = "okay";
+};
+
+&gpiob {
+	status = "okay";
+};
+
+&gpioc {
+	status = "okay";
+};
+
+&gpiod {
+	status = "okay";
+};
+
+&gpioe {
+	status = "okay";
+};
+
+&gpiof {
+	status = "okay";
+};
+
+&gpiog {
+	status = "okay";
+};
+
+&gpioh {
+	status = "okay";
+};
+
+&gpioi {
+	status = "okay";
+};
+
+&gpioj {
+	status = "okay";
+};
+
+&gpiok {
+	status = "okay";
+};
+
+&gpioz {
+	status = "okay";
+};
+
+&pinctrl {
+	uart4_pins_a: uart4@0 {
+		pins1 {
+			pinmux = <STM32_PINMUX('G', 11, AF6)>; /* UART4_TX */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+		pins2 {
+			pinmux = <STM32_PINMUX('B', 2, AF8)>; /* UART4_RX */
+			bias-disable;
+		};
+	};
+
+	sdmmc1_b4_pins_a: sdmmc1-b4@0 {
+		pins {
+			pinmux = <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
+				 <STM32_PINMUX('C', 9, AF12)>, /* SDMMC1_D1 */
+				 <STM32_PINMUX('C', 10, AF12)>, /* SDMMC1_D2 */
+				 <STM32_PINMUX('C', 11, AF12)>, /* SDMMC1_D3 */
+				 <STM32_PINMUX('C', 12, AF12)>, /* SDMMC1_CK */
+				 <STM32_PINMUX('D', 2, AF12)>; /* SDMMC1_CMD */
+			slew-rate = <3>;
+			drive-push-pull;
+			bias-disable;
+		};
+	};
+
+	sdmmc1_dir_pins_a: sdmmc1-dir@0 {
+		pins {
+			pinmux = <STM32_PINMUX('F', 2, AF11)>, /* SDMMC1_D0DIR */
+				 <STM32_PINMUX('C', 7, AF8)>, /* SDMMC1_D123DIR */
+				 <STM32_PINMUX('B', 9, AF11)>, /* SDMMC1_CDIR */
+				 <STM32_PINMUX('E', 4, AF8)>; /* SDMMC1_CKIN */
+			slew-rate = <3>;
+			drive-push-pull;
+			bias-pull-up;
+		};
+	};
+	sdmmc2_b4_pins_a: sdmmc2-b4@0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 14, AF9)>, /* SDMMC2_D0 */
+				 <STM32_PINMUX('B', 15, AF9)>, /* SDMMC2_D1 */
+				 <STM32_PINMUX('B', 3, AF9)>, /* SDMMC2_D2 */
+				 <STM32_PINMUX('B', 4, AF9)>, /* SDMMC2_D3 */
+				 <STM32_PINMUX('E', 3, AF9)>, /* SDMMC2_CK */
+				 <STM32_PINMUX('G', 6, AF10)>; /* SDMMC2_CMD */
+			slew-rate = <3>;
+			drive-push-pull;
+			bias-pull-up;
+		};
+	};
+
+	sdmmc2_d47_pins_a: sdmmc2-d47@0 {
+		pins {
+			pinmux = <STM32_PINMUX('A', 8, AF9)>, /* SDMMC2_D4 */
+				 <STM32_PINMUX('A', 9, AF10)>, /* SDMMC2_D5 */
+				 <STM32_PINMUX('E', 5, AF9)>, /* SDMMC2_D6 */
+				 <STM32_PINMUX('D', 3, AF9)>; /* SDMMC2_D7 */
+			slew-rate = <3>;
+			drive-push-pull;
+			bias-pull-up;
+		};
+	};
+};
+
+&pinctrl_z {
+	i2c4_pins_a: i2c4@0 {
+		pins {
+			pinmux = <STM32_PINMUX('Z', 4, AF6)>, /* I2C4_SCL */
+				 <STM32_PINMUX('Z', 5, AF6)>; /* I2C4_SDA */
+			bias-disable;
+			drive-open-drain;
+			slew-rate = <0>;
+		};
+	};
+};
+
+&i2c4 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c4_pins_a>;
+	i2c-scl-rising-time-ns = <185>;
+	i2c-scl-falling-time-ns = <20>;
+	status = "okay";
+
+	pmic: stpmu1@33 {
+		compatible = "st,stpmu1";
+		reg = <0x33>;
+		interrupts = <0 2>;
+		interrupt-parent = <&gpioa>;
+		interrupt-controller;
+		#interrupt-cells = <2>;
+		status = "okay";
+
+		st,main_control_register = <0x04>;
+		st,vin_control_register = <0xc0>;
+		st,usb_control_register = <0x30>;
+
+		regulators {
+			compatible = "st,stpmu1-regulators";
+
+			ldo1-supply = <&v3v3>;
+			ldo2-supply = <&v3v3>;
+			ldo3-supply = <&vdd_ddr>;
+			ldo5-supply = <&v3v3>;
+			ldo6-supply = <&v3v3>;
+			pwr_sw1-supply = <&bst_out>;
+			pwr_sw2-supply = <&bst_out>;
+
+			vddcore: buck1 {
+				regulator-name = "vddcore";
+				regulator-min-microvolt = <800000>;
+				regulator-max-microvolt = <1350000>;
+				regulator-always-on;
+				regulator-initial-mode = <2>;
+				regulator-over-current-protection;
+
+				regulator-state-standby {
+					regulator-on-in-suspend;
+					regulator-suspend-microvolt = <1200000>;
+					regulator-mode = <8>;
+				};
+				regulator-state-mem {
+					regulator-off-in-suspend;
+				};
+				regulator-state-disk {
+					regulator-off-in-suspend;
+				};
+			};
+
+			vdd_ddr: buck2 {
+				regulator-name = "vdd_ddr";
+				regulator-min-microvolt = <1350000>;
+				regulator-max-microvolt = <1350000>;
+				regulator-always-on;
+				regulator-initial-mode = <2>;
+				regulator-over-current-protection;
+
+				regulator-state-standby {
+					regulator-suspend-microvolt = <1350000>;
+					regulator-on-in-suspend;
+					regulator-mode = <8>;
+				};
+				regulator-state-mem {
+					regulator-suspend-microvolt = <1350000>;
+					regulator-on-in-suspend;
+					regulator-mode = <8>;
+				};
+				regulator-state-disk {
+					regulator-off-in-suspend;
+				};
+			};
+
+			vdd: buck3 {
+				regulator-name = "vdd";
+				regulator-min-microvolt = <3300000>;
+				regulator-max-microvolt = <3300000>;
+				regulator-always-on;
+				st,mask_reset;
+				regulator-initial-mode = <8>;
+				regulator-over-current-protection;
+
+				regulator-state-standby {
+					regulator-suspend-microvolt = <3300000>;
+					regulator-on-in-suspend;
+					regulator-mode = <8>;
+				};
+				regulator-state-mem {
+					regulator-suspend-microvolt = <3300000>;
+					regulator-on-in-suspend;
+					regulator-mode = <8>;
+				};
+				regulator-state-disk {
+					regulator-suspend-microvolt = <3300000>;
+					regulator-on-in-suspend;
+					regulator-mode = <8>;
+				};
+			};
+
+			v3v3: buck4 {
+				regulator-name = "v3v3";
+				regulator-min-microvolt = <3300000>;
+				regulator-max-microvolt = <3300000>;
+				regulator-boot-on;
+				regulator-over-current-protection;
+				regulator-initial-mode = <8>;
+
+				regulator-state-standby {
+					regulator-suspend-microvolt = <3300000>;
+					regulator-unchanged-in-suspend;
+					regulator-mode = <8>;
+				};
+				regulator-state-mem {
+					regulator-off-in-suspend;
+				};
+				regulator-state-disk {
+					regulator-off-in-suspend;
+				};
+			};
+
+			vdda: ldo1 {
+				regulator-name = "vdda";
+				regulator-min-microvolt = <2900000>;
+				regulator-max-microvolt = <2900000>;
+				interrupts = <IT_CURLIM_LDO1 0>;
+				interrupt-parent = <&pmic>;
+
+				regulator-state-standby {
+					regulator-suspend-microvolt = <2900000>;
+					regulator-unchanged-in-suspend;
+				};
+				regulator-state-mem {
+					regulator-off-in-suspend;
+				};
+				regulator-state-disk {
+					regulator-off-in-suspend;
+				};
+			};
+
+			v2v8: ldo2 {
+				regulator-name = "v2v8";
+				regulator-min-microvolt = <2800000>;
+				regulator-max-microvolt = <2800000>;
+				interrupts = <IT_CURLIM_LDO2 0>;
+				interrupt-parent = <&pmic>;
+
+				regulator-state-standby {
+					regulator-suspend-microvolt = <2800000>;
+					regulator-unchanged-in-suspend;
+				};
+				regulator-state-mem {
+					regulator-off-in-suspend;
+				};
+				regulator-state-disk {
+					regulator-off-in-suspend;
+				};
+			};
+
+			vtt_ddr: ldo3 {
+				regulator-name = "vtt_ddr";
+				regulator-min-microvolt = <0000000>;
+				regulator-max-microvolt = <1000000>;
+				regulator-always-on;
+				regulator-over-current-protection;
+
+				regulator-state-standby {
+					regulator-off-in-suspend;
+				};
+				regulator-state-mem {
+					regulator-off-in-suspend;
+				};
+				regulator-state-disk {
+					regulator-off-in-suspend;
+				};
+			};
+
+			vdd_usb: ldo4 {
+				regulator-name = "vdd_usb";
+				regulator-min-microvolt = <3300000>;
+				regulator-max-microvolt = <3300000>;
+				interrupts = <IT_CURLIM_LDO4 0>;
+				interrupt-parent = <&pmic>;
+
+				regulator-state-standby {
+					regulator-unchanged-in-suspend;
+				};
+				regulator-state-mem {
+					regulator-off-in-suspend;
+				};
+				regulator-state-disk {
+					regulator-off-in-suspend;
+				};
+			};
+
+			vdd_sd: ldo5 {
+				regulator-name = "vdd_sd";
+				regulator-min-microvolt = <2900000>;
+				regulator-max-microvolt = <2900000>;
+				interrupts = <IT_CURLIM_LDO5 0>;
+				interrupt-parent = <&pmic>;
+				regulator-boot-on;
+
+				regulator-state-standby {
+					regulator-suspend-microvolt = <2900000>;
+					regulator-unchanged-in-suspend;
+				};
+				regulator-state-mem {
+					regulator-off-in-suspend;
+				};
+				regulator-state-disk {
+					regulator-off-in-suspend;
+				};
+			};
+
+			v1v8: ldo6 {
+				regulator-name = "v1v8";
+				regulator-min-microvolt = <1800000>;
+				regulator-max-microvolt = <1800000>;
+				interrupts = <IT_CURLIM_LDO6 0>;
+				interrupt-parent = <&pmic>;
+
+				regulator-state-standby {
+					regulator-suspend-microvolt = <1800000>;
+					regulator-unchanged-in-suspend;
+				};
+				regulator-state-mem {
+					regulator-off-in-suspend;
+				};
+				regulator-state-disk {
+					regulator-off-in-suspend;
+				};
+			};
+
+			vref_ddr: vref_ddr {
+				regulator-name = "vref_ddr";
+				regulator-always-on;
+				regulator-over-current-protection;
+
+				regulator-state-standby {
+					regulator-on-in-suspend;
+				};
+				regulator-state-mem {
+					regulator-on-in-suspend;
+				};
+				regulator-state-disk {
+					regulator-off-in-suspend;
+				};
+			};
+
+			 bst_out: boost {
+				regulator-name = "bst_out";
+				interrupts = <IT_OCP_BOOST 0>;
+				interrupt-parent = <&pmic>;
+			 };
+
+			vbus_otg: pwr_sw1 {
+				regulator-name = "vbus_otg";
+				interrupts = <IT_OCP_OTG 0>;
+				interrupt-parent = <&pmic>;
+				regulator-active-discharge;
+			 };
+
+			 vbus_sw: pwr_sw2 {
+				regulator-name = "vbus_sw";
+				interrupts = <IT_OCP_SWOUT 0>;
+				interrupt-parent = <&pmic>;
+				regulator-active-discharge;
+			 };
+		};
+	};
+};
+
+&sdmmc1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&sdmmc1_b4_pins_a &sdmmc1_dir_pins_a>;
+	broken-cd;
+	st,dirpol;
+	st,negedge;
+	st,pin-ckin;
+	bus-width = <4>;
+	vmmc-supply = <&vdd_sd>;
+	vqmmc-supply = <&sd_switch>;
+	sd-uhs-sdr12;
+	sd-uhs-sdr25;
+	sd-uhs-sdr50;
+	sd-uhs-ddr50;
+	sd-uhs-sdr104;
+	status = "okay";
+};
+
+&sdmmc2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&sdmmc2_b4_pins_a &sdmmc2_d47_pins_a>;
+	non-removable;
+	no-sd;
+	no-sdio;
+	st,dirpol;
+	st,negedge;
+	bus-width = <8>;
+	status = "okay";
+};
+
+&uart4 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart4_pins_a>;
+	status = "okay";
+};

@@ -1,0 +1,11 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -102,7 +102,7 @@ AC_DEFUN([AC_HEADER_FIND], [
+ )
+ 
+ AC_HEADER_FIND([asterisk.h], $with_asterisk)
+-AC_HEADER_FIND([iconv.h], /usr/include /usr/local/include /opt/local/include)
++AC_HEADER_FIND([iconv.h], "${TOOLCHAIN_DIR}/include")
+ 
+ AC_DEFINE([ICONV_CONST],[], [Define to const if you has iconv() const declaration of input buffer])
+ AC_MSG_CHECKING([for iconv use const inbuf])

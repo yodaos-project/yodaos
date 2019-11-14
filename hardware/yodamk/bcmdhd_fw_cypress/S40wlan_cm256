@@ -1,0 +1,4 @@
+#!/bin/ash
+
+
+insmod cywdhd.ko  firmware_path=/etc/wifi/cm256/fw_bcm43455c0_ag.bin nvram_path=/etc/wifi/cm256/nvram.txt

@@ -1,0 +1,101 @@
+--- a/include/asterisk/lock.h
++++ b/include/asterisk/lock.h
+@@ -51,9 +51,11 @@
+ #include <pthread.h>
+ #include <time.h>
+ #include <sys/param.h>
++#ifndef __UCLIBC__
+ #ifdef HAVE_BKTR
+ #include <execinfo.h>
+ #endif
++#endif
+ 
+ #ifndef HAVE_PTHREAD_RWLOCK_TIMEDWRLOCK
+ #include "asterisk/time.h"
+@@ -86,11 +88,15 @@
+ #define __AST_RWLOCK_INIT_VALUE		{0}
+ #endif /* HAVE_PTHREAD_RWLOCK_INITIALIZER */
+ 
++#ifndef __UCLIBC__
+ #ifdef HAVE_BKTR
+ #define AST_LOCK_TRACK_INIT_VALUE { { NULL }, { 0 }, 0, { NULL }, { 0 }, {{{ 0 }}}, PTHREAD_MUTEX_INIT_VALUE }
+ #else
+ #define AST_LOCK_TRACK_INIT_VALUE { { NULL }, { 0 }, 0, { NULL }, { 0 }, PTHREAD_MUTEX_INIT_VALUE }
+ #endif
++#else
++#define AST_LOCK_TRACK_INIT_VALUE { { NULL }, { 0 }, 0, { NULL }, { 0 }, PTHREAD_MUTEX_INIT_VALUE }
++#endif
+ 
+ #define AST_MUTEX_INIT_VALUE { PTHREAD_MUTEX_INIT_VALUE, NULL, 1 }
+ #define AST_MUTEX_INIT_VALUE_NOTRACKING { PTHREAD_MUTEX_INIT_VALUE, NULL, 0 }
+@@ -114,9 +120,11 @@ struct ast_lock_track {
+ 	int reentrancy;
+ 	const char *func[AST_MAX_REENTRANCY];
+ 	pthread_t thread_id[AST_MAX_REENTRANCY];
++#ifndef __UCLIBC__
+ #ifdef HAVE_BKTR
+ 	struct ast_bt backtrace[AST_MAX_REENTRANCY];
+ #endif
++#endif
+ 	pthread_mutex_t reentr_mutex;
+ };
+ 
+@@ -241,6 +249,7 @@ enum ast_lock_type {
+  * on the lock.  ast_mark_lock_acquired() will mark it as held by this thread.
+  */
+ #if !defined(LOW_MEMORY)
++#ifndef HAVE_BKTR
+ #ifdef HAVE_BKTR
+ void ast_store_lock_info(enum ast_lock_type type, const char *filename,
+ 	int line_num, const char *func, const char *lock_name, void *lock_addr, struct ast_bt *bt);
+@@ -248,14 +257,22 @@ void ast_store_lock_info(enum ast_lock_t
+ void ast_store_lock_info(enum ast_lock_type type, const char *filename,
+ 	int line_num, const char *func, const char *lock_name, void *lock_addr);
+ #endif /* HAVE_BKTR */
++#else
++void ast_store_lock_info(enum ast_lock_type type, const char *filename,
++        int line_num, const char *func, const char *lock_name, void *lock_addr);
++#endif 
+ 
+ #else
+ 
++#ifndef __UCLIBC__
+ #ifdef HAVE_BKTR
+ #define ast_store_lock_info(I,DONT,CARE,ABOUT,THE,PARAMETERS,BUD)
+ #else
+ #define ast_store_lock_info(I,DONT,CARE,ABOUT,THE,PARAMETERS)
+ #endif /* HAVE_BKTR */
++#else
++#define ast_store_lock_info(I,DONT,CARE,ABOUT,THE,PARAMETERS)
++#endif
+ #endif /* !defined(LOW_MEMORY) */
+ 
+ /*!
+@@ -283,19 +300,27 @@ void ast_mark_lock_failed(void *lock_add
+  * be removed from the current thread's lock info struct.
+  */
+ #if !defined(LOW_MEMORY)
++#ifndef __UCLIBC__
+ #ifdef HAVE_BKTR
+ void ast_remove_lock_info(void *lock_addr, struct ast_bt *bt);
+ #else
+ void ast_remove_lock_info(void *lock_addr);
+ #endif /* HAVE_BKTR */
++#else
++void ast_remove_lock_info(void *lock_addr);
++#endif 
+ void ast_suspend_lock_info(void *lock_addr);
+ void ast_restore_lock_info(void *lock_addr);
+ #else
++#ifndef __UCLIBC
+ #ifdef HAVE_BKTR
+ #define ast_remove_lock_info(ignore,me)
+ #else
+ #define ast_remove_lock_info(ignore)
+ #endif /* HAVE_BKTR */
++#else
++#define ast_remove_lock_info(ignore)
++#endif
+ #define ast_suspend_lock_info(ignore);
+ #define ast_restore_lock_info(ignore);
+ #endif /* !defined(LOW_MEMORY) */

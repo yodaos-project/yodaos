@@ -1,0 +1,15 @@
+Description: Hack build routines to compile shared library
+Author: loki_val and solar
+Origin: http://sources.gentoo.org/viewcvs.py/gentoo-x86/net-libs/libsrtp/files/libsrtp-1.4.4-shared.patch
+Last-Update: 2010-03-19
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -19,7 +19,7 @@
+ 
+ .PHONY: all test build_table_apps
+ 
+-all: test 
++all: shared_library test
+ 
+ runtest: build_table_apps test
+ 	@echo "running libsrtp test applications..."

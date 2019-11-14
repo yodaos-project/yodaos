@@ -1,0 +1,18 @@
+Index: wpa_supplicant-2.6/wpa_supplicant/events.c
+===================================================================
+--- wpa_supplicant-2.6.orig/wpa_supplicant/events.c	2016-10-03 02:51:11.000000000 +0800
++++ wpa_supplicant-2.6/wpa_supplicant/events.c	2018-05-24 23:27:05.394294514 +0800
+@@ -1742,9 +1742,10 @@
+ 			if (wpa_supplicant_req_sched_scan(wpa_s))
+ 				wpa_supplicant_req_new_scan(wpa_s, timeout_sec,
+ 							    timeout_usec);
+-
+-			wpa_msg_ctrl(wpa_s, MSG_INFO,
+-				     WPA_EVENT_NETWORK_NOT_FOUND);
++            if (wpa_s->conf->ssid != NULL) {
++			    wpa_msg_ctrl(wpa_s, MSG_INFO,
++				         WPA_EVENT_NETWORK_NOT_FOUND);
++            }
+ 		}
+ 	}
+ 	return 0;

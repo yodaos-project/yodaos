@@ -1,0 +1,11 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -84,7 +84,7 @@ case "$host" in
+ esac
+ 
+ # ==================== checks for libraries =============================
+-AC_CHECK_LIB(curses,initscr,,[AC_MSG_ERROR([ncurses library missing])])
++AC_CHECK_LIB(ncurses,initscr,,[AC_MSG_ERROR([ncurses library missing])])
+ AC_CHECK_LIB(pthread, pthread_mutex_init, THREAD_LIBS="-lpthread",
+     AC_MSG_ERROR(pthread library needed!))
+ 

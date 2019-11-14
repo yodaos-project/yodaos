@@ -1,0 +1,34 @@
+#!/bin/sh
+[ -f /etc/banner ] && cat /etc/banner
+[ -e /tmp/.failsafe ] && cat /etc/banner.failsafe
+fgrep -sq '/ overlay ro,' /proc/mounts && {
+	echo 'Your JFFS2-partition seems full and overlayfs is mounted read-only.'
+	echo 'Please try to remove files from /overlay/upper/... and reboot!'
+}
+
+export PATH="%PATH%":/data/custom/usr/bin
+export LD_LIBRARY_PATH=/usr/lib/:/usr/lib/hw:/lib:/data/custom/usr/lib
+export HOME=$(grep -e "^${USER:-root}:" /etc/passwd | cut -d ":" -f 6)
+export HOME=${HOME:-/root}
+export PS1='\u@\h:\w\$ '
+export COMPONENT_REGISTER_PATH=/usr/lib/omx
+export PYTHONIOENCODING=UTF-8
+#export ROKID_LUA_PORT=15003
+export NODE_PRIORITIZED_PATH=/usr/lib/node_modules
+export NODE_PATH=/usr/lib/node_modules
+export PULSEAUDIO_HOME=/var/run/pulse
+
+[ -x /bin/more ] || alias more=less
+[ -x /usr/bin/vim ] && alias vi=vim || alias vim=vi
+
+[ -z "$KSH_VERSION" -o \! -s /etc/mkshrc ] || . /etc/mkshrc
+
+[ -x /usr/bin/arp ] || arp() { cat /proc/net/arp; }
+[ -x /usr/bin/ldd ] || ldd() { LD_TRACE_LOADED_OBJECTS=1 $*; }
+
+[ -n "$FAILSAFE" ] || {
+	for FILE in /etc/profile.d/*.sh; do
+		[ -e "$FILE" ] && . "$FILE"
+	done
+	unset FILE
+}

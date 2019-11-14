@@ -1,0 +1,11 @@
+--- a/res/Makefile
++++ b/res/Makefile
+@@ -78,7 +78,7 @@ distclean::
+ 	rm -f pjproject/build.mak
+ 
+ pjproject/build.mak: pjproject/aconfigure
+-	(cd pjproject && CFLAGS="-fPIC" ./configure --build=$(BUILD_PLATFORM) --host=$(HOST_PLATFORM) --disable-floating-point --disable-sound --disable-oss --disable-speex-aec --disable-l16-codec --disable-gsm-codec --disable-g722-codec --disable-g7221-codec --disable-speex-codec --disable-ilbc-codec --disable-g711-codec)
++	(cd pjproject && CFLAGS="-fPIC" ./configure --build=$(BUILD_PLATFORM) --host=$(HOST_PLATFORM) --disable-floating-point --disable-sound	--disable-oss --disable-speex-aec --disable-l16-codec --disable-gsm-codec --disable-g722-codec --disable-g7221-codec --disable-speex-codec --disable-ilbc-codec --disable-g711-codec --disable-opencore-amrnb --disable-video --disable-sdl --disable-ffmpeg --disable-v4l2)
+ 
+ ifneq ($(findstring $(MAKECMDGOALS),all),)
+ -include pjproject/build.mak

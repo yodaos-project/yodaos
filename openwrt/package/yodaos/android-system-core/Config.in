@@ -1,0 +1,2 @@
+config BR2_PACKAGE_ANDROID_SYSTEM_CORE
+        bool "rokid porting android cutils&utils to buildroot."

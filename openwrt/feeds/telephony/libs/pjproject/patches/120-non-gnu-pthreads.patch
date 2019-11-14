@@ -1,0 +1,20 @@
+--- pjproject-2.6/pjlib/src/pj/os_core_unix.c	2016-04-13 08:24:48.000000000 +0200
++++ pjproject-new/pjlib/src/pj/os_core_unix.c	2017-05-08 09:51:49.980905420 +0200
+@@ -1123,7 +1123,7 @@ static pj_status_t init_mutex(pj_mutex_t
+ 	return PJ_RETURN_OS_ERROR(rc);
+ 
+     if (type == PJ_MUTEX_SIMPLE) {
+-#if (defined(PJ_LINUX) && PJ_LINUX!=0) || \
++#if (defined(PJ_LINUX) && PJ_LINUX!=0 && defined(__GLIBC__)) || \
+     defined(PJ_HAS_PTHREAD_MUTEXATTR_SETTYPE)
+ 	rc = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL);
+ #elif (defined(PJ_RTEMS) && PJ_RTEMS!=0) || \
+@@ -1133,7 +1133,7 @@ static pj_status_t init_mutex(pj_mutex_t
+ 	rc = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL);
+ #endif
+     } else {
+-#if (defined(PJ_LINUX) && PJ_LINUX!=0) || \
++#if (defined(PJ_LINUX) && PJ_LINUX!=0 && defined(__GLIBC__)) || \
+      defined(PJ_HAS_PTHREAD_MUTEXATTR_SETTYPE)
+ 	rc = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+ #elif (defined(PJ_RTEMS) && PJ_RTEMS!=0) || \

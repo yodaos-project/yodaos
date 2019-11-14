@@ -1,0 +1,9 @@
+menu "Configuration"
+
+config HOMEBASE_AUTO_RUN
+	bool "auto run"
+	default y
+	help
+		homebase service auto run
+
+endmenu

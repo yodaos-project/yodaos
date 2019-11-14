@@ -1,0 +1,21 @@
+--- a/modules/cnxcc/Makefile
++++ b/modules/cnxcc/Makefile
+@@ -45,7 +45,7 @@ else
+ endif
+ 
+ DEFS+=$(HIREDISDEFS) $(LEVENTDEFS)
+-LIBS=$(HIREDISLIBS) $(LEVENTLIBS)
++LIBS=$(HIREDISLIBS) $(LEVENTLIBS) $(EXTRA_LIBS)
+ 
+ DEFS+=-DOPENSER_MOD_INTERFACE
+ SERLIBPATH=../../lib
+--- a/modules/janssonrpc-c/netstring.h
++++ b/modules/janssonrpc-c/netstring.h
+@@ -24,6 +24,7 @@
+ #define __NETSTRING_STREAM_H
+ 
+ #include <string.h>
++#include <event2/buffer.h>
+ #include <event2/bufferevent.h>
+ 
+ typedef struct {

@@ -1,0 +1,55 @@
+--- a/libs/apr/configure.ac
++++ b/libs/apr/configure.ac
+@@ -1624,38 +1624,7 @@ if test "$threads" = "1"; then
+     APR_CHECK_DEFINE(PTHREAD_PROCESS_SHARED, pthread.h)
+     AC_CHECK_FUNCS(pthread_mutexattr_setpshared)
+     AC_CHECK_LIB(pthread, pthread_setschedparam, [AC_DEFINE(HAVE_PTHREAD_SETSCHEDPARAM, 1, [Define if you have pthread_setschedparam()])])
+-
+-    # Some systems have setpshared and define PROCESS_SHARED, but don't 
+-    # really support PROCESS_SHARED locks.  So, we must validate that we 
+-    # can go through the steps without receiving some sort of system error.
+-    # Linux and older versions of AIX have this problem.
+-    APR_IFALLYES(header:pthread.h define:PTHREAD_PROCESS_SHARED func:pthread_mutexattr_setpshared, [
+-      AC_CACHE_CHECK([for working PROCESS_SHARED locks], apr_cv_process_shared_works, [
+-      AC_TRY_RUN([
+-#include <sys/types.h>
+-#include <pthread.h>
+-        int main()
+-        {
+-            pthread_mutex_t mutex;
+-            pthread_mutexattr_t attr;
+-            if (pthread_mutexattr_init(&attr))
+-                exit(1);
+-            if (pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_SHARED))
+-                exit(2);
+-            if (pthread_mutex_init(&mutex, &attr))
+-                exit(3);
+-            if (pthread_mutexattr_destroy(&attr))
+-                exit(4);
+-            if (pthread_mutex_destroy(&mutex))
+-                exit(5);
+-            exit(0);
+-        }], [apr_cv_process_shared_works=yes], [apr_cv_process_shared_works=no])])
+-      # Override detection of pthread_mutexattr_setpshared
+-      ac_cv_func_pthread_mutexattr_setpshared=$apr_cv_process_shared_works])
+-
+-    if test "$ac_cv_func_pthread_mutexattr_setpshared" = "yes"; then
+-        APR_CHECK_PTHREAD_ROBUST_SHARED_MUTEX
+-    fi
++    APR_CHECK_PTHREAD_ROBUST_SHARED_MUTEX
+ fi
+ 
+ # See which lock mechanisms we can support on this system.
+@@ -1956,7 +1925,11 @@ fi
+ 
+ APR_CHECK_TCP_NODELAY_INHERITED
+ APR_CHECK_O_NONBLOCK_INHERITED
+-APR_CHECK_TCP_NODELAY_WITH_CORK
++
++dnl Check TCP_NODELAY_WITH_CORK ONLY when NOT cross compiling
++if test "$cross_compiling" != yes; then
++	APR_CHECK_TCP_NODELAY_WITH_CORK
++fi
+ 
+ # Look for a way of corking TCP...
+ APR_CHECK_DEFINE(TCP_CORK, netinet/tcp.h)

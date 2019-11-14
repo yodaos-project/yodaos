@@ -1,0 +1,13 @@
+Index: rtpproxy-2.0.0/src/rtp.h
+===================================================================
+--- rtpproxy-2.0.0.orig/src/rtp.h
++++ rtpproxy-2.0.0/src/rtp.h
+@@ -29,6 +29,8 @@
+ #ifndef _RTP_H_
+ #define _RTP_H_
+ 
++#include <endian.h>
++
+ /*
+  * RTP payload types
+  */

@@ -1,0 +1,20 @@
+#!/bin/sh /etc/rc.common
+
+START=90
+
+start() {
+        echo "Starting lirc"
+        mkdir -p /var/run/lirc
+        # Use this for audio_alsa plugin:
+        #/usr/bin/amixer -q set 'Auto Gain Control' off
+        #/usr/bin/amixer -q set Mic capture 31%
+        #/usr/sbin/lircd --driver=audio_alsa -d plughw@24000
+        # Use this for default plugin:
+        /usr/sbin/lircd -d /dev/lirc0                                           
+}
+
+stop() {
+        echo "Stopping lirc"                                                 
+        /bin/kill `pidof lircd`
+        return 0                                                                
+}

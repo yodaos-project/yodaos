@@ -1,0 +1,13 @@
+#!/bin/sh
+# Copyright (C) 2011 OpenWrt.org
+
+# START=82
+USE_PROCD=1
+PROG=/usr/sbin/wpa_supplicant
+
+start_service() {
+    procd_open_instance
+	procd_set_param command $PROG -iwlan0 -Dnl80211 -c /etc/wpa_supplicant.conf
+	procd_set_param respawn
+	procd_close_instance
+}

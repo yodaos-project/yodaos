@@ -1,0 +1,46 @@
+Index: hostapd-2016-06-15/wpa_supplicant/config_file.c
+===================================================================
+--- hostapd-2016-06-15.orig/wpa_supplicant/config_file.c	2017-08-28 15:12:35.000000000 +0800
++++ hostapd-2016-06-15/wpa_supplicant/config_file.c	2018-10-26 21:50:11.268368294 +0800
+@@ -751,7 +751,7 @@
+ 	INT(acs);
+ #endif /* CONFIG_ACS */
+ 	write_int(f, "proactive_key_caching", ssid->proactive_key_caching, -1);
+-	INT(disabled);
++	//INT(disabled);
+ 	INT(peerkey);
+ 	INT(mixed_cell);
+ 	INT(max_oper_chwidth);
+Index: hostapd-2016-06-15/wpa_supplicant/ctrl_iface.c
+===================================================================
+--- hostapd-2016-06-15.orig/wpa_supplicant/ctrl_iface.c	2018-10-26 21:44:31.628362078 +0800
++++ hostapd-2016-06-15/wpa_supplicant/ctrl_iface.c	2018-10-26 21:49:17.100367303 +0800
+@@ -3517,6 +3517,28 @@
+ static int wpa_supplicant_ctrl_iface_save_config(struct wpa_supplicant *wpa_s)
+ {
+ 	int ret;
++    int id = -1;
++    struct wpa_ssid *ssid;
++    struct wpa_ssid *current_ssid = wpa_s->current_ssid;
++
++    ssid = wpa_s->conf->ssid;
++    while (ssid && (current_ssid != NULL)) {
++        wpa_msg(wpa_s, MSG_DEBUG, "id :: %d\n", ssid->id);
++        wpa_msg(wpa_s, MSG_DEBUG, "ssid :: %s\n", wpa_ssid_txt(ssid->ssid, ssid->ssid_len));
++        wpa_msg(wpa_s, MSG_DEBUG, "current ssid :: %s\n", wpa_ssid_txt(current_ssid->ssid, current_ssid->ssid_len));
++
++        if (ssid != current_ssid) {
++            if (os_strcmp(ssid->ssid, current_ssid->ssid) == 0) {
++                id = ssid->id;
++            }
++        }
++
++        ssid = ssid->next;
++        if (id >= 0) {
++            wpa_config_remove_network(wpa_s->conf, id);
++            id = -1;
++        }
++    }
+ 
+ 	if (!wpa_s->conf->update_config) {
+ 		wpa_printf(MSG_DEBUG, "CTRL_IFACE: SAVE_CONFIG - Not allowed "

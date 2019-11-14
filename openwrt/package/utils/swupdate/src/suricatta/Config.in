@@ -1,0 +1,73 @@
+menu "Suricatta"
+
+menu "Features"
+depends on SURICATTA
+config SURICATTA_SSL
+	bool "SSL support"
+	default n
+	depends on HAVE_LIBSSL
+	depends on HAVE_LIBCRYPTO
+	help
+	  Enable SSL and checksum verification support in suricatta.
+
+comment "SSL support needs libcrypto, libssl"
+	depends on !HAVE_LIBSSL || !HAVE_LIBCRYPTO
+
+choice
+	prompt "Update Status Storage"
+	help
+	  Place for suricatta to persistently store the update
+	  status for, e.g., communicating it to the server after
+	  a reboot.
+
+config SURICATTA_STATE_CHOICE_NONE
+	bool "None"
+	help
+	  Do not store update status.
+
+config SURICATTA_STATE_CHOICE_BOOTLOADER
+	bool "Bootloader"
+	help
+	  Store update status in Bootloader's environment.
+	  Specify Bootloader environment variable name to store update status in.
+
+endchoice
+
+config SURICATTA_STATE_BOOTLOADER
+	string "Store Update Status in Bootloader Environment variable"
+	default "ustate"
+	depends on SURICATTA_STATE_CHOICE_BOOTLOADER
+	help
+	  Store update information in Bootloader's environment.
+
+endmenu
+
+menu "Server"
+
+choice
+	prompt "Server Type"
+	default SURICATTA_HAWKBIT
+	help
+	  Choose the server type. Currently, just hawkBit is
+	  supported.
+
+config SURICATTA_HAWKBIT
+	bool "hawkBit support"
+	depends on HAVE_LIBCURL
+	depends on HAVE_JSON_C
+	select JSON
+	select SURICATTA
+	help
+	  Support for hawkBit server.
+	  https://projects.eclipse.org/projects/iot.hawkbit
+
+config SURICATTA_SERVER_NONE
+	bool "None"
+	help
+	  Do not start suricatta mode
+
+endchoice
+
+endmenu
+
+endmenu

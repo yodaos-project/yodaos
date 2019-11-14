@@ -1,0 +1,153 @@
+;
+; TAPI Telephony Interface
+;
+; Configuration file
+
+[interfaces]
+;
+; Number of FXS ports (default: 2)
+channels = 2
+;
+; Create contexts per channel (default: off)
+;per_channel_context = off
+;
+; Set tapi firmware file path
+;firmwarefilename = /lib/firmware/danube_firmware.bin
+;
+; Set tapi bbd file path
+;bbdfilename = /lib/firmware/danube_bbd_fxs.bin
+;
+; Set vmmc device path
+;basepath = /dev/vmmc
+;
+[general]
+;
+; Gain setting for the receive and transmit path.
+; The value is given in dB within the range (-24dB to +12dB), in 1 dB steps.
+;
+;rxgain = 1
+;txgain = 1
+;
+;
+;
+; Line echo cancller valid types:
+;
+; off		LEC and echo suppressor turned off.
+; nlec		LEC using fixed window; no echo suppressor.
+; wlec		LEC using fixed and moving window; no echo suppressor.
+; nees		LEC using fixed window and echo suppressor.
+; nfees		LEC using fixed and moving window and echo suppressor.
+; es		Echo suppressor
+;
+;echocancel = off
+;
+; If nlec or wlec is selected than size of the fixed window in narrowband (8 kHz) sampling mode
+; can be defined with:
+; A value of 0 defaults to: 16 ms if type is nlec or 8 ms if type is wlec:
+;
+;echocancelfixedwindowsize = 0
+;
+; If wlec is selected than size of the moving window in narrowband (8 kHz) sampling mode
+; can be defined with:
+; A value of 0 defaults to 8 ms.
+;
+;echocancelnfemovingwindowsize = 0
+;
+; If wlec is selected than size of the moving window in wideband (16 kHz) sampling mode
+; can be defined with:
+; A value of 0 defaults to 8 ms.
+;
+;echocancelwidefixedwindowsize = 0
+;
+; Activate or deactivate line echo cancller NLP (Non Linear Processor) if the LEC is active,
+; valid is on or off:
+;
+;echocancelnlp = off
+;
+;
+;
+; Jitter buffer valid types:
+;
+; fixed		Fixed jitter buffer.
+; adaptive	Adaptive jitter buffer.
+;
+;jitterbuffertype = fixed
+;
+; Jitter buffer packet adaptation valid types:
+;
+; voice		Jitter buffer optimized for voice.
+; data		Jitter buffer optimized for data.
+; datanorep	Jitter buffer optimized for data but without doing packet repetition.
+;
+;jitterbufferpackettype = voice
+;
+;	Following jitter buffer values can only be used with jitter buffer adaptive type:
+; Turns on or off jitter buffer adaptation:
+;
+;jitterbufferadaptation = off
+;
+; Scaling factor multiplied by 16; in adaptive jitter buffer mode, the target average playout delay is
+; equal to the estimated jitter multiplied by the scaling factor. The default value for the scaling factor
+; is about 1.4 (scaling=22), meaning that the target average playout delay is equal to the estimated
+; jitter. If less packets should be dropped because of jitter, the scaling factor has to be increased. An
+; increase in the scaling factor will eventually lead to an increased playout delay.
+; The supported range is 1 to 16 (16 up to 256).
+;
+;jitterbufferscalling = 1
+;
+; Initial size of the jitter buffer in time stamps of 125 us:
+;
+;jitterbufferinitialsize = 125
+;
+; Minimum size of the jitter buffer in time stamps of 125 us
+;
+;jitterbufferminsize = 125
+;
+; Maximum size of the jitter buffer in time stamps of 125 us
+;
+;jitterbuffermaxsize = 125
+;
+;
+;
+; Caller id valid standards:
+;
+; telecordia	 Bellcore/Telcordia GR-30-CORE; use Bell202 FSK coding of CID information. (default)
+; etsifsk	 ETSI 300-659-1/2/3 V1.3.1; use V.23 FSK coding to transmit CID information.
+; etsidtmf	 ETSI 300-659-1/2/3 V1.3.1; use DTMF transmission of CID information.
+; sin		 SIN 227 Issue 3.4; use V.23 FSK coding of CID information.
+; ntt		 NTT standard: TELEPHONE SERVICE INTERFACES, edition 5; use a modified V.23 FSK coding of
+; 		 CID information.
+; kpndtmf	 KPN; use DTMF transmission of CID information.
+; kpndtmffsk	 KPN; use DTMF and FSK transmission of CID information.
+;
+;calleridtype = telecordia
+;
+;
+;
+; Voice activity detection:
+;
+; on		Voice activity detection on; in this case also comfort noise and spectral
+; 		information (nicer noise) is switched on.
+; g711		Voice activity detection on with comfort noise generation,
+;		but without spectral information.
+; cng		Voice activity detection on with comfort noise generation, but without silence compression
+; sc		Voice activity detection on with silence compression,
+;		but without comfort noise generation.
+;
+;voiceactivitydetection = on
+;
+;
+;
+; Timeout between dialed digits, in milliseconds, before placing the call.
+;
+;interdigit = 4000
+;
+;
+;
+; Tone generator type (default: integrated)
+; integrated	Use tapi tone generator
+; asterisk	Use asterisk tone generator where possible
+; media		Use media tone where possible
+;
+;tone_generator = integrated
+;

@@ -1,0 +1,30 @@
+# ==========================================================================
+# Build system
+# ==========================================================================
+
+help:
+	@echo 'Cleaning:'
+	@echo '  clean			- delete temporary files created by build'
+	@echo '  distclean		- delete all non-source files (including .config)'
+	@echo
+	@echo 'Build:'
+	@echo '  all			- Executable'
+	@echo '  swupdate		- software updater executable'
+	@echo
+	@echo 'Configuration:'
+	@echo '  allnoconfig		- disable all symbols in .config'
+	@echo '  allyesconfig		- enable all symbols in .config'
+	@echo '  config		- text based configurator (of last resort)'
+	@echo '  menuconfig		- interactive curses-based configurator'
+	@echo '  oldconfig		- resolve any unresolved symbols in .config'
+	@$(if $(boards), \
+		$(foreach b, $(boards), \
+		printf "  %-21s - Build for %s\\n" $(b) $(subst _defconfig,,$(b));) \
+		echo '')
+	@echo
+	@echo 'Development:'
+	@echo '  randconfig		- generate a random configuration'
+	@echo
+	@echo 'Documentation:'
+	@make -C doc help
+

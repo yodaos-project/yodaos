@@ -1,0 +1,126 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2017 OpenWrt.org
+
+START=90
+
+USE_PROCD=1
+
+#PROCD_DEBUG=1
+
+FS=freeswitch
+DEFAULT=/etc/default/$FS
+LOGGER="/usr/bin/logger -p user.err -s -t $FS"
+OPTIONS=
+TIMEOUT=30
+
+[ -f $DEFAULT ] && . $DEFAULT
+
+fs_user="${FS_USER:-$FS}"
+fs_group="${FS_GROUP:-$FS}"
+
+fs_dir_etc="/etc/$FS"
+fs_dir_localstate="/var/lib/$FS"
+fs_dir_run="/var/run/$FS"
+
+fs_dir_cache="${FS_DIR_CACHE:-/tmp/$FS/cache}"
+fs_dir_db="${FS_DIR_DB:-/tmp/$FS/db}"
+fs_dir_log="${FS_DIR_LOG:-/tmp/$FS/log}"
+fs_dir_recordings="${FS_DIR_RECORDINGS:-/tmp/$FS/recordings}"
+fs_dir_storage="${FS_DIR_STORAGE:-/tmp/$FS/storage}"
+fs_dir_temp="${FS_DIR_TEMP:-/tmp/$FS/temp}"
+
+start_service() {
+  local dir=
+
+  if [ -f "/etc/${FS}_disabled" ]; then
+    $LOGGER File \"/etc/${FS}_disabled\" exists
+    $LOGGER Remove it once your configuration is set up
+    exit 1
+  fi
+
+  for dir in "$fs_dir_cache" "$fs_dir_db" "$fs_dir_localstate" \
+    "$fs_dir_log" "$fs_dir_recordings" "$fs_dir_run" "$fs_dir_storage" \
+    "$fs_dir_temp"
+  do
+    [ -n "$dir" ] && {
+      mkdir -p "$dir"
+      chown "$fs_user":"$fs_group" "$dir"
+      chmod 750 "$dir"
+    }
+  done
+
+  #[ -d "$fs_dir_etc" ] && {
+  #  find "$fs_dir_etc" -type f -exec chown root:"$fs_group" {} \;
+  #  find "$fs_dir_etc" -type f -exec chmod 640 {} \;
+  #}
+
+  procd_open_instance
+  # starting with full path seems cleaner judging by 'ps' output
+  procd_set_param command /usr/bin/$FS
+  # need to specify all or none of -conf, -log, and -db
+  procd_append_param command -cache "$fs_dir_cache" -conf \
+    "$fs_dir_etc" -db "$fs_dir_db" -log "$fs_dir_log" -recordings \
+    "$fs_dir_recordings" -run "$fs_dir_run" -storage "$fs_dir_storage" \
+    -temp "$fs_dir_temp"
+  procd_append_param command -c
+  # -nc -nf: workaround for interop issue (which causes high load)
+  #procd_append_param command -nc -nf
+  procd_append_param command $OPTIONS
+  procd_set_param user "$fs_user"
+  # forward stdout of the command to logd
+  #procd_set_param stdout 1
+  # same for stderr
+  procd_set_param stderr 1
+  procd_close_instance
+}
+
+stop_service() {
+  local retval=
+  local mypid=
+  local timeout=$TIMEOUT
+
+  pgrep $FS &> /dev/null
+  [ $? -ne 0 ] && exit 0
+
+  [ -f "$fs_dir_run"/${FS}.pid ]
+  retval=$?
+
+  # init script could find itself in a scenario where FS was started
+  # very recently, so make it wait a while for a pid file to appear
+  while [ $retval -ne 0 -a $timeout -gt 0 ]; do
+    sleep 1
+    [ -f "$fs_dir_run"/${FS}.pid ]
+    retval=$?
+    timeout=$(($timeout-1))
+  done
+
+  [ $retval -eq 0 ] || {
+    $LOGGER PID file does not exist
+    exit 1
+  }
+
+  mypid=$(cat "$fs_dir_run"/${FS}.pid)
+
+  [ "$mypid" -gt 1 ] 2> /dev/null || {
+    $LOGGER PID file contains garbage
+    exit 1
+  }
+
+  timeout=$TIMEOUT
+  kill $mypid
+  pgrep $FS | grep -w $mypid &>/dev/null
+  retval=$?
+
+  while [ $retval -eq 0 -a $timeout -gt 0 ]; do
+    sleep 10
+    pgrep $FS | grep -w $mypid &>/dev/null
+    retval=$?
+    [ $retval -eq 0 ] && kill $mypid 2>/dev/null
+    timeout=$(($timeout-10))
+  done
+
+  [ $retval -ne 1 ] && {
+    $LOGGER Failed to stop $FS
+    exit 1
+  }
+}

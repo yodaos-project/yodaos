@@ -1,0 +1,36 @@
+#!/bin/ash
+
+echo 1 > /sys/class/rfkill/rfkill0/state
+usleep 1000
+echo 0 > /sys/class/rfkill/rfkill0/state
+usleep 5000
+echo 1 > /sys/class/rfkill/rfkill0/state
+
+FILENAME=/sys/bus/mmc/devices/sdio\:0001/sdio\:0001\:1/device
+FIRMWARE=""
+
+echo $FILENAME $1
+
+while read LINE
+do
+    echo $LINE
+    case "$LINE" in
+        0xa9a6)
+            echo "FIRMWARE is nb197"
+            FIRMWARE=/etc/wifi/nb197/bcm43438a1.hcd
+            brcm_patchram_plus --enable_hci --no2bytes --tosleep 200000 --baudrate  115200 --patchram $FIRMWARE  /dev/ttyS1 &
+            ;;
+        0xa9bf)
+            echo "FIRMWARE is cm256"
+            FIRMWARE=/etc/wifi/cm256/BCM4345C0.hcd
+            brcm_patchram_plus --enable_hci --no2bytes --tosleep 200000 --baudrate  115200 --patchram $FIRMWARE  /dev/ttyS1 &
+            ;;
+        *)
+    esac
+done < $FILENAME
+
+
+
+
+# load the firmware need time, the the worst time is 2.6 s.
+sleep 3

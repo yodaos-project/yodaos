@@ -1,0 +1,4 @@
+config BR2_PACKAGE_LUMENFLINGER
+        bool "rokid porting android lumenflinger to buildroot."
+        select BR2_PACKAGE_ANDROID_HARDWARE
+        select BR2_PACKAGE_ANDROID_FW_NATIVE

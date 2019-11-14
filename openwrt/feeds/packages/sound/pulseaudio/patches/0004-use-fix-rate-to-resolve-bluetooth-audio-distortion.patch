@@ -1,0 +1,33 @@
+diff -aburNp pulseaudio-10.0_orgin/src/modules/bluetooth/module-bluetooth-policy.c pulseaudio-10.0/src/modules/bluetooth/module-bluetooth-policy.c
+--- pulseaudio-10.0_orgin/src/modules/bluetooth/module-bluetooth-policy.c	2018-10-07 18:27:39.870102087 +0800
++++ pulseaudio-10.0/src/modules/bluetooth/module-bluetooth-policy.c	2018-10-07 18:29:31.000000000 +0800
+@@ -97,7 +97,7 @@ static pa_hook_result_t source_put_hook_
+     }
+ 
+     /* Load module-loopback */
+-    args = pa_sprintf_malloc("source=\"%s\" source_dont_move=\"true\" sink_input_properties=\"media.role=%s\"", source->name,
++    args = pa_sprintf_malloc("source=\"%s\" source_dont_move=\"true\" sink_input_properties=\"media.role=%s\" adjust_time=0", source->name,
+                              role);
+     (void) pa_module_load(c, "module-loopback", args);
+     pa_xfree(args);
+@@ -136,7 +136,7 @@ static pa_hook_result_t sink_put_hook_ca
+     }
+ 
+     /* Load module-loopback */
+-    args = pa_sprintf_malloc("sink=\"%s\" sink_dont_move=\"true\" source_output_properties=\"media.role=%s\"", sink->name,
++    args = pa_sprintf_malloc("sink=\"%s\" sink_dont_move=\"true\" source_output_properties=\"media.role=%s\" adjust_time=0", sink->name,
+                              role);
+     (void) pa_module_load(c, "module-loopback", args);
+     pa_xfree(args);
+diff -aburNp pulseaudio-10.0_orgin/src/modules/module-loopback.c pulseaudio-10.0/src/modules/module-loopback.c
+--- pulseaudio-10.0_orgin/src/modules/module-loopback.c	2018-10-07 18:27:39.874102087 +0800
++++ pulseaudio-10.0/src/modules/module-loopback.c	2018-10-07 18:30:32.000000000 +0800
+@@ -828,7 +828,7 @@ int pa__init(pa_module *m) {
+ 
+     pa_sink_input_new_data_set_sample_spec(&sink_input_data, &ss);
+     pa_sink_input_new_data_set_channel_map(&sink_input_data, &map);
+-    sink_input_data.flags = PA_SINK_INPUT_VARIABLE_RATE | PA_SINK_INPUT_START_CORKED;
++    sink_input_data.flags = /*PA_SINK_INPUT_VARIABLE_RATE | */PA_SINK_INPUT_START_CORKED;
+ 
+     if (!remix)
+         sink_input_data.flags |= PA_SINK_INPUT_NO_REMIX;

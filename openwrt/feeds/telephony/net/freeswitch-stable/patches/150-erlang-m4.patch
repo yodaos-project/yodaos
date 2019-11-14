@@ -1,0 +1,23 @@
+--- a/build/config/erlang.m4
++++ b/build/config/erlang.m4
+@@ -43,9 +43,20 @@ then
+ 			ERLANG_LDFLAGS="-L$ERLANG_LIBDIR $ERLANG_LDFLAGS"
+ 			LIBS="-L$ERLANG_LIBDIR $LIBS"
+ 		fi
++
++		#
++		# Don't use the above ERLANG_LDFLAGS
++		#
++		ERLANG_LIBDIR="$STAGING_DIR/usr/lib"
++		ERLANG_LDFLAGS="-L$ERLANG_LIBDIR"
++		LIBS="-L$ERLANG_LIBDIR $LIBS"
+ 		AC_MSG_RESULT([$ERLANG_LIBDIR])
+ 
+ 		ERLANG_INCDIR=`$ERLANG -noshell -eval 'io:format("~n~s/include~n", [[code:lib_dir("erl_interface")]]).' -s erlang halt | tail -n 1`
++		#
++		# Don't use the above ERLANG_INCDIR
++		#
++		ERLANG_INCDIR="$STAGING_DIR/usr/include"
+ 		AC_MSG_CHECKING([erlang incdir])
+ 		if test -z "`echo $ERLANG_INCDIR`" ; then
+ 			AC_MSG_ERROR([failed])

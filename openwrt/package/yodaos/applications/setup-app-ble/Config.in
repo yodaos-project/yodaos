@@ -1,0 +1,21 @@
+menu "Configuration"
+
+config MQTT_lib
+	bool "Mqtt lib"
+	default y
+	help
+		MQTT lib
+
+
+choice
+    prompt "MQTT lib Selection"
+    default MQTT_SHARED 
+
+        config MQTT_SHARED
+          bool "MQTT lib for shared"
+
+        config MQTT_STATIC
+          bool "MQTT lib for static"
+endchoice
+
+endmenu

@@ -1,0 +1,12 @@
+diff -aburNp bluez-5.48_orgin/src/device.c bluez-5.48/src/device.c
+--- bluez-5.48_orgin/src/device.c	2018-10-30 14:39:28.562220347 +0800
++++ bluez-5.48/src/device.c	2018-11-16 15:03:02.000000000 +0800
+@@ -4916,7 +4916,7 @@ bool device_attach_att(struct btd_device
+ 	if (gatt_db_isempty(dev->db))
+ 		load_gatt_db(dev, srcaddr, dstaddr);
+ 
+-	gatt_client_init(dev);
++	//gatt_client_init(dev);
+ 	gatt_server_init(dev, btd_gatt_database_get_db(database));
+ 
+ 	/*

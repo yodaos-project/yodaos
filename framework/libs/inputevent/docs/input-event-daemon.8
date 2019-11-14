@@ -1,0 +1,187 @@
+'\" t
+.\"     Title: input-event-daemon
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
+.\"      Date: 03/20/2010
+.\"    Manual: \ \&
+.\"    Source: \ \&
+.\"  Language: English
+.\"
+.TH "INPUT\-EVENT\-DAEMON" "8" "03/20/2010" "\ \&" "\ \&"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+input-event-daemon \- input event handling daemon
+.SH "SYNOPSIS"
+.sp
+.nf
+\fBinput\-event\-daemon\fR [ [ \-\-monitor | \-\-list | \-\-help | \-\-version ] |
+                     [\-\-config=FILE] [\-\-verbose] [\-\-no\-daemon] ]
+.fi
+.SH "DESCRIPTION"
+.sp
+input\-event\-daemon(1) is a daemon which executes a user\-defined command on input events, such as keys, mouse buttons and switches\&. This can be useful to handle special keys on laptops or multimedia keyboards without X11\&.
+.SH "OPTIONS"
+.PP
+\fB\-m, \-\-monitor\fR
+.RS 4
+Start in monitoring mode\&. In this mode
+\fIinput\-event\-daemon\fR
+does not detach to background, but shows every input event and the device file which triggered it\&. This option is to be specified exclusively\&.
+.RE
+.PP
+\fB\-l, \-\-list\fR
+.RS 4
+Lists all available input device files, including their name, supported features and physical path\&. This option is to be specified exclusively\&.
+.RE
+.PP
+\fB\-c, \-\-config\fR=\fIFILE\fR
+.RS 4
+Use configuration file
+\fIFILE\fR\&. This option will be ignored in monitoring mode\&. See below for syntax information\&. (default:
+\fI/etc/input\-event\-daemon\&.conf\fR)
+.RE
+.PP
+\fB\-v, \-\-verbose\fR
+.RS 4
+Verbosely print every event which is handled in the configuration file\&. This option may be combined with the option
+\fB\-\-no\-daemon\fR\&.
+.RE
+.PP
+\fB\-D, \-\-no\-daemon\fR
+.RS 4
+Do not detach from console\&.
+.RE
+.PP
+\fB\-h, \-\-help\fR
+.RS 4
+Print help and quit\&.
+.RE
+.PP
+\fB\-V, \-\-version\fR
+.RS 4
+Print program version number and quit\&.
+.RE
+.SH "FILES"
+.PP
+\fI/etc/input\-event\-daemon\&.conf\fR
+.RS 4
+The default path of the configuration file\&.
+.RE
+.SH "EXAMPLES"
+.sp
+A common configuration file may look like this:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+#
+# /etc/input\-event\-daemon\&.conf
+#
+
+[Global]
+listen = /dev/input/event0
+listen = /dev/input/event1
+
+[Keys]
+MUTE         = amixer \-q set Master mute
+CTRL+ALT+ESC = shutdown \-h now
+
+[Switches]
+RADIO:0 = ifconfig wlan0 down
+
+[Idle]
+1h 30m = vbetool dpms off
+reset  = vbetool dpms on
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+\fB[Global]\fR
+.RS 4
+Specifies all devices files to listen to\&. This option may be used more than once\&.
+.RE
+.PP
+\fB[Keys]\fR
+.RS 4
+All commands in this section are executed when the specified shortcut occurred\&. Modifiers are separated by the plus sign\&. A shortcut may be defined only once\&.
+.RE
+.PP
+\fB[Switches]\fR
+.RS 4
+This section defines commands which are executed when a specified switch is set to the defined value\&. Switch name and value are separated by a colon\&.
+.RE
+.PP
+\fB[Idle]\fR
+.RS 4
+The commands defined in this section are executed after all input devices did not send any events in the specified amount of time\&. The special key
+\fIRESET\fR
+is triggered when returning from idle\&.
+.RE
+.if n \{\
+.sp
+.\}
+.RS 4
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBNote\fR
+.ps -1
+.br
+.sp
+The idle time applies to all events, even such not handled by input\-event\-daemon (e\&.g\&. mouse movement)\&.
+.sp .5v
+.RE
+.SH "INSTALLATION"
+.sp
+To build and install input\-event\-daemon from source use the following commands:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ make
+$ make install
+.fi
+.if n \{\
+.RE
+.\}
+.SH "KNOWN BUGS"
+.sp
+Since the device file paths do change when devices are added or removed, you may want to use \fBudev(7)\fR to automatically create a symlink for the device\&.
+.sp
+A custom udev rule which creates \fI/dev/input/usb\-mouse\fR may look like this:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+SUBSYSTEM=="input" ATTRS{name}=="USB Optical Mouse" SYMLINK+="input/usb\-mouse"
+.fi
+.if n \{\
+.RE
+.\}
+.SH "AUTHOR"
+.sp
+Written by Sebastian Wicki, <gandro@gmx\&.net>
+.sp
+Reviewed by Oliver Reissig\&.
+.SH "RESOURCES"
+.PP
+The latest version of this program can be found at:
+.RS 4
+
+http://github\&.com/gandro/input\-event\-daemon
+.RE

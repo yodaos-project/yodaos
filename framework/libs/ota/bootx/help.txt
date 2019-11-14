@@ -1,0 +1,77 @@
+
+使用注意:
+    1. 使用 usb 下载时如果出现\"Error opening libusb: LIBUSB_ERROR_ACCESS\"，有两种解决当前问题的办法：
+      1.1 临时办法：使用 sudo 权限执行
+      1.2 长期办法：修改默认 usb 设备的权限，通过修改 /lib/udev/rules.d/50-udev-default.rules 来添加一条匹配规则，
+          完成后重启电脑即可，规则如下
+            SUBSYSTEMS==\"usb\", ATTRS{idVendor}==\"a700\", ATTRS{idProduct}==\"0001\", GROUP=\"users\", MODE=\"0666\"
+
+参数说明（以下所说的 .boot 文件是用于跟 bootx 进行交互运行在板子上的文件）：
+    -m： 通过指定芯片来确定 .boot 文件，从而进行下载等操作，该选项不跟 -b 选项同时使用
+         该芯片列表有如下两种方式生成（可通过直接运行 bootx 查看当前芯片列表，如下两种方式存在同样命名时，优先选择前者）:
+         1. 根据 ~/.bootx 目录下的 .boot 文件生成，比如说我在 ~/.bootx 下放置了 gx8010.boot，那么 -m 选项的列表中就会有 
+            gx8010 这个选项，使用时指定 -m gx8010 即可
+         2. bootx 内置的 .boot 文件，当前 bootx 内置的芯片列表有（使用时只需指定芯片即可）：
+            <芯片>  : <封装>
+            leo     : gx8008/gx8010/gx8012
+            leo_mpw : mpw
+    -b： 指定外部的 .boot 文件，不跟 -m 选项同时使用
+    -c： 选择 -c command list中的命令
+    -d： 指定具体的串口设备名，如果未指定，bootx 会自动扫描一个可用的串口
+    -r： 用于指定与rom通信的波特率，如115200/57600等，若不指定，使用.boot文件中配置的波特率
+    -t： 配置下载 .boot 文件时的传输方式，现在有如下几种，不用 -t 选项时，默认使用串口方式（上位机即发起烧写动作的这一端）
+        s  : 完全使用串口下载 .boot 文件，且随后的命令中进行的传输是通过串口的，这个选项需要上位机跟板子通过串口连接
+        u  : 完全使用 usbslave 下载 .boot 文件，且随后的命令中进行的传输是通过 usb 的，如果要使用该模式，使用前要确保板子已经通过 
+             usb 数据线连接至上位机
+        su : 先用串口下载一部分 .boot 文件，再用 usb 下载剩余的 .boot 文件，随后的命令中进行的传输是通过 usb 的，这个模式下
+             需要板子同时有串口设备和 usb 数据线连接。这个下载方式主要是针对板子上没有 boot 按键的，没有 boot 按键就无法默认
+             从 usb slave 启动
+        nnu: 正常的下载流程中，会先下载 .boot 文件（使用 u/su/u 方式），等 .boot 起来后，mcu 就处于烧写模式了，这个时候 bootx 就会
+             发送各种命令让 mcu 去执行。而当前模式会跳过下载 .boot 文件，直接进行烧写。当前模式可以在使用过 u/su 方式的下载后或
+             者其他方式让 mcu 进入烧写模式后使用。当前模式的传输方式是 usb ，所以需要板子跟上位机通过 usb 数据线连接
+    -D： 进入 debug 模式，用于处理在下载过程中遇到问题时，能过通过该模式完成下载失败的问题的定位
+    -h： 显示帮助信息
+    -H： 会显示更加详细的使用方法和使用例程
+    -v： 显示bootx版本信息
+    -V： 显示bootx的changelog
+
+使用例程：
+
+  -m 选项使用用例：
+     以 flash 擦除命令举例
+       bootx -m leo -t u -c flash eraseall
+
+  下载命令:
+     serialdown
+       下载 download.bin 到 flash 的 0x0 地址处（使用串口下载）
+         bootx -m leo -t s -c serialdown 0x0 download.bin
+     usbslavedown
+       下载 download.bin 到 flash 的 0x0 地址处（使用 usb 下载）
+         bootx -m leo -t u -c usbslavedown 0x0 download.bin
+     download
+       下载 download.bin 到 flash 的 0x0 地址处，由于 -t 为 u，所以使用 usb 进行下载
+         bootx -m leo -t u -c download 0x0 download.bin
+
+  dump 命令:
+    serialdump
+      从 flash 中读取起始地址为 0 长度为 0x100000 的数据到当前目录的 dump.bin 文件中（使用串口进行 dump）
+        bootx -m leo -t s -c serialdump 0 0x100000 dump.bin
+    usbslavedump
+      从 flash 中读取起始地址为 0 长度为 0x100000 的数据到当前目录的 dump.bin 文件中（使用 usb 进行 dump）
+        bootx -m leo -t u -c usbslavedump 0 0x100000 dump.bin
+    dump
+      从 flash 中读取起始地址为 0 长度为 0x100000 的数据到当前目录的 dump.bin 文件中，由于 -t 为 u，所以使用 usb 进行 dump
+        bootx -m leo -t u -c dump 0 0x100000 dump.bin
+
+  通用命令:
+    flash 擦除命令
+      部分擦除：
+        从 flash 上起始地址为 0x0 处开始进行擦除，擦除长度为 0x10000
+          bootx -m leo -t u -c flash erase 0x0 0x10000
+      全部擦除：
+        擦除整片 flash
+          bootx -m leo -t u -c flash eraseall
+
+  命令组合（将 -c 后的所有命令使用双引号引起来，每一组完整的命令以分号结尾，最后一组命令不必加分号）：
+    先将 flash 上数据全部擦除，然后将 gxscpu.bin 下载到 flash 的 0 地址处
+      bootx -m leo -t s -c \"flash eraseall;serialdown 0 gxscpu.bin\"

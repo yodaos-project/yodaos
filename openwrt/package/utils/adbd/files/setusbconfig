@@ -1,0 +1,111 @@
+#!/bin/sh
+
+name=`basename $0`
+
+usage() {
+  echo "$name Usage:"
+  echo ""
+  echo "$name [function]"
+  echo "function: mtp,    support MTP function"
+  echo "          adb,    support adb function"
+  echo "          adb,mtp support adb and mtp function"
+  echo "example:"
+  echo "$name adb,mtp"
+  echo ""
+}
+
+udc_controller=`ls /sys/class/udc`
+
+set_usb_function() {
+# 1:function
+# 2:idVendor
+# 3:idProduct
+#
+
+  [ -d /sys/kernel/config/usb_gadget ] || {
+	mount -t configfs none /sys/kernel/config
+	mkdir /sys/kernel/config/usb_gadget/g1
+	mkdir /sys/kernel/config/usb_gadget/g1/strings/0x409
+	echo "Allwinner" > /sys/kernel/config/usb_gadget/g1/strings/0x409/manufacturer
+	echo "Tina" > /sys/kernel/config/usb_gadget/g1/strings/0x409/product
+  }
+  [ -d /sys/kernel/config/usb_gadget/g1/configs/c.1 ] || {
+	mkdir /sys/kernel/config/usb_gadget/g1/configs/c.1
+	echo 0xc0 > /sys/kernel/config/usb_gadget/g1/configs/c.1/bmAttributes
+	echo 500 > /sys/kernel/config/usb_gadget/g1/configs/c.1/MaxPower
+	mkdir /sys/kernel/config/usb_gadget/g1/configs/c.1/strings/0x409
+  }
+
+  [ -d /sys/kernel/config/usb_gadget/g1/functions/ffs.adb ] || {
+	mkdir /sys/kernel/config/usb_gadget/g1/functions/ffs.adb
+  }
+  [ -d /sys/kernel/config/usb_gadget/g1/functions/mtp.gs0 ] || {
+	mkdir /sys/kernel/config/usb_gadget/g1/functions/mtp.gs0
+  }
+  [ -d /sys/kernel/config/usb_gadget/g1/functions/mass_storage.usb0 ] || {
+	mkdir /sys/kernel/config/usb_gadget/g1/functions/mass_storage.usb0
+	echo Tina > /sys/kernel/config/usb_gadget/g1/functions/mass_storage.usb0/lun.0/inquiry_string
+  }
+
+  rm -f /sys/kernel/config/usb_gadget/g1/configs/c.1/ffs.adb
+  rm -f /sys/kernel/config/usb_gadget/g1/configs/c.1/mtp.gs0
+  rm -f /sys/kernel/config/usb_gadget/g1/configs/c.1/f1
+
+  echo $2 > /sys/kernel/config/usb_gadget/g1/idVendor
+  echo $3 > /sys/kernel/config/usb_gadget/g1/idProduct
+
+  if [ $1 == "none" ]; then
+	return
+  elif [ $1 == "mtp" ]; then
+	ln -s /sys/kernel/config/usb_gadget/g1/functions/mtp.gs0/ /sys/kernel/config/usb_gadget/g1/configs/c.1/mtp.gs0
+  elif [ $1 == "adb" ]; then
+	ln -s /sys/kernel/config/usb_gadget/g1/functions/ffs.adb/ /sys/kernel/config/usb_gadget/g1/configs/c.1/ffs.adb
+  elif [ $1 == "mass_storage" ]; then
+	ln -s /sys/kernel/config/usb_gadget/g1/functions/mass_storage.usb0/ /sys/kernel/config/usb_gadget/g1/configs/c.1/f1
+  elif [ $1 == "mtp,adb" ]; then
+	ln -s /sys/kernel/config/usb_gadget/g1/functions/ffs.adb/ /sys/kernel/config/usb_gadget/g1/configs/c.1/ffs.adb
+	ln -s /sys/kernel/config/usb_gadget/g1/functions/mtp.gs0/ /sys/kernel/config/usb_gadget/g1/configs/c.1/mtp.gs0
+  elif [ $1 == "mass_storage,adb" ]; then
+	ln -s /sys/kernel/config/usb_gadget/g1/functions/ffs.adb/ /sys/kernel/config/usb_gadget/g1/configs/c.1/ffs.adb
+	ln -s /sys/kernel/config/usb_gadget/g1/functions/mass_storage.usb0/ /sys/kernel/config/usb_gadget/g1/configs/c.1/f1
+  fi
+
+  [ -d /dev/usb-ffs/adb ] || {
+	mkdir /dev/usb-ffs
+	mkdir /dev/usb-ffs/adb
+	mount -o uid=2000,gid=2000 -t functionfs adb /dev/usb-ffs/adb/
+  }
+  echo $udc_controller > /sys/kernel/config/usb_gadget/g1/UDC
+}
+
+if [ $# == 1 ]; then
+  if [ $1 == "none" ]; then
+    set_usb_function none 0x1f3a 0x1001
+    return
+  fi
+  if [ $1 == "adb" ]; then
+    set_usb_function adb 0x18d1 0xD002
+    return
+  fi
+  if [ $1 == "mtp" ]; then
+    set_usb_function mtp 0x1f3a 0x1006
+    return
+  fi
+  if [ $1 == "mass_storage" ]; then
+    set_usb_function mass_storage 0x1f3a 0x1000
+    return
+  fi
+  if [ $1 == "adb,mtp" -o $1 == "mtp,adb" ]; then
+    set_usb_function mtp,adb 0x1f3a 0x1007
+    return
+  fi
+  if [ $1 == "adb,mass_storage" -o $1 == "mass_storage,adb" ]; then
+    set_usb_function mass_storage,adb 0x1f3a 0x1002
+    return
+  fi
+  echo "Invalid arg:$1"
+  usage
+else
+  echo "Lack of arg!"
+  usage
+fi

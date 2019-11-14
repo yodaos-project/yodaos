@@ -1,0 +1,48 @@
+From cdd1607bf6f9337312227ff432cbd45de7d26298 Mon Sep 17 00:00:00 2001
+From: dairen <ren.dai@rokid.com>
+Date: Tue, 15 Jan 2019 11:40:41 +0800
+Subject: [PATCH] 2
+
+---
+ src/modules/module-loopback.c | 2 ++
+ src/pulsecore/proplist-util.c | 6 +++---
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/src/modules/module-loopback.c b/src/modules/module-loopback.c
+index 75d9932..16aa4a2 100644
+--- a/src/modules/module-loopback.c
++++ b/src/modules/module-loopback.c
+@@ -825,6 +825,8 @@ int pa__init(pa_module *m) {
+ 
+     if (!pa_proplist_contains(sink_input_data.proplist, PA_PROP_MEDIA_ROLE))
+         pa_proplist_sets(sink_input_data.proplist, PA_PROP_MEDIA_ROLE, "abstract");
++    if (!pa_proplist_contains(sink_input_data.proplist, PA_PROP_MEDIA_NAME))
++        pa_proplist_sets(sink_input_data.proplist, PA_PROP_MEDIA_NAME, "playback");
+ 
+     pa_sink_input_new_data_set_sample_spec(&sink_input_data, &ss);
+     pa_sink_input_new_data_set_channel_map(&sink_input_data, &map);
+diff --git a/src/pulsecore/proplist-util.c b/src/pulsecore/proplist-util.c
+index baf683d..a254c3c 100644
+--- a/src/pulsecore/proplist-util.c
++++ b/src/pulsecore/proplist-util.c
+@@ -256,14 +256,14 @@ char *pa_proplist_get_stream_group(pa_proplist *p, const char *prefix, const cha
+     if (!prefix)
+         prefix = "stream";
+ 
+-    if ((r = pa_proplist_gets(p, PA_PROP_MEDIA_ROLE)))
++    if ((r = pa_proplist_gets(p, PA_PROP_MEDIA_NAME)))
++        t = pa_sprintf_malloc("%s-by-media-name:%s", prefix, r);
++    else if ((r = pa_proplist_gets(p, PA_PROP_MEDIA_ROLE)))
+         t = pa_sprintf_malloc("%s-by-media-role:%s", prefix, r);
+     else if ((r = pa_proplist_gets(p, PA_PROP_APPLICATION_ID)))
+         t = pa_sprintf_malloc("%s-by-application-id:%s", prefix, r);
+     else if ((r = pa_proplist_gets(p, PA_PROP_APPLICATION_NAME)))
+         t = pa_sprintf_malloc("%s-by-application-name:%s", prefix, r);
+-    else if ((r = pa_proplist_gets(p, PA_PROP_MEDIA_NAME)))
+-        t = pa_sprintf_malloc("%s-by-media-name:%s", prefix, r);
+     else
+         t = pa_sprintf_malloc("%s-fallback:%s", prefix, r);
+ 
+-- 
+2.18.0
+

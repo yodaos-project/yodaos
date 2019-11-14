@@ -1,0 +1,216 @@
+Index: wpa_supplicant-2.6/src/utils/wpa_debug.c
+===================================================================
+--- wpa_supplicant-2.6.orig/src/utils/wpa_debug.c	2016-10-03 02:51:11.000000000 +0800
++++ wpa_supplicant-2.6/src/utils/wpa_debug.c	2018-06-06 18:25:03.503438093 +0800
+@@ -22,6 +22,9 @@
+ #include <fcntl.h>
+ #include <string.h>
+ #include <stdio.h>
++#include <sys/time.h>
++#include <time.h>
++#include <sys/timeb.h>
+ 
+ static FILE *wpa_debug_tracing_file = NULL;
+ 
+@@ -29,8 +32,8 @@
+ #endif /* CONFIG_DEBUG_LINUX_TRACING */
+ 
+ 
+-int wpa_debug_level = MSG_INFO;
+-int wpa_debug_show_keys = 0;
++int wpa_debug_level = MSG_EXCESSIVE;
++int wpa_debug_show_keys = 1;
+ int wpa_debug_timestamp = 0;
+ 
+ 
+@@ -64,21 +67,23 @@
+ 
+ void wpa_debug_print_timestamp(void)
+ {
+-#ifndef CONFIG_ANDROID_LOG
++//#ifndef CONFIG_ANDROID_LOG
+ 	struct os_time tv;
++    struct os_tm now_time;
+ 
+-	if (!wpa_debug_timestamp)
+-		return;
++//	if (!wpa_debug_timestamp)
++//		return;
+ 
+ 	os_get_time(&tv);
++    os_gmtime(tv.sec, &now_time);
+ #ifdef CONFIG_DEBUG_FILE
+ 	if (out_file) {
+-		fprintf(out_file, "%ld.%06u: ", (long) tv.sec,
+-			(unsigned int) tv.usec);
+-	} else
++        fprintf(out_file, "[%02d_%02d  %02d:%02d:%02d  %06u] ", now_time.month, now_time.day, (now_time.hour + 8) >= 24 ? now_time.hour - 16 : now_time.hour + 8,
++                now_time.min, now_time.sec, (unsigned int)tv.usec);
++    } else
+ #endif /* CONFIG_DEBUG_FILE */
+ 	printf("%ld.%06u: ", (long) tv.sec, (unsigned int) tv.usec);
+-#endif /* CONFIG_ANDROID_LOG */
++//#endif /* CONFIG_ANDROID_LOG */
+ }
+ 
+ 
+@@ -208,8 +213,8 @@
+ 	va_start(ap, fmt);
+ 	if (level >= wpa_debug_level) {
+ #ifdef CONFIG_ANDROID_LOG
+-		__android_log_vprint(wpa_to_android_level(level),
+-				     ANDROID_LOG_NAME, fmt, ap);
++//		__android_log_vprint(wpa_to_android_level(level),
++//				     ANDROID_LOG_NAME, fmt, ap);
+ #else /* CONFIG_ANDROID_LOG */
+ #ifdef CONFIG_DEBUG_SYSLOG
+ 		if (wpa_debug_syslog) {
+@@ -223,8 +228,8 @@
+ 			fprintf(out_file, "\n");
+ 		} else {
+ #endif /* CONFIG_DEBUG_FILE */
+-		vprintf(fmt, ap);
+-		printf("\n");
++//		vprintf(fmt, ap);
++//		printf("\n");
+ #ifdef CONFIG_DEBUG_FILE
+ 		}
+ #endif /* CONFIG_DEBUG_FILE */
+Index: wpa_supplicant-2.6/wpa_supplicant/ctrl_iface.c
+===================================================================
+--- wpa_supplicant-2.6.orig/wpa_supplicant/ctrl_iface.c	2016-10-03 02:51:11.000000000 +0800
++++ wpa_supplicant-2.6/wpa_supplicant/ctrl_iface.c	2018-06-06 18:18:08.223428644 +0800
+@@ -52,6 +52,12 @@
+ #include "offchannel.h"
+ #include "drivers/driver.h"
+ #include "mesh.h"
++#include <sys/time.h>
++#include <time.h>
++#include <sys/timeb.h>
++
++
++static int log_is_open = 0;
+ 
+ static int wpa_supplicant_global_iface_list(struct wpa_global *global,
+ 					    char *buf, int len);
+@@ -2146,6 +2152,50 @@
+ }
+ 
+ 
++static int wpa_supplicant_ctrl_iface_logopen(struct wpa_supplicant *wpa_s,
++                                              char *cmd, char *buf,
++                                              size_t buflen)
++{
++        struct os_time tv;
++        struct os_tm now_time;
++        char filepath[256] = {0};
++
++        os_get_time(&tv);
++        os_gmtime(tv.sec, &now_time);
++        
++        if (log_is_open != 0) {
++            os_memcpy(buf, "the file is opened\n", strlen("the file is opened\n"));
++            return strlen("the file is opened\n");
++        }
++
++        sprintf(filepath, "/data/log/wpa_%02d_%02d_%02d_%02d_%02d.log", now_time.month, now_time.day, (now_time.hour + 8) >= 24 ? now_time.hour - 16 : now_time.hour + 8,
++                now_time.min, now_time.sec);
++
++        if (wpa_debug_open_file(filepath)) {
++            os_memcpy(buf, "FAILED\n", 7);
++            return 7;
++        }
++
++        log_is_open = 1;
++        os_memcpy(buf, "OK\n", 3);
++
++        return 3;
++}
++
++
++static int wpa_supplicant_ctrl_iface_logclose(struct wpa_supplicant *wpa_s,
++                                              char *cmd, char *buf,
++                                              size_t buflen)
++{
++        wpa_debug_close_file();
++
++        log_is_open = 0;
++
++        os_memcpy(buf, "OK\n", 3);
++        return 3;
++}
++
++
+ static int wpa_supplicant_ctrl_iface_blacklist(struct wpa_supplicant *wpa_s,
+ 					       char *cmd, char *buf,
+ 					       size_t buflen)
+@@ -6904,6 +6954,8 @@
+ 		pos += ret;
+ 	}
+ 
++    wpa_printf(MSG_DEBUG, "current signal is %d", si.current_signal);
++
+ 	return pos - buf;
+ }
+ 
+@@ -9092,7 +9144,13 @@
+ 	} else if (os_strncmp(buf, "BLACKLIST", 9) == 0) {
+ 		reply_len = wpa_supplicant_ctrl_iface_blacklist(
+ 			wpa_s, buf + 9, reply, reply_size);
+-	} else if (os_strncmp(buf, "LOG_LEVEL", 9) == 0) {
++    } else if (os_strncmp(buf, "LOG_OPEN", 8) == 0) {
++        reply_len = wpa_supplicant_ctrl_iface_logopen(
++            wpa_s, buf + 8, reply, reply_size);
++    }else if (os_strncmp(buf, "LOG_CLOSE", 9) == 0) {
++        reply_len = wpa_supplicant_ctrl_iface_logclose(
++            wpa_s, buf + 9, reply, reply_size);
++    } else if (os_strncmp(buf, "LOG_LEVEL", 9) == 0) {
+ 		reply_len = wpa_supplicant_ctrl_iface_log_level(
+ 			wpa_s, buf + 9, reply, reply_size);
+ 	} else if (os_strncmp(buf, "LIST_NETWORKS ", 14) == 0) {
+Index: wpa_supplicant-2.6/wpa_supplicant/main.c
+===================================================================
+--- wpa_supplicant-2.6.orig/wpa_supplicant/main.c	2016-10-03 02:51:11.000000000 +0800
++++ wpa_supplicant-2.6/wpa_supplicant/main.c	2018-06-06 18:07:57.095414739 +0800
+@@ -190,7 +190,7 @@
+ 		return -1;
+ 
+ 	os_memset(&params, 0, sizeof(params));
+-	params.wpa_debug_level = MSG_INFO;
++	params.wpa_debug_level = MSG_MSGDUMP;
+ 
+ 	iface = ifaces = os_zalloc(sizeof(struct wpa_interface));
+ 	if (ifaces == NULL)
+Index: wpa_supplicant-2.6/wpa_supplicant/wpa_cli.c
+===================================================================
+--- wpa_supplicant-2.6.orig/wpa_supplicant/wpa_cli.c	2016-10-03 02:51:11.000000000 +0800
++++ wpa_supplicant-2.6/wpa_supplicant/wpa_cli.c	2018-06-06 18:06:46.383413130 +0800
+@@ -2697,6 +2697,17 @@
+ 	return wpa_ctrl_command(ctrl, "ERP_FLUSH");
+ }
+ 
++static int wpa_cli_cmd_log_open(struct wpa_ctrl *ctrl, int argc, char *argv[])
++{
++        return wpa_ctrl_command(ctrl, "LOG_OPEN");
++}
++
++
++static int wpa_cli_cmd_log_close(struct wpa_ctrl *ctrl, int argc, char *argv[])
++{
++        return wpa_ctrl_command(ctrl, "LOG_CLOSE");
++}
++
+ 
+ static int wpa_cli_cmd_mac_rand_scan(struct wpa_ctrl *ctrl, int argc,
+ 				     char *argv[])
+@@ -3311,6 +3322,10 @@
+ 	  "<scan|sched|pno|all> enable=<0/1> [addr=mac-address "
+ 	  "mask=mac-address-mask] = scan MAC randomization"
+ 	},
++    {"log_open", wpa_cli_cmd_log_open, NULL, cli_cmd_flag_none,
++      "create the wifi log"},
++    {"log_close", wpa_cli_cmd_log_close, NULL, cli_cmd_flag_none,
++     "close the current wifi log"},
+ 	{ "get_pref_freq_list", wpa_cli_cmd_get_pref_freq_list, NULL,
+ 	  cli_cmd_flag_none,
+ 	  "<interface type> = retrieve preferred freq list for the specified interface type" },

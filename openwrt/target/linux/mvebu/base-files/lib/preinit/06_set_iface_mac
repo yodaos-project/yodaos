@@ -1,0 +1,26 @@
+#
+# Copyright (C) 2014-2015 OpenWrt.org
+#
+
+preinit_set_mac_address() {
+	local mac
+
+	. /lib/functions.sh
+	. /lib/mvebu.sh
+
+	case $(mvebu_board_name) in
+	armada-xp-linksys-mamba)
+		mac=$(mtd_get_mac_ascii devinfo hw_mac_addr)
+		ifconfig eth0 hw ether $mac 2>/dev/null
+		ifconfig eth1 hw ether $mac 2>/dev/null
+		;;
+	armada-385-linksys-caiman|armada-385-linksys-cobra|armada-385-linksys-rango|armada-385-linksys-shelby)
+		mac=$(mtd_get_mac_ascii devinfo hw_mac_addr)
+		mac_wan=$(macaddr_setbit_la "$mac")
+		ifconfig eth1 hw ether $mac 2>/dev/null
+		ifconfig eth0 hw ether $mac_wan 2>/dev/null
+		;;
+	esac
+}
+
+boot_hook_add preinit_main preinit_set_mac_address

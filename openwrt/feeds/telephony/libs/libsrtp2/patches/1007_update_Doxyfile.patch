@@ -1,0 +1,94 @@
+Description: Update Doxyfile and header template
+Author: Jonas Smedegaard <dr@jones.dk>
+Last-Update: 2010-02-28
+--- a/doc/Makefile.in
++++ b/doc/Makefile.in
+@@ -25,6 +25,7 @@ libsrtpdoc: 
+ 		echo "*** Sorry, can't build doc outside source dir"; exit 1; \
+ 	fi
+ 	sed 's/LIBSRTPVERSION/$(version)/' header.template > header.tex
++	doxygen -u
+ 	doxygen
+ 	sed 's/\subsection/\section/' latex/index.tex > latex/index.tmp
+ 	mv latex/index.tmp latex/index.tex
+@@ -38,7 +39,7 @@ cryptodoc: clean
+ 	cp latex/refman.pdf crypto.pdf
+ 
+ clean:
+-	rm -rf latex/ header.tex
++	rm -rf latex/ header.tex Doxyfile.bak
+ 	for a in * ; do			                \
+               if [ -f "$$a~" ] ; then rm -f $$a~; fi;	\
+         done;
+--- a/doc/header.template
++++ b/doc/header.template
+@@ -6,28 +6,40 @@
+ % 
+ \documentclass[letterpaper]{book}
+ \usepackage{makeidx}
+-\usepackage{fancyhdr}
+ \usepackage{graphicx}
+ \usepackage{multicol}
+ \usepackage{float}
++\usepackage{listings}
++\usepackage{color}
++\usepackage{ifthen}
++\usepackage[table]{xcolor}
+ \usepackage{textcomp}
+ \usepackage{alltt}
+-\usepackage{times}
+-\usepackage{graphicx}
+-\ifx\pdfoutput\undefined
+-\usepackage[ps2pdf,
++\usepackage{ifpdf}
++\ifpdf
++\usepackage[pdftex,
+             pagebackref=true,
+             colorlinks=true,
+-            linkcolor=blue
++            linkcolor=blue,
++            unicode
+            ]{hyperref}
+ \else
+-\usepackage[pdftex,
++\usepackage[ps2pdf,
+             pagebackref=true,
+             colorlinks=true,
+-            linkcolor=blue
++            linkcolor=blue,
++            unicode
+            ]{hyperref}
++\usepackage{pspicture}
+ \fi
++\usepackage[utf8]{inputenc}
++\usepackage{mathptmx}
++\usepackage[scaled=.90]{helvet}
++\usepackage{courier}
++\usepackage{sectsty}
++\usepackage[titles]{tocloft}
+ \usepackage{doxygen}
++\lstset{language=C++,inputencoding=utf8,basicstyle=\footnotesize,breaklines=true,breakatwhitespace=true,tabsize=3,numbers=left }
+ \makeindex
+ \setcounter{tocdepth}{1}
+ \renewcommand{\footrulewidth}{0.4pt}
+@@ -59,7 +71,9 @@
+ \selectfont
+ 
+ 
++\renewcommand{\familydefault}{\sfdefault}
+ \begin{document}
++\hypersetup{pageanchor=false}
+ \begin{titlepage}
+ \vspace*{4cm}
+ %\begin{center}
+@@ -107,9 +121,6 @@ This reference material in this documena
+ \clearemptydoublepage
+ \pagenumbering{roman}
+ \tableofcontents
+-%\clearemptydoublepage
+-
+ \clearemptydoublepage
+ \pagenumbering{arabic}
+-
+-
++\hypersetup{pageanchor=true}

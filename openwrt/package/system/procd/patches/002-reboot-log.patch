@@ -1,0 +1,118 @@
+diff --git a/inittab.c b/inittab.c
+index 6dde11a..3f900bd 100644
+--- a/inittab.c
++++ b/inittab.c
+@@ -128,6 +128,7 @@ static void respawn(struct uloop_timeout *tout)
+ 
+ static void rcdone(struct runqueue *q)
+ {
++	printf("---enter rcdone---\n");
+ 	procd_state_next();
+ }
+ 
+@@ -139,8 +140,12 @@ static void runrc(struct init_action *a)
+ 	}
+ 
+ 	/* proceed even if no init or shutdown scripts run */
+-	if (rcS(a->argv[1], a->argv[2], rcdone))
++	if (rcS(a->argv[1], a->argv[2], rcdone)) {
++		printf("---rcdone---\n");
+ 		rcdone(NULL);
++	} else {
++		printf("----rcdone error\n");
++	}
+ }
+ 
+ static void askfirst(struct init_action *a)
+@@ -231,6 +236,7 @@ static int add_action(struct init_action *a, const char *name)
+ {
+ 	int i;
+ 
++	printf("add action %s\n", name);
+ 	for (i = 0; i < ARRAY_SIZE(handlers); i++)
+ 		if (!strcmp(handlers[i].name, name)) {
+ 			a->handler = &handlers[i];
+@@ -245,7 +251,7 @@ void procd_inittab_run(const char *handler)
+ {
+ 	struct init_action *a;
+ 
+-	list_for_each_entry(a, &actions, list)
++	list_for_each_entry(a, &actions, list) {
+ 		if (!strcmp(a->handler->name, handler)) {
+ 			if (a->handler->multi) {
+ 				a->handler->cb(a);
+@@ -254,6 +260,7 @@ void procd_inittab_run(const char *handler)
+ 			a->handler->cb(a);
+ 			break;
+ 		}
++	}
+ }
+ 
+ void procd_inittab(void)
+@@ -291,7 +298,7 @@ void procd_inittab(void)
+ 		if (regexec(&pat_inittab, line, 5, matches, 0))
+ 			continue;
+ 
+-		DEBUG(4, "Parsing inittab - %s", line);
++		printf("Parsing inittab - %s\n", line);
+ 
+ 		for (i = TAG_ID; i <= TAG_PROCESS; i++) {
+ 			line[matches[i].rm_eo] = '\0';
+diff --git a/log.h b/log.h
+index bf86f1e..e4e5285 100644
+--- a/log.h
++++ b/log.h
+@@ -18,7 +18,7 @@
+ #include <libubox/ulog.h>
+ 
+ #define DEBUG(level, fmt, ...) do { \
+-	if (debug >= level) { \
++	if (1) { \
+ 		ulog(LOG_DEBUG, fmt, ## __VA_ARGS__); \
+ 	} } while (0)
+ 
+diff --git a/rcS.c b/rcS.c
+index 1e38d39..f743c10 100644
+--- a/rcS.c
++++ b/rcS.c
+@@ -137,22 +137,23 @@ static int _rc(struct runqueue *q, char *path, const char *file, char *pattern,
+ 	int j;
+ 
+ 	if (!dir) {
+-		ERROR("Out of memory in %s.\n", file);
++		printf("Out of memory in %s.\n", file);
+ 		return -1;
+ 	}
+ 
+-	DEBUG(2, "running %s/%s%s %s\n", path, file, pattern, param);
++	printf("running %s/%s%s %s\n", path, file, pattern, param);
+ 	sprintf(dir, "%s/%s%s", path, file, pattern);
+ 	if (glob(dir, GLOB_NOESCAPE | GLOB_MARK, NULL, &gl)) {
+-		DEBUG(2, "glob failed on %s\n", dir);
++		printf("glob failed on %s\n", dir);
+ 		return -1;
+ 	}
+ 
+ 	for (j = 0; j < gl.gl_pathc; j++)
+ 		add_initd(q, gl.gl_pathv[j], param);
+ 
+-	globfree(&gl);
++	printf("dir %s\n", dir);
+ 
++	globfree(&gl);
+ 	return 0;
+ }
+ 
+diff --git a/state.c b/state.c
+index 0d37036..acc4f6a 100644
+--- a/state.c
++++ b/state.c
+@@ -182,7 +182,7 @@ static void state_enter(void)
+ 
+ void procd_state_next(void)
+ {
+-	DEBUG(4, "Change state %d -> %d\n", state, state + 1);
++	printf("Change state %d -> %d\n", state, state + 1);
+ 	state++;
+ 	state_enter();
+ }

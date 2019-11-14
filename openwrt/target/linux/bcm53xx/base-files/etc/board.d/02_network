@@ -1,0 +1,67 @@
+#!/bin/sh
+#
+# Copyright (C) 2011 OpenWrt.org
+#
+
+. /lib/functions/uci-defaults.sh
+
+board_config_update
+
+board=$(cat /proc/device-tree/compatible | tr '\0' '\t' | cut -f 1)
+case "$board" in
+asus,rt-ac87u)
+	ifname=eth1
+	;;
+dlink,dir-885l | \
+netgear,r7900 | \
+netgear,r8000 | \
+netgear,r8500)
+
+	ifname=eth2
+	;;
+*)
+	ifname=eth0
+	;;
+esac
+
+# Workaround for devices using eth2 connected to (CPU) switch port 8
+case "$board" in
+dlink,dir-885l | \
+netgear,r7900 | \
+netgear,r8000 | \
+netgear,r8500)
+	ifname=eth0
+	ucidef_add_switch "switch0" \
+		"0:lan" "1:lan" "2:lan" "3:lan" "4:wan" "5t@$ifname"
+	board_config_flush
+	exit 0
+	;;
+esac
+
+# NVRAM entries may contain unsorted ports, e.g. Netgear R6250 uses
+# vlan1ports=3 2 1 0 5*
+# vlan2ports=4 5u
+# and early Netgear R8000 was using
+# vlan1ports=3 2 1 0 5 7 8*
+vlan1ports="$(echo $(nvram get vlan1ports | tr " " "\n" | sort))"
+vlan2ports="$(echo $(nvram get vlan2ports | tr " " "\n" | sort))"
+if echo "$vlan1ports" | egrep -q "^1 2 3 4 5" && \
+   echo "$vlan2ports" | egrep -q "^0 5"; then
+	ucidef_add_switch "switch0" \
+		"1:lan" "2:lan" "3:lan" "4:lan" "0:wan" "5t@$ifname"
+elif echo "$vlan1ports" | egrep -q "^1 2 3 5 7" && \
+     echo "$vlan2ports" | egrep -q "^0 7"; then
+	ucidef_add_switch "switch0" \
+		"1:lan" "2:lan" "3:lan" "5:lan" "0:wan" "7t@$ifname"
+elif echo "$vlan1ports" | egrep -q "^0 1 2 3 5 7 8" && \
+     echo "$vlan2ports" | egrep -q "^4 8"; then
+	ucidef_add_switch "switch0" \
+		"0:lan" "1:lan" "2:lan" "3:lan" "5:lan" "7:lan" "4:wan" "8t@$ifname"
+else
+	ucidef_add_switch "switch0" \
+		"0:lan" "1:lan" "2:lan" "3:lan" "4:wan" "5t@$ifname"
+fi
+
+board_config_flush
+
+exit 0

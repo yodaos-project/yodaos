@@ -1,0 +1,269 @@
+menu "Configuration"
+  depends on PACKAGE_freeswitch
+
+  choice
+    depends on DEVEL
+    prompt "Git HEAD version to use"
+    default FS_WITH_DEFAULT_HEAD
+    help
+	The existing git HEAD is probably outdated. This option allows
+	OpenWRT to pull the latest git HEAD. Please ONLY enable this
+	option if you know what you are doing. It may and/or may not
+	be cleanly compiled and may require some intervension to create
+	new patches. If you take this route and come up with some patches,
+	please contemplate to contribute
+	or send in your patches.
+
+    config FS_WITH_DEFAULT_HEAD
+      bool "Default"
+      help
+	Since developers @FreeSWITCH are actively working to improve
+	FreeSWITCH, there is a chance the default git HEAD has long
+	been oudated.
+
+    config FS_WITH_LATEST_HEAD
+      bool "Latest"
+      help
+	Please use this option with cautious. It may and/or may not compile
+	out of the box and may and/or may not require some additional new
+	patches.
+
+  endchoice
+
+  choice
+    prompt "FS TARRED archive to use"
+    default FS_WITH_OPENWRT_SOURCE
+    help
+	Select which tarred to use: local or OpenWRT
+	local: Manually downloaded from FS git repo
+	OpenWRT: FS tarred-file downloaded from source by OpenWRT
+	FS git repo: https://freeswitch.org/stash/scm/fs/freeswitch.git
+
+   config FS_WITH_LOCAL_SOURCE
+      bool "local"
+      help
+	Use local tarred archive. This approach requires a manually checkout
+	source from FS git repository using 'git clone', then package the
+	source using tar with XZ compression. The tarred file should include
+	$(PKG_VERSION) as follows:
+	1. "git clone git://git.freeswitch.org/freeswitch.git <dir>"
+	2. Change to <dir>.
+	3. "git checkout $(FS_DEFAULT_HEAD) && git submodule update"
+	4. Back to parent <dir>.
+	5. "tar -Jcf freeswitch_git-$(PKG_VERSION).tar.xz <dir>"
+	6. Move the tarred file to OpenWRT download directory.
+
+   config FS_WITH_OPENWRT_SOURCE
+      bool "OpenWRT"
+      help
+	Use (download) tarred archive from OpenWRT.
+
+  endchoice
+
+  choice 
+    prompt "Select database"
+    default FS_WITH_SQLITE3
+    help
+	Select which database library to use for libs/apr-util package.
+	Default is SQLite.
+
+    config FS_WITH_MYSQL
+      bool "MySQL"
+      help
+	Compile libs/apr-util with MySQL support.
+
+    config FS_WITH_POSTGRESQL
+      bool "PostgreSQL"
+      help
+	Compile libs/apr-util with PostgreSQL support.
+
+    config FS_WITH_SQLITE2
+      bool "SQLITE2"
+      help
+	Compile libs/apr-util with SQLITE2 support.
+
+    config FS_WITH_SQLITE3
+      bool "SQLITE3"
+      help
+	Compile libs/apr-util with SQLITE3 support.
+
+  endchoice
+
+  config FS_WITH_ALSA
+    bool "Enable ALSA for sound support"
+    default y
+    help
+	Compile with ALSA support.
+
+  config FS_WITH_VISIBILITY
+    bool "Enable API visibility support"
+    default y
+    help
+	Compile with API visibility support.
+
+  config FS_WITH_APR_CONFIG_SWITCHES
+    bool "Enable APR configuration switches"
+    default y
+    help
+	Enable some configure switches in libs/apr.
+
+  config FS_WITH_APR_IPV6
+    depends on FS_WITH_APR_CONFIG_SWITCHES
+    bool "Enable IPV6 support in APR"
+    default y
+    help
+	Compile libs/apr package with IPV6 support.
+
+  config FS_WITH_APR_SCTP
+    depends on FS_WITH_APR_CONFIG_SWITCHES
+    bool "Enable SCTP support in APR"
+    default y
+    help
+	Compile with SCTP (Stream Control Transfer Protocol)
+	support in lib APR.
+
+  config FS_WITH_APR_THREADS
+    depends on FS_WITH_APR_CONFIG_SWITCHES
+    bool "Enable threading support in APR"
+    default y
+    help
+	Compile with threads support in libs/apr.
+
+  config FS_WITH_BUILTIN_ZRTP
+    bool "Enable built-in ZRTP"
+    default y
+    help
+	Compile with ZRTP support.
+
+  config FS_WITH_OGG
+    bool "Enable ogg support in mod_celt"
+    default y
+    help
+	Enable this option to allow use of OGG in mod_celt.
+
+  config FS_WITH_CORE_LIBEDIT_SUPPORT
+    bool "Compile with libedit Support"
+    default n
+    help
+	Compile with libedit Support. ATM, libedit isn't 
+	supported by OpenWRT.
+
+  config FS_WITH_FHS
+    bool "Follow the FHS when placing files and directories"
+    default y
+    help
+	Build FreeSWITCH to comply with FHS when placing 
+	files and directories.
+
+  config FS_WITH_LIBVPX
+    bool "Enable building libvpx"
+    default y
+    help
+	Compile to build libs/libvpx.
+
+  config FS_WITH_LIBYUV
+    bool "Enable building libyuv"
+    default y
+    help
+	Compile to build libs/libyuv.
+
+  config FS_WITH_LZMA
+    bool "Enable liblzma usage in libtiff"
+    default y
+    help
+	Compile libs/tiff package with liblzma support. This option
+	requires LZMA2 compression package called liblzma.
+
+  config FS_WITH_ODBC
+    depends on PACKAGE_sqliteodbc
+    depends on PACKAGE_unixodbc_svn
+    bool "Compile with ODBC support (Requires unixodbc NOT YET AVAILABLE)"
+    default n
+    help
+	Enable ODBC support. Since both sqliteodbc and unixodbc 
+	packages are not yet available on OpenWRT, ODBC support 
+	should not be enabled.
+
+  config FS_WITH_OPENSSL
+    bool "Enable SSL support"
+    default y
+    help
+	Compile with SSL support.
+
+  config FS_WITH_OPT
+    bool "Enable optimization"
+    default y
+    help
+	Compile with optimization flag enabled. This
+	will add max optimising compiler flags
+
+  config FS_WITH_SILENT_RULES
+    bool "Enable with less verbose build output"
+    default n
+    help
+	Enable this option to produce a less verbose build output
+	(undo: "make V=1")
+
+  config FS_WITH_SRTP
+    bool "Enable SRTP"
+    default y
+    help
+	Compile with SRTP support.
+
+  config FS_WITH_SRTP_GENERIC_AESICM
+    depends on FS_WITH_SRTP
+    bool "Compile in changes for ISMAcryp"
+    default y
+    help
+	Compile in changes for ISMAcryp.
+
+  config FS_WITH_SRTP_KERNEL_LINUX
+    depends on FS_WITH_SRTP
+    bool "Build library to run in Linux kernel context"
+    default n
+    help
+	Build library to run in Linux kernel context.
+
+  config FS_WITH_SRTP_OPENSSL
+    depends on FS_WITH_SRTP
+    bool "Use OpenSSL crypto primitives to build SRTP"
+    default y
+    help
+	Use OpenSSL crypto primitives.
+
+  config FS_WITH_STUN
+    bool "Enable stun module"
+    default y
+    help
+	Enable stun module.
+
+  config FS_WITH_ERLANG
+    depends on PACKAGE_freeswitch-mod-erlang-event
+    string
+    prompt "path to erlang installed directory"
+    default "$$(STAGING_DIR)/host/lib/erlang"
+    help
+	Specify the path to erlang libraries.
+
+#  config FS_WITH_OGG_INCLUDES
+#    string
+#    prompt "OGG include HEADER path"
+#    default "$$(STAGING_DIR)/usr/include"
+#    help
+#	Specify the include header path for OGG library.
+
+  config FS_WITH_PYTHON
+    bool "Enable to use system provided version of python"
+    default y
+    help
+	Enable to use system provided version of python.
+
+  config FS_WITH_PYTHON_PATH
+    depends on FS_WITH_PYTHON
+    string
+    prompt "full path to binary python$(PYTHON3_VERSION)"
+    default "$$(STAGING_DIR)/host/bin/python$(PYTHON3_VERSION)"
+    help
+        Specify the full path to binary python$(PYTHON3-VERSION).
+
+endmenu

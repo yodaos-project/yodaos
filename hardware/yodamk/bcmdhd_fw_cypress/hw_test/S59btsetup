@@ -1,0 +1,4 @@
+#!/bin/ash
+
+/usr/bin/hciconfig hci0 up
+/usr/bin/hciconfig hci0 reset

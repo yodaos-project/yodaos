@@ -1,0 +1,17 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006-2011 OpenWrt.org
+
+START=101
+
+USE_PROCD=1
+PROG=/usr/bin/adbd
+
+start_service () {
+	if [ ! -f "/etc/adb.id" ]; then
+		cat /proc/sys/kernel/random/uuid | cut -c -8 > /etc/adb.id
+	fi
+	cat /etc/adb.id > /sys/class/android_usb/android0/iSerial
+	procd_open_instance
+	procd_set_param command "$PROG"
+	procd_close_instance
+}

@@ -1,0 +1,37 @@
+diff -aburNp bluez-5.48_orgin/Makefile.in bluez-5.48/Makefile.in
+--- bluez-5.48_orgin/Makefile.in	2018-10-30 14:39:28.578220347 +0800
++++ bluez-5.48/Makefile.in	2018-11-02 16:15:02.000000000 +0800
+@@ -2362,15 +2362,15 @@ gobex_sources = gobex/gobex.h gobex/gobe
+ builtin_modules = hostname wiimote autopair policy $(am__append_3) \
+ 	$(am__append_5) $(am__append_7) $(am__append_9) \
+ 	$(am__append_11) $(am__append_13) $(am__append_15) \
+-	$(am__append_18) gap scanparam deviceinfo $(am__append_20) \
+-	battery
++	$(am__append_18) gap scanparam deviceinfo $(am__append_20)
++#	battery
+ builtin_sources = plugins/hostname.c plugins/wiimote.c \
+ 	plugins/autopair.c plugins/policy.c $(am__append_4) \
+ 	$(am__append_6) $(am__append_8) $(am__append_10) \
+ 	$(am__append_12) $(am__append_14) $(am__append_16) \
+ 	$(am__append_19) profiles/gap/gas.c profiles/scanparam/scan.c \
+-	profiles/deviceinfo/deviceinfo.c $(am__append_21) \
+-	profiles/battery/battery.c
++	profiles/deviceinfo/deviceinfo.c $(am__append_21)
++#	profiles/battery/battery.c
+ builtin_nodist = 
+ builtin_ldadd = $(am__append_22)
+ @SIXAXIS_TRUE@plugins_sixaxis_la_SOURCES = plugins/sixaxis.c
+diff -aburNp bluez-5.48_orgin/Makefile.plugins bluez-5.48/Makefile.plugins
+--- bluez-5.48_orgin/Makefile.plugins	2018-10-30 14:39:28.586220348 +0800
++++ bluez-5.48/Makefile.plugins	2018-11-02 16:14:03.000000000 +0800
+@@ -100,8 +100,10 @@ builtin_sources += profiles/midi/midi.c
+ builtin_ldadd += @ALSA_LIBS@
+ endif
+ 
++if ROKID_BATTERY
+ builtin_modules += battery
+ builtin_sources += profiles/battery/battery.c
++endif
+ 
+ if SIXAXIS
+ plugin_LTLIBRARIES += plugins/sixaxis.la

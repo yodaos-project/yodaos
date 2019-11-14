@@ -1,0 +1,19 @@
+#
+# Author: Lasse Collin
+#
+# This file has been put into the public domain.
+# You can do whatever you want with this file.
+#
+
+prefix=/home/dugw/git/commit/openwrt/staging_dir/host
+exec_prefix=/home/dugw/git/commit/openwrt/staging_dir/host
+libdir=/home/dugw/git/commit/openwrt/staging_dir/host/lib
+includedir=/home/dugw/git/commit/openwrt/staging_dir/host/include
+
+Name: libarchive
+Description: General purpose data compression library
+URL: http://tukaani.org/xz/
+Version: 3.3.2
+Cflags: -I${includedir}
+Libs: -L${libdir} -larchive
+Libs.private: -pthread

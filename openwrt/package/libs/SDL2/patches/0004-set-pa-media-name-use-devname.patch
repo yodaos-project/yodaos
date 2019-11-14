@@ -1,0 +1,72 @@
+From dea23b59a39b2d328271fd8b6c32579e0cb46f08 Mon Sep 17 00:00:00 2001
+From: "guanying.zhou" <guanying.zhou@rokid.com>
+Date: Wed, 29 Nov 2017 18:09:07 +0800
+Subject: [PATCH] set pa media name use devname
+
+---
+ src/audio/SDL_audio.c                 | 6 +++++-
+ src/audio/pulseaudio/SDL_pulseaudio.c | 8 +++++++-
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/src/audio/SDL_audio.c b/src/audio/SDL_audio.c
+index 460852d..9954c08 100644
+--- a/src/audio/SDL_audio.c
++++ b/src/audio/SDL_audio.c
+@@ -1187,6 +1187,10 @@ open_audio_device(const char *devname, int iscapture,
+     SDL_bool build_cvt;
+     void *handle = NULL;
+     int i = 0;
++    const char *media_name;// for pulseaudio
++
++    media_name = devname;
++    devname = NULL;
+ 
+     if (!SDL_WasInit(SDL_INIT_AUDIO)) {
+         SDL_SetError("Audio subsystem is not initialized");
+@@ -1309,7 +1313,7 @@ open_audio_device(const char *devname, int iscapture,
+         }
+     }
+ 
+-    if (current_audio.impl.OpenDevice(device, handle, devname, iscapture) < 0) {
++    if (current_audio.impl.OpenDevice(device, handle, media_name, iscapture) < 0) {
+         close_audio_device(device);
+         return 0;
+     }
+diff --git a/src/audio/pulseaudio/SDL_pulseaudio.c b/src/audio/pulseaudio/SDL_pulseaudio.c
+index fc12133..6dd2195 100644
+--- a/src/audio/pulseaudio/SDL_pulseaudio.c
++++ b/src/audio/pulseaudio/SDL_pulseaudio.c
+@@ -444,6 +444,7 @@ PULSEAUDIO_CloseDevice(_THIS)
+         if (this->hidden->capturebuf != NULL) {
+             PULSEAUDIO_pa_stream_drop(this->hidden->stream);
+         } else {
++            /* drain playback stream */
+             WaitForPulseOperation(this->hidden->mainloop, PULSEAUDIO_pa_stream_drain(this->hidden->stream, stream_operation_complete_no_op, NULL));
+         }
+         PULSEAUDIO_pa_stream_disconnect(this->hidden->stream);
+@@ -507,6 +508,7 @@ PULSEAUDIO_OpenDevice(_THIS, void *handle, const char *devname, int iscapture)
+     pa_stream_flags_t flags = 0;
+     int state = 0;
+     int rc = 0;
++    char *media_name = NULL;
+ 
+     /* Initialize all variables that we clean on shutdown */
+     h = this->hidden = (struct SDL_PrivateAudioData *)
+@@ -607,9 +609,13 @@ PULSEAUDIO_OpenDevice(_THIS, void *handle, const char *devname, int iscapture)
+     PULSEAUDIO_pa_channel_map_init_auto(&pacmap, this->spec.channels,
+                                         PA_CHANNEL_MAP_WAVEEX);
+ 
++    media_name = devname;
++    if (!media_name) {
++        media_name = "audio";
++    }
+     h->stream = PULSEAUDIO_pa_stream_new(
+         h->context,
+-        "Simple DirectMedia Layer", /* stream description */
++        media_name, /* stream description */
+         &paspec,    /* sample format spec */
+         &pacmap     /* channel map */
+         );
+-- 
+2.15.0
+

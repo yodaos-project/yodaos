@@ -1,0 +1,38 @@
+#!/bin/sh
+
+NAME=servicemanager
+DAEMON=/usr/bin/$NAME
+PIDFILE=/var/run/$NAME.pid
+REPLYPIDFILE=/var/run/runtime.pid
+
+case "$1" in
+	start)
+		echo "Starting servicemanager..."
+		start-stop-daemon -S -m -p $PIDFILE -b -x $DAEMON 
+		;;
+	stop)
+		echo -n "Stopping servicemanager..."
+		if [ -f $REPLYPIDFILE ]; then
+			echo "Please stop runtime first"
+		else
+			start-stop-daemon -K -o -p $PIDFILE
+			rm -f $PIDFILE
+		fi			
+		;;
+	restart|reload)
+		echo -n "Restarting servicemanager..."
+		if [ -f $REPLYPIDFILE ]; then
+			echo "Please stop runtime first"
+		else
+			start-stop-daemon -K -o -p $PIDFILE
+			rm -f $PIDFILE
+			start-stop-daemon -S -m -p $PIDFILE -b -x $DAEMON 
+		fi			
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit $?
+

@@ -1,0 +1,14 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -435,10 +435,7 @@ if test "$enable_fixed_point" = "yes" ; then
+     AC_DEFINE([SPANDSP_USE_FIXED_POINT], [1], [Enable fixed point processing, where possible, instead of floating point])
+     SPANDSP_USE_FIXED_POINT="#define SPANDSP_USE_FIXED_POINT 1"
+ else
+-    AX_FIXED_POINT_MACHINE([$host],
+-        [AC_DEFINE([SPANDSP_USE_FIXED_POINT], [1], [Enable fixed point processing, where possible, instead of floating point])
+-        SPANDSP_USE_FIXED_POINT="#define SPANDSP_USE_FIXED_POINT 1"],
+-        [SPANDSP_USE_FIXED_POINT="#undef SPANDSP_USE_FIXED_POINT"])
++    SPANDSP_USE_FIXED_POINT="#undef SPANDSP_USE_FIXED_POINT"]
+ fi
+ AX_MISALIGNED_ACCESS_FAILS([$host],
+     [AC_DEFINE([SPANDSP_MISALIGNED_ACCESS_FAILS], [1], [Do not expect a misaligned memory access to work correctly])

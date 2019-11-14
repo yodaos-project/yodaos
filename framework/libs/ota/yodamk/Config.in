@@ -1,0 +1,13 @@
+config ROKIDOS_BOARDCONFIG_STORAGE_DEVICETYPE
+    int "board storage type device id"
+    help
+        0-mmc,1-nand
+    default 1
+
+config YODABASE_RECOVERY_BOOT
+    bool "yodaos boot into recovery mode for ota"
+    default n
+
+config OTA_AUTH
+    bool "support ota image signature authentication"
+    default n

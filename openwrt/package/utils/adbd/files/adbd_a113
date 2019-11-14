@@ -1,0 +1,46 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006-2011 OpenWrt.org
+
+START=85
+
+USE_PROCD=1
+PROG=/usr/bin/adbd
+
+usb_init(){
+	MODULE_FILE=`find /lib/modules -name "g_ffs.ko"`
+	if [ -n $MODULE_FILE ];then
+	  #SERIAL_NO=`getprop | grep "serialno" | awk  '{print $2}'`
+	  #SERIAL_NO=${SERIAL_NO:1}
+	  #SERIAL_NO=${SERIAL_NO%?}
+
+	  CMD=`cat /proc/cmdline |grep androidboot.serialno`
+	  SERIAL_NO=`echo ${CMD#*"androidboot.serialno="} |awk '{print $1}'`
+
+	  if [ ! $SERIAL_NO ]; then
+	      SERIAL_NO=0123456789ABCDEF
+	  else
+	      echo ${SERIAL_NO}
+	  fi
+
+	  insmod ${MODULE_FILE} idVendor=0x18d1 idProduct=0x4e26  iSerialNumber=${SERIAL_NO}  functions=ffs
+
+	  if [ $? -eq 0 ]
+	  then
+	          mkdir -p /dev/usb-ffs/adb
+	          mount -o uid=2000,gid=2000 -t functionfs adb /dev/usb-ffs/adb
+	  else
+	          return 0
+	  fi
+	fi
+}
+
+start_service () {
+	usb_init
+	if [ ! -f "/etc/adb.id" ]; then
+		cat /proc/sys/kernel/random/uuid | cut -c -8 > /etc/adb.id
+	fi
+	cat /etc/adb.id > /sys/class/android_usb/android0/iSerial
+	procd_open_instance
+	procd_set_param command "$PROG"
+	procd_close_instance
+}

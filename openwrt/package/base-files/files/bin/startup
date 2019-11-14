@@ -1,0 +1,41 @@
+#!/bin/sh
+
+argp=1
+timout=10
+file=/d4f/d2a/h8g
+
+while getopts 't:f:' opt; 
+do	
+    case ${opt} in
+        t)
+            argp=`expr $argp + 2`
+            timeout=`expr ${OPTARG} + 0`;;
+        f)
+            argp=`expr $argp + 2`
+            file="${OPTARG}";;
+        ?)
+            echo "Usage:$0 [options] [server] [arg]"
+	    exit 1
+    esac
+done
+
+#echo argp = $argp delay tiem = $time flag file = $file
+
+for i in $(seq $argp $#)
+do
+  param=$(eval echo \${$i})
+  cmd="$cmd $param"
+done
+
+for i in `seq 1 $timeout`
+do
+  if [ -f $file ];then
+    break
+  fi
+  sleep 1
+done
+
+exec $cmd
+
+
+

@@ -1,0 +1,11 @@
+--- a/build/rules.mak
++++ b/build/rules.mak
+@@ -13,7 +13,7 @@ SHLIB = $($(APP)_SHLIB)
+ SONAME = $($(APP)_SONAME)
+ 
+ ifeq ($(SHLIB_SUFFIX),so)
+-SHLIB_OPT := -shared -Wl,-soname,$(SHLIB)
++SHLIB_OPT := -shared
+ else ifeq ($(SHLIB_SUFFIX),dylib)
+ SHLIB_OPT := -dynamiclib -undefined dynamic_lookup -flat_namespace
+ else ifeq ($(SHLIB_SUFFIX),dll)

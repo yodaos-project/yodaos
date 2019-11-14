@@ -1,0 +1,116 @@
+#!/bin/sh
+
+# This script provides basic compatibility with automake configure scripts
+# for use in automated build systems. See:
+#
+# https://people.gnome.org/~walters/docs/build-api.txt
+#
+
+print_help() {
+    echo "--prefix=DIR		Install files in DIR (default /usr)"
+    echo "--libdir=DIR		Install library files in DIR/tgt (default PREFIX/lib)"
+    echo "--sysconfdir=DIR	Install configuration files in DIR (default /etc)"
+    echo "--datadir=DIR		Install data files in DIR (default $PREFIX/share)"
+    echo "--mandir=DIR		Install configuration files in DIR (default DATADIR/man)"
+    echo "--docdir=DIR		Install documentation files in DIR (default DATADIR/doc/tgt)"
+    echo "--sbindir=DIR		Install binaries in DIR (default DATADIR/sbin)"
+    echo "--disable-man         Disable building and installing man pages"
+}
+
+top_srcdir=$(dirname $0)
+
+prefix=/usr
+exec_prefix='$(prefix)'
+bindir='$(prefix)/bin'
+sbindir='$(exec_prefix)/sbin'
+datadir='$(prefix)/share'
+mandir='$(datadir)/man'
+sysconfdir='$(prefix)/etc'
+host=''
+CFLAGS='-O2 -g'
+CXXFLAGS='-O2 -g'
+LDFLAGS=''
+
+while [ $# '>' 0 ] ; do
+    option=`expr "$1" : '\([^=]*\)='`
+    optarg=
+    consume_next=false
+    if [ x$option != x ]; then
+        optarg=`expr "$1" : '[^=]*=\(.*\)'`
+        shift
+    else
+        option=$1
+        shift
+        if expr "$option" : '-' > /dev/null ; then
+            consume_next=true
+            optarg=$1
+        fi
+    fi
+
+    case $option in
+        --prefix)
+            prefix=$optarg
+            ;;
+        --exec_prefix)
+            exec_prefix=$optarg
+            ;;
+        --sysconfdir)
+            sysconfdir=$optarg
+            ;;
+        --mandir)
+            mandir=$optarg
+            ;;
+        --datadir)
+            docdir=$optarg
+            ;;
+        --sbindir)
+            mandir=$optarg
+            ;;
+        --host)
+            host=$optarg
+            ;;
+        CFLAGS)
+            CFLAGS=$optarg
+            ;;
+        CXXFLAGS)
+            CXXFLAGS=$optarg
+            ;;
+        LDFLAGS)
+            LDFLAGS=$optarg
+            ;;
+        --with-*|--without-*|--enable-*|--disable-*)
+            consume_next=false
+            ;;
+        --help)
+            print_help
+            exit
+            ;;
+    esac
+
+    if $consume_next ; then
+        shift
+    fi
+done
+
+cat > config.mk <<EOF
+host = $host
+prefix = $prefix
+exec_prefix = $exec_prefix
+sbindir = $sbindir
+bindir = $bindir
+datadir = $datadir
+mandir = $mandir
+sysconfdir = $sysconfdir
+OPT_CFLAGS = $CFLAGS
+OPT_CXXFLAGS = $CXXFLAGS
+OPT_LDFLAGS = $LDFLAGS
+EOF
+
+if [ "$(pwd)" != "$(cd $top_srcdir && pwd)" ] ; then
+    cat > Makefile <<EOF
+top_srcdir = $top_srcdir
+include \$(top_srcdir)/Makefile
+EOF
+fi
+
+make makefiles

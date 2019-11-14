@@ -1,0 +1,101 @@
+menu "Clock"
+
+config CLK
+	bool "Enable clock driver support"
+	depends on DM
+	help
+	  This allows drivers to be provided for clock generators, including
+	  oscillators and PLLs. Devices can use a common clock API to request
+	  a particular clock rate and check on available clocks. Clocks can
+	  feed into other clocks in a tree structure, with multiplexers to
+	  choose the source for each clock.
+
+config SPL_CLK
+	bool "Enable clock support in SPL"
+	depends on CLK && SPL && SPL_DM
+	help
+	  The clock subsystem adds a small amount of overhead to the image.
+	  If this is acceptable and you have a need to use clock drivers in
+	  SPL, enable this option. It might provide a cleaner interface to
+	  setting up clocks within SPL, and allows the same drivers to be
+	  used as U-Boot proper.
+
+config TPL_CLK
+	bool "Enable clock support in TPL"
+	depends on CLK && TPL_DM
+	help
+	  The clock subsystem adds a small amount of overhead to the image.
+	  If this is acceptable and you have a need to use clock drivers in
+	  SPL, enable this option. It might provide a cleaner interface to
+	  setting up clocks within TPL, and allows the same drivers to be
+	  used as U-Boot proper.
+
+config CLK_BCM6345
+	bool "Clock controller driver for BCM6345"
+	depends on CLK && ARCH_BMIPS
+	default y
+	help
+	  This clock driver adds support for enabling and disabling peripheral
+	  clocks on BCM6345 SoCs. HW has no rate changing capabilities.
+
+config CLK_BOSTON
+	def_bool y if TARGET_BOSTON
+	depends on CLK
+	select REGMAP
+	select SYSCON
+	help
+	  Enable this to support the clocks
+
+config CLK_STM32F
+	bool "Enable clock driver support for STM32F family"
+	depends on CLK && (STM32F7 || STM32F4)
+	default y
+	help
+	  This clock driver adds support for RCC clock management
+	  for STM32F4 and STM32F7 SoCs.
+
+config CLK_HSDK
+	bool "Enable cgu clock driver for HSDK"
+	depends on CLK
+	help
+	  Enable this to support the cgu clocks on Synopsys ARC HSDK
+
+config CLK_ZYNQ
+	bool "Enable clock driver support for Zynq"
+	depends on CLK && ARCH_ZYNQ
+	default y
+	help
+	  This clock driver adds support for clock realted settings for
+	  Zynq platform.
+
+config CLK_ZYNQMP
+	bool "Enable clock driver support for ZynqMP"
+	depends on ARCH_ZYNQMP
+	help
+	  This clock driver adds support for clock realted settings for
+	  ZynqMP platform.
+
+config CLK_STM32MP1
+	bool "Enable RCC clock driver for STM32MP1"
+	depends on ARCH_STM32MP && CLK
+	default y
+	help
+	  Enable the STM32 clock (RCC) driver. Enable support for
+	  manipulating STM32MP1's on-SoC clocks.
+
+source "drivers/clk/tegra/Kconfig"
+source "drivers/clk/uniphier/Kconfig"
+source "drivers/clk/exynos/Kconfig"
+source "drivers/clk/at91/Kconfig"
+source "drivers/clk/renesas/Kconfig"
+source "drivers/clk/mvebu/Kconfig"
+
+config ICS8N3QV01
+	bool "Enable ICS8N3QV01 VCXO driver"
+	depends on CLK
+	help
+	  Support for the ICS8N3QV01 Quad-Frequency VCXO (Voltage-Controlled
+	  Crystal Oscillator). The output frequency can be programmed via an
+	  I2C interface.
+
+endmenu

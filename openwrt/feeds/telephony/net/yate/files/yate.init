@@ -1,0 +1,25 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2013 OpenWrt.org
+START=50
+
+SERVICE_USE_PID=1
+
+YATE_BINARY="/usr/bin/yate"
+YATE_LOG_FILE=""
+YATE_OPTIONS="-d -s -p /var/run/yate.pid"
+
+start() {
+	if [ -n "$YATE_LOG_FILE" ]; then
+		YATE_OPTIONS="$YATE_OPTIONS -r -l $YATE_LOG_FILE"
+	fi
+
+	service_start $YATE_BINARY $YATE_OPTIONS
+}
+
+stop() {
+	service_stop $YATE_BINARY
+}
+
+reload() {
+	service_reload $YATE_BINARY
+}

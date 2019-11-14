@@ -1,0 +1,30 @@
+[general]
+servername = Openwrt
+keepalive = 60
+debug = core
+context = default
+dateformat = D/M/Y
+bindaddr = ::
+port = 2000
+disallow = all
+allow = ulaw 
+allow = alaw
+allow = g729
+firstdigittimeout = 16
+digittimeout = 6
+autoanswer_ring_time = 1
+transfer_on_hangup = off
+musicclass = default
+language = en
+deny = 0.0.0.0/0.0.0.0
+permit = internal
+dndFeature = on
+echocancel = off
+silencesuppression = off
+
+hotline_enabled = yes
+hotline_context = default
+hotline_extension = 111
+
+devicetable = sccpdevice
+linetable = sccpline

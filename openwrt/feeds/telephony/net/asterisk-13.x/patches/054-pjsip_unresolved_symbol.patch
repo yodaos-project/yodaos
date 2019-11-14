@@ -1,0 +1,25 @@
+Description: Fix unresolved symbol ast_sip_session_unregister_supplement in PJSIP
+Origin: other, https://issues.asterisk.org/jira/secure/attachment/54695/ast.diff
+Bug: https://issues.asterisk.org/jira/browse/ASTERISK-26518
+
+--- a/res/res_pjsip/pjsip_message_ip_updater.c
++++ b/res/res_pjsip/pjsip_message_ip_updater.c
+@@ -362,15 +362,15 @@ void ast_res_pjsip_cleanup_message_ip_up
+ {
+ 	ast_sip_unregister_service(&multihomed_module);
+ 	ast_sip_unregister_supplement(&multihomed_supplement);
+-	ast_sip_session_unregister_supplement(&multihomed_session_supplement);
++	//ast_sip_session_unregister_supplement(&multihomed_session_supplement);
+ }
+ 
+ int ast_res_pjsip_init_message_ip_updater(void)
+ {
+-	if (ast_sip_session_register_supplement(&multihomed_session_supplement)) {
++	/*if (ast_sip_session_register_supplement(&multihomed_session_supplement)) {
+ 		ast_log(LOG_ERROR, "Could not register multihomed session supplement for outgoing requests\n");
+ 		return -1;
+-	}
++	}*/
+ 
+ 	if (ast_sip_register_supplement(&multihomed_supplement)) {
+ 		ast_log(LOG_ERROR, "Could not register multihomed supplement for outgoing requests\n");

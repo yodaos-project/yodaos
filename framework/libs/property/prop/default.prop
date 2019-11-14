@@ -1,0 +1,14 @@
+#
+# ADDITIONAL_DEFAULT_PROPERTIES
+#
+# enable adb network connection.
+service.adb.tcp.port=5555
+ro.boot.firstboot=1
+ro.boot.ftm=
+ro.boot.hardware=kamino
+ro.boot.usid=1234567890
+ro.product.locale=zh-CN
+ro.rokid.build.platform=linux
+ro.rokid.captureid=3
+ro.rokid.playid=2
+ro.rokid.device=xxxxxxxx

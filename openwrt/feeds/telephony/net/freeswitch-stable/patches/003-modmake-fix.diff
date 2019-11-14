@@ -1,0 +1,11 @@
+--- a/build/modmake.rulesam
++++ b/build/modmake.rulesam
+@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign subdir-object
+ AM_CFLAGS   = $(SWITCH_AM_CFLAGS) $(SWITCH_ANSI_CFLAGS)
+ AM_CPPFLAGS = $(SWITCH_AM_CXXFLAGS)
+ AM_LDFLAGS  = $(SWITCH_AM_LDFLAGS)
+-DEFAULT_VARS = CFLAGS="$(CFLAGS)" CPPFLAGS="$(CXXFLAGS)" LDFLAGS="$(LDFLAGS)" CC="$(CC)" CXX="$(CXX)"
++DEFAULT_VARS = CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" CXXFLAGS="$(CXXFLAGS)" LDFLAGS="$(LDFLAGS)" CC="$(CC)" CXX="$(CXX)"
+ DEFAULT_ARGS = --build=$(build) --host=$(host) --target=$(target) --prefix="$(prefix)" --exec_prefix="$(exec_prefix)" --libdir="$(libdir)" --disable-shared --with-pic
+ 
+ moddir=@modulesdir@

@@ -1,0 +1,87 @@
+--- a/src/mod/languages/mod_v8/Makefile.am
++++ b/src/mod/languages/mod_v8/Makefile.am
+@@ -15,12 +15,17 @@ V8_LIBEXT=dylib
+ V8_BUILDPARAMS=snapshot=off i18nsupport=off
+ V8_SNAPSHOT=nosnapshot
+ else
+-V8_LIBDIR=$(V8_BUILDDIR)/out/native/lib.target
++V8_LIBDIR=$(V8_BUILDDIR)/out/$(FS_STABLE_MYARCH).release/lib.target
+ V8_LIBEXT=so
+ # Some gcc versions report warnings incorrectly
+ V8_BUILDPARAMS=strictaliasing=off werror=no i18nsupport=off
++if DISABLE_SNAPSHOT_V8
++V8_BUILDPARAMS+=snapshot=off
++V8_SNAPSHOT=nosnapshot
++else
+ V8_SNAPSHOT=snapshot
+ endif
++endif
+ 
+ if ENABLE_STATIC_V8
+ # Build the static lib version of V8
+@@ -29,8 +34,8 @@ V8_STATIC_DIR=$(V8_BUILDDIR)/out/native
+ V8_ICU_STATIC_DIR=$(V8_BUILDDIR)/out/native
+ V8_CXXFLAGS =
+ else
+-V8_STATIC_DIR=$(V8_BUILDDIR)/out/native/obj.target/tools/gyp
+-V8_ICU_STATIC_DIR=$(V8_BUILDDIR)/out/native/obj.target/third_party/icu
++V8_STATIC_DIR=$(V8_BUILDDIR)/out/$(FS_STABLE_MYARCH).release/obj.target/tools/gyp
++V8_ICU_STATIC_DIR=$(V8_BUILDDIR)/out/$(FS_STABLE_MYARCH).release/obj.target/third_party/icu
+ V8_CXXFLAGS = -fPIC
+ endif
+ V8LIB=$(V8_STATIC_DIR)/libv8_base*.a
+@@ -46,11 +51,6 @@ else
+ V8_EXTRA_BUILD_PARAMS=--no-parallel
+ endif
+ 
+-# Try to find the target platform for our configured CXX compiler
+-# Parse the result one extra time to handle different i386 platforms (i386, i486 etc)
+-CXX_TARGET_PLATFORM := $(shell $(CXX) -v 2>&1 | grep Target | cut '-d:' -f2 | cut '-d-' -f1 | tr -d ' ')
+-CXX_TARGET_PLATFORM_I386 := $(shell echo "$(CXX_TARGET_PLATFORM)" | sed 's/^\(.\{1\}\)\(.\{1\}\)/\13/')
+-
+ MODNAME=mod_v8
+ 
+ AM_CFLAGS    += -I. -I./include -I$(switch_srcdir)/src/mod/languages/mod_v8/include -I$(V8_DIR)/include
+@@ -121,21 +121,13 @@ $(V8_DIR)/.stamp-patch: $(V8_DIR)
+ 
+ $(V8LIB): $(V8_DIR) $(V8_DIR)/.stamp-patch
+ 	mkdir -p $(V8_BUILDDIR)
+-	if test "$(CXX_TARGET_PLATFORM)" = "x86_64"; then \
+-	   defines="v8_target_arch=x64 target_arch=x64"; \
+-	else \
+-	   if test "$(CXX_TARGET_PLATFORM)" = "arm"; then \
+-	      defines="v8_target_arch=arm target_arch=arm"; \
+-	   else \
+-	      if test "$(CXX_TARGET_PLATFORM_I386)" = "i386"; then \
+-	         defines="v8_target_arch=ia32 target_arch=ia32"; \
+-	      fi; \
+-	   fi; \
+-	fi; \
+-	cd $(V8_BUILDDIR) && CFLAGS="$(V8_CXXFLAGS)" CXXFLAGS="$(V8_CXXFLAGS)" \
+-	LINK=@CXX@ CXX=@CXX@ GYPFLAGS="$(V8_EXTRA_BUILD_PARAMS)" GYP_DEFINES="$$defines" \
+-	OUTDIR=$(V8_BUILDDIR)/out \
+-	PYTHONPATH="$(V8_DIR)/build/gyp/pylib:$(PYTHONPATH)" $(MAKE) -C $(V8_DIR) $(V8_BUILDPARAMS) native
++	cd $(V8_BUILDDIR) && sed -i "/'want_separate_host_toolset': 0,/s/0/1/" build/standalone.gypi && \
++	$(DEFAULT_VARS) CFLAGS+="$(V8_CXXFLAGS)" CXXFLAGS+="$(V8_CXXFLAGS)" \
++	LINK=@CXX@ CXX=@CXX@ GYPFLAGS="$(V8_EXTRA_BUILD_PARAMS)" OUTDIR=./out/ \
++	PYTHONPATH="$(V8_DIR)/build/gyp/pylib:$(FS_STABLE_HOST_PYTHONPATH)" $(MAKE) -C $(V8_DIR) \
++	CC.host="$(FS_STABLE_HOSTCC)" CFLAGS.host="$(FS_STABLE_HOST_CFLAGS)" CXX.host="$(FS_STABLE_HOSTCXX)" \
++	CXXFLAGS.host="$(FS_STABLE_HOST_CFLAGS)" LDFLAGS.host="$(FS_STABLE_HOST_LDFLAGS)" \
++	$(V8_BUILDPARAMS) $(FS_STABLE_MYDEFINES) $(FS_STABLE_MYARCH).release
+ 
+ if ENABLE_STATIC_V8
+ install-exec-local: $(V8LIB)
+--- a/configure.ac
++++ b/configure.ac
+@@ -1519,6 +1519,11 @@ AC_ARG_ENABLE(parallel-build-v8,
+ [AS_HELP_STRING([--disable-parallel-build-v8], [Disable parallel build of V8])], [enable_parallel_build_v8="$enableval"], [enable_parallel_build_v8="yes"])
+ AM_CONDITIONAL([ENABLE_PARALLEL_BUILD_V8],[test "x$enable_parallel_build_v8" != "xno"])
+ 
++# Option to force heap snapshot generation of Google's V8 to off
++AC_ARG_ENABLE(snapshot-v8,
++[AS_HELP_STRING([--disable-snapshot-v8], [Disable heap snapshot generation of V8])], [enable_snapshot_v8="$enableval"], [enable_snapshot_v8="yes"])
++AM_CONDITIONAL([DISABLE_SNAPSHOT_V8],[test "x$enable_snapshot_v8" != "xyes"])
++
+ AM_CONDITIONAL([HAVE_ODBC],[test "x$enable_core_odbc_support" != "xno"])
+ AM_CONDITIONAL([HAVE_MYSQL],[test "$found_mysql" = "yes"])
+ 

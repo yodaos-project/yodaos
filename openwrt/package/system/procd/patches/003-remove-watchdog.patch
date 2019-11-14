@@ -1,0 +1,14 @@
+diff --git a/watchdog.c b/watchdog.c
+index 592ae7e..46339d4 100644
+--- a/watchdog.c
++++ b/watchdog.c
+@@ -109,7 +109,8 @@ void watchdog_init(int preinit)
+ 		wdt_fd = atoi(env);
+ 		unsetenv("WDTFD");
+ 	} else {
+-		wdt_fd = open("/dev/watchdog", O_WRONLY);
++		//wdt_fd = open("/dev/watchdog", O_WRONLY);
++        wdt_fd = -1;
+ 	}
+ 
+ 	if (wdt_fd < 0)

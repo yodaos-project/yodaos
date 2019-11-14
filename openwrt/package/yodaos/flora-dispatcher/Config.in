@@ -1,0 +1,9 @@
+menu "Configuration"
+
+config FLORA_DISPATCHER_AUTO_RUN
+	bool "auto run"
+	default y
+	help
+		flora dispatcher service auto run
+
+endmenu

@@ -1,0 +1,14 @@
+[Unit]
+Description=ADB Daemon
+After=sysinit.target
+Before=network.service
+
+[Service]
+Type=simple
+ExecStartPre=/sbin/xdg-adbd start
+ExecStart=/bin/bash -c 'ADB_TRACE=1 /sbin/adbd 2> /var/log/adbd.err 1> /var/log/adbd.out'
+
+ExecStopPost=/bin/umount /dev/usb-ffs/adb
+
+[Install]
+WantedBy=basic.target

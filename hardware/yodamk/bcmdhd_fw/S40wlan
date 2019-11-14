@@ -1,0 +1,4 @@
+#!/bin/ash
+
+
+bcmdhd_fw station 1

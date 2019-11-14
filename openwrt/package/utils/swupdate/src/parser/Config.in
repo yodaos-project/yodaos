@@ -1,0 +1,71 @@
+menu "Parser Features"
+
+config LIBCONFIG
+	bool "libconfig"
+	default y
+	depends on HAVE_LIBCONFIG
+	help
+	  Use libconfig to parse the configuration file.
+	  This is the default parser.
+
+comment "Default config parser support needs libconfig"
+	depends on !HAVE_LIBCONFIG
+
+config PARSERROOT
+	string "Name of root node"
+	depends on LIBCONFIG || JSON
+	help
+	  For compatibility reasons, the root node
+	  can be set to something else as "software".
+	  In most case you do not need to set it.
+
+config JSON
+	bool "libjson"
+	default n
+	depends on HAVE_JSON_C
+	help
+	  Use json-c to parse the configuration file.
+	  Also required for suricatta's hawkBit Server support.
+
+comment "JSON config parser support needs json-c"
+	depends on !HAVE_JSON_C
+
+config LUAEXTERNAL
+	bool "lua"
+	depends on LUA
+	default n
+	help
+	  call an external parser written in Lua.
+
+config SETEXTPARSERNAME
+	bool "Set external parser name"
+	depends on LUAEXTERNAL
+	default n
+	help
+	  Set to define own path and filename for the
+	  external parser, else default lua-tools/extparser.lua
+	  will be used.
+
+config EXTPARSERNAME
+	string "External parser file name"
+	depends on SETEXTPARSERNAME
+	help
+	  Lua script to be executed for parsing
+	  the sw-description file.
+
+config SETSWDESCRIPTION
+	bool "set file description name"
+	default n
+	help
+	  Set it if you want to change the name of
+	  the default software descritpion file.
+	  If not set, default file name is "sw-description"
+
+config SWDESCRIPTION
+	string "description file"
+	depends on SETSWDESCRIPTION
+	help
+	   File extracted from the image containing
+	   the description (meta) of the images.
+	   This file, after extraction, is passed to the parser.
+endmenu

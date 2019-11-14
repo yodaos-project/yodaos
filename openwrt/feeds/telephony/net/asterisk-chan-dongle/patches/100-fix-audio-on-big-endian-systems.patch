@@ -1,0 +1,46 @@
+--- a/channel.c
++++ b/channel.c
+@@ -539,6 +539,19 @@ again:
+ 	}
+ }
+ 
++// see https://github.com/openwrt/telephony/issues/7
++static inline void change_audio_endianness_to_le(struct iovec *iov, int iovcnt)
++{
++#if __BYTE_ORDER == __LITTLE_ENDIAN
++   return; // nothing to do
++#else
++   for(;iovcnt-->0;iov++)
++   {
++      ast_swapcopy_samples(iov->iov_base, iov->iov_base, iov->iov_len/2);
++   }
++#endif
++}
++
+ #/* */
+ static void timing_write (struct pvt* pvt)
+ {
+@@ -566,6 +579,7 @@ static void timing_write (struct pvt* pv
+ 			iovcnt = mixb_read_n_iov (&pvt->a_write_mixb, iov, FRAME_SIZE);
+ 			mixb_read_n_iov (&pvt->a_write_mixb, iov, FRAME_SIZE);
+ 			mixb_read_upd (&pvt->a_write_mixb, FRAME_SIZE);
++			change_audio_endianness_to_le(iov, iovcnt);
+ 		}
+ 		else if (used > 0)
+ 		{
+@@ -579,6 +593,7 @@ static void timing_write (struct pvt* pv
+ 			iov[iovcnt].iov_base	= silence_frame;
+ 			iov[iovcnt].iov_len	= FRAME_SIZE - used;
+ 			iovcnt++;
++			change_audio_endianness_to_le(iov, iovcnt);
+ 		}
+ 		else
+ 		{
+@@ -588,6 +603,7 @@ static void timing_write (struct pvt* pv
+ 			iov[0].iov_base		= silence_frame;
+ 			iov[0].iov_len		= FRAME_SIZE;
+ 			iovcnt			= 1;
++			// ignore endianness for zeros
+ //			continue;
+ 		}
+ 

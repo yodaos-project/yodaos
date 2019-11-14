@@ -1,0 +1,14 @@
+config system
+	option hostname	OpenWrt
+	option timezone	CST-8
+	option zonename 'Asia/Shanghai'
+	option conloglevel '8'
+	option cronloglevel '8'
+	option ttylogin	0
+
+config timeserver ntp
+	list server	ntp.rokid.com
+	list server	ntp.sjtu.edu.cn
+	list server	time.apple.com
+	option enabled 1
+	option enable_server 0

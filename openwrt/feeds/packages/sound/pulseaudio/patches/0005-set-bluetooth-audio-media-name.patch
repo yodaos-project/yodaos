@@ -1,0 +1,15 @@
+diff -aburNp pulseaudio-10.0_orgin/src/modules/module-loopback.c pulseaudio-10.0/src/modules/module-loopback.c
+--- pulseaudio-10.0_orgin/src/modules/module-loopback.c	2018-10-07 18:37:04.000000000 +0800
++++ pulseaudio-10.0/src/modules/module-loopback.c	2018-10-07 18:36:11.000000000 +0800
+@@ -957,8 +957,9 @@ int pa__init(pa_module *m) {
+         pa_proplist_sets(u->source_output->proplist, PA_PROP_MEDIA_ICON_NAME, n);
+ 
+     if (!pa_proplist_contains(u->sink_input->proplist, PA_PROP_MEDIA_NAME))
+-        pa_proplist_setf(u->sink_input->proplist, PA_PROP_MEDIA_NAME, "Loopback from %s",
+-                         pa_strnull(pa_proplist_gets(u->source_output->source->proplist, PA_PROP_DEVICE_DESCRIPTION)));
++        pa_proplist_setf(u->sink_input->proplist, PA_PROP_MEDIA_NAME, "playback");
++        //pa_proplist_setf(u->sink_input->proplist, PA_PROP_MEDIA_NAME, "Loopback from %s",
++        //                 pa_strnull(pa_proplist_gets(u->source_output->source->proplist, PA_PROP_DEVICE_DESCRIPTION)));
+ 
+     if (source && !pa_proplist_contains(u->sink_input->proplist, PA_PROP_MEDIA_ICON_NAME)
+             && (n = pa_proplist_gets(u->source_output->source->proplist, PA_PROP_DEVICE_ICON_NAME)))

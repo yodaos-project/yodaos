@@ -1,0 +1,177 @@
+# Copyright (C) 2006-2014 Rokid
+#
+# This is free software, licensed under the GNU General Public License v2.
+# See /LICENSE for more information.
+#
+
+menu "Peripheral Modules"
+    menu "WIFI/BT"
+		config WIFI_TYPE_NAME
+			string "wifi type name"
+			default "mmc0"
+
+		config BT_UART_DEV
+			string "bt uart dev name"
+			default "ttyS1"
+
+		config BT_UART_SPEED
+			string "bt uart speed"
+			default "2000000"
+
+        config WIFI_BT_AMPAK
+            bool "Ampak"
+            select PACKAGE_bcmdhd_fw
+            select PACKAGE_kmod-bcmdhd
+            default n
+
+        if WIFI_BT_AMPAK
+            config PACKAGE_AMPAK_6255
+                bool "AP6255"
+                default n
+
+                choice
+                    prompt "AP6255"
+                    depends on PACKAGE_AMPAK_6255
+
+                    config PACKAGE_AMPAK_6255_BY_BSA
+                        bool
+                        prompt "6255 bt by bsa_server"
+                        select PACKAGE_bsa_server
+                        select BLUETOOTH_USE_BSA_AMPAK
+
+                    config PACKAGE_AMPAK_6255_BY_BLUEZ
+                        bool
+                        prompt "6255 bt by bluez"
+                        select PACKAGE_pulseaudio_enable_bluez
+                        select BLUETOOTH_USE_BLUEZ
+
+                endchoice
+
+            config PACKAGE_AMPAK_6236
+                bool "AP6236"
+                default n
+
+                choice
+                    prompt "AP6236"
+                    depends on PACKAGE_AMPAK_6236
+
+                    config PACKAGE_AMPAK_6236_BY_BSA
+                        bool
+                        prompt "6236 bt by bsa_server"
+                        select PACKAGE_bsa_server
+                        select BLUETOOTH_USE_BSA_AMPAK
+
+                    config PACKAGE_AMPAK_6236_BY_BLUEZ
+                        bool
+                        prompt "6236 bt by bluez"
+                        select PACKAGE_pulseaudio_enable_bluez
+                        select BLUETOOTH_USE_BLUEZ
+
+                endchoice
+
+            config PACKAGE_AMPAK_6212
+                bool "AP6212"
+                default n
+
+                choice
+                    prompt "AP6212"
+                    depends on PACKAGE_AMPAK_6212
+
+                    config PACKAGE_AMPAK_6212_BY_BSA
+                        bool
+                        prompt "6212 bt by bsa_server"
+                        select PACKAGE_bsa_server
+                        select BLUETOOTH_USE_BSA_AMPAK
+
+                    config PACKAGE_AMPAK_6212_BY_BLUEZ
+                        bool
+                        prompt "6212 bt by bluez"
+                        select PACKAGE_pulseaudio_enable_bluez
+                        select BLUETOOTH_USE_BLUEZ
+
+                endchoice
+        endif
+
+        config WIFI_BT_CYPRESS
+            bool "Cypress"
+            select PACKAGE_bcmdhd_fw_cypress
+            select PACKAGE_kmod-bcmdhd_cypress
+            default n
+
+        if WIFI_BT_CYPRESS
+            config PACKAGE_CYPRESS_NB197
+                bool "NB197"
+                default n
+
+                choice
+                    prompt "NB197"
+                    depends on PACKAGE_CYPRESS_NB197
+
+                    config PACKAGE_CYPRESS_NB197_BY_BSA
+                        bool
+                        prompt "nb197 bt by bsa_server"
+                        select PACKAGE_bsa_server
+                        select BLUETOOTH_USE_BSA_CYPRESS
+
+                    config PACKAGE_CYPRESS_NB197_BY_BLUEZ
+                        bool
+                        prompt "nb197 bt by bluez"
+                        select PACKAGE_pulseaudio_enable_bluez
+                        select BLUETOOTH_USE_BLUEZ
+
+                endchoice
+
+            config PACKAGE_CYPRESS_CM256
+                bool "CM256"
+                default n
+
+                choice
+                    prompt "CM256"
+                    depends on PACKAGE_CYPRESS_CM256
+
+                    config PACKAGE_CYPRESS_CM256_BY_BSA
+                        bool
+                        prompt "by bsa_server"
+                        select PACKAGE_bsa_server
+                        select BLUETOOTH_USE_BSA_CYPRESS
+
+                    config PACKAGE_CYPRESS_CM256_BY_BLUEZ
+                        bool
+                        prompt "by bluez"
+                        select PACKAGE_pulseaudio_enable_bluez
+                        select BLUETOOTH_USE_BLUEZ
+
+                endchoice
+        endif
+
+        config WIFI_BT_REALTEK
+            bool "Realtek"
+            select PACKAGE_pulseaudio_enable_bluez
+            select BLUETOOTH_USE_BLUEZ
+            select PACKAGE_kmod-rtk_wifi
+            select PACKAGE_rtk_hciattach
+            default n
+
+        if WIFI_BT_REALTEK
+            config PACKAGE_REALTEK_8723DS
+                bool
+                prompt "8723ds"
+                default n
+        endif
+
+        config WIFI_BT_RPI3B_PLUS
+            bool "Raspberry Pi 3b+"
+            select PACKAGE_pulseaudio_enable_bluez
+            select BLUETOOTH_USE_BLUEZ
+            select PACKAGE_hciattach
+            default n
+
+        #hw test
+        config WIFI_BT_HW_TEST
+            bool
+            depends on PACKAGE_AMPAK_6212_BY_BLUEZ || PACKAGE_AMPAK_6236_BY_BLUEZ || PACKAGE_AMPAK_6255_BY_BLUEZ || PACKAGE_CYPRESS_NB197_BY_BLUEZ
+            prompt "WIFI BT HARDWARE TEST"
+            default n
+    endmenu
+
+endmenu

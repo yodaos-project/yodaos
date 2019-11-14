@@ -1,0 +1,57 @@
+From d7760376422653eecf49b44ff8e83093d0b27f57 Mon Sep 17 00:00:00 2001
+From: "huan.zhang" <huan.zhang@rokid.com>
+Date: Thu, 16 May 2019 14:01:40 +0800
+Subject: [PATCH] Restrict the write buffer size of logd Ustream
+
+---
+ log/logd.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/log/logd.c b/log/logd.c
+index eed67d1..da16c3b 100644
+--- a/log/logd.c
++++ b/log/logd.c
+@@ -129,6 +129,7 @@ read_log(struct ubus_context *ctx, struct ubus_object *obj,
+ 		cl->s.stream.notify_state = client_notify_state;
+ 		cl->fd = fds[1];
+ 		ustream_fd_init(&cl->s, cl->fd);
++		cl->s.stream.w.max_buffers = 4000;
+ 		list_add(&cl->list, &clients);
+ 		while ((!tb[READ_LINES] || count) && l) {
+ 			blob_buf_init(&b, 0);
+@@ -178,7 +179,6 @@ write_log(struct ubus_context *ctx, struct ubus_object *obj,
+ 				len = LOG_LINE_SIZE;
+ 				event[len - 1] = 0;
+ 			}
+-
+ 			log_add(event, len, SOURCE_SYSLOG);
+ 		}
+ 	}
+@@ -215,10 +215,21 @@ ubus_notify_log(struct log_head *l)
+ 	blobmsg_add_u32(&b, "priority", l->priority);
+ 	blobmsg_add_u32(&b, "source", l->source);
+ 	blobmsg_add_u64(&b, "time", (((__u64) l->ts.tv_sec) * 1000) + (l->ts.tv_nsec / 1000000));
+-
++	int i = 0;
++       int ret = 0;
+ 	list_for_each_entry(c, &clients, list)
+-		ustream_write(&c->s.stream, (void *) b.head, blob_len(b.head) + sizeof(struct blob_attr), false);
+-
++	{
++           i++;
++    	    ret = ustream_write(&c->s.stream, (void *) b.head, blob_len(b.head) + sizeof(struct blob_attr), false);
++    	    if (ret <= 0)
++	    {
++		printf("i = %d client write err, clear this stream\n", i);
++		ustream_free(&c->s.stream);
++		c->s.stream.w.data_tail = c->s.stream.w.head;
++		c->s.stream.w.buffers = 0;
++		c->s.stream.w.data_bytes = 0;
++	    }
++	}
+ 	blob_buf_free(&b);
+ }
+ 
+-- 
+2.18.0
+

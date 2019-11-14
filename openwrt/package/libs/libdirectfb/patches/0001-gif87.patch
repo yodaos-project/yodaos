@@ -1,0 +1,12 @@
+--- DirectFB-1.7.7/interfaces/IDirectFBVideoProvider/idirectfbvideoprovider_gif.c	2018-12-13 16:58:00.816040385 +0800
++++ DirectFB-1.7.7/interfaces/IDirectFBVideoProvider/idirectfbvideoprovider_gif.c	2018-12-13 16:59:46.288039732 +0800
+@@ -1029,7 +1029,8 @@ IDirectFBVideoProvider_GIF_GetSpeed( IDi
+ static DFBResult
+ Probe( IDirectFBVideoProvider_ProbeContext *ctx )
+ {
+-     if (!memcmp( ctx->header, "GIF89", 5 ))
++     if (!memcmp( ctx->header, "GIF87a", 6 ) ||
++         !memcmp( ctx->header, "GIF89a", 6 ))
+           return DFB_OK;
+
+      return DFB_UNSUPPORTED;

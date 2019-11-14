@@ -1,0 +1,3 @@
+[settings]
+sccpdevice => sqlite3,asterisk,sccpdeviceconfig
+sccpline => sqlite3,asterisk,sccpline

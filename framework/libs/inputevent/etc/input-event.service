@@ -1,0 +1,10 @@
+[Unit]
+Description=Input Event
+After=dbus.service
+
+[Service]
+ExecStart=/usr/bin/input-event --no-daemon
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

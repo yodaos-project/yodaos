@@ -1,0 +1,33 @@
+--- a/init/halt.c
++++ b/init/halt.c
+@@ -68,6 +68,9 @@
+
+ #include "libbb.h"
+ #include "reboot.h"
++#include <linux/reboot.h>
++#include <sys/syscall.h>
++#include <unistd.h>
+
+ #if ENABLE_FEATURE_WTMP
+ #include <sys/utsname.h>
+@@ -104,6 +107,7 @@ int halt_main(int argc UNUSED_PARAM, cha
+ 		RB_AUTOBOOT
+ 	};
+ 	static const smallint signals[] = { SIGUSR1, SIGUSR2, SIGTERM };
++	const char *param = "update";
+
+ 	int delay = 0;
+ 	int which, flags, rc;
+@@ -114,6 +118,12 @@ int halt_main(int argc UNUSED_PARAM, cha
+
+ 	printf("which %d\n", which);
+ 	/* Parse and handle arguments */
++	if ((argc == 2) && (strcmp(param, argv[1]) == 0))
++	{
++		printf("Rebooting with argument '%s'.", param);
++		(void) syscall(SYS_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, param);
++	}
++
+ 	opt_complementary = "d+"; /* -d N */
+ 	/* We support -w even if !ENABLE_FEATURE_WTMP,
+ 	 * in order to not break scripts.

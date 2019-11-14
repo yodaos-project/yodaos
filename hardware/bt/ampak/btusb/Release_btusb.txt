@@ -1,0 +1,32 @@
+To compile the Bluetooth USB Driver (BTUSB) you have to:
+> cd /3rdparty/embedded/brcm/linux/btusb
+> make
+
+The Makefile may need to be adapted to the target:
+KDIR := /lib/modules/$(shell uname -r)/build    => For local kernel (currently running)
+KDIR := /opt/brcm/linux                         => For different kernel, it should point to the appropriate kernel version
+
+By default btusb supports the most Broadcom's BT controller types.
+To restrict the support to a single VID/PID (USB identifier of the BT controller type), the BTUSB_VID and BTUSB_PID can be defined.
+For 20702 the values to use are:
+EXTRA_CFLAGS += -DBTUSB_VID=0x0A5C
+EXTRA_CFLAGS += -DBTUSB_PID=0x22BE
+
+To install the btusb.ko module, you may have to create a node in /dev:
+mknod btusb0 c 180 194
+
+On a Linux Computer, the /dev/btusb0 node is, usually, automatically created.
+You can create the /etc/udev/rules.d/50-brcm.rules file, to allow regular users to use it.
+The file contains:
+# udev rule for btusb
+KERNEL=="btusb*", MODE="0666"
+
+Furthermore, BlueZ must be uninstalled to avoid driver conflicts.
+
+See BSA Software user guide for further information.
+
+BTUSB Compile Options for Lite Stack Support:
+> make LITE=FALSE         => No StackLite (Default)"
+> make LITE=TRUE          => StackLite compiled"
+> make SEC=FALSE          => No SEC Encoder Support(default)"
+> make SEC=TRUE           => SEC Encoder Support (Requires StackLite)

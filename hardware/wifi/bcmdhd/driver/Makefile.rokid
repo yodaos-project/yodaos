@@ -1,0 +1,80 @@
+DHDOFILES += aiutils.o
+DHDOFILES += siutils.o
+DHDOFILES += sbutils.o
+DHDOFILES += bcmutils.o
+DHDOFILES += bcmwifi_channels.o
+DHDOFILES += dhd_linux.o
+DHDOFILES += dhd_linux_platdev.o
+DHDOFILES += dhd_linux_sched.o
+DHDOFILES += dhd_pno.o
+DHDOFILES += dhd_common.o
+DHDOFILES += dhd_ip.o
+DHDOFILES += dhd_linux_wq.o
+DHDOFILES += dhd_custom_gpio.o
+DHDOFILES += bcmevent.o
+DHDOFILES += hndpmu.o
+DHDOFILES += linux_osl.o
+DHDOFILES += wldev_common.o
+DHDOFILES += wl_android.o
+DHDOFILES += dhd_debug_linux.o
+DHDOFILES += dhd_debug.o
+DHDOFILES += dhd_mschdbg.o
+DHDOFILES += hnd_pktq.o
+DHDOFILES += hnd_pktpool.o
+DHDOFILES += dhd_config.o
+DHDOFILES += wl_android_ext.o
+DHDOFILES += dhd_gpio.o
+
+#CONFIG_BCMDHD_SDIO := y
+DHDOFILES += bcmsdh.o
+DHDOFILES += bcmsdh_linux.o
+DHDOFILES += bcmsdh_sdmmc.o
+DHDOFILES += bcmsdh_sdmmc_linux.o
+DHDOFILES += dhd_sdio.o
+DHDOFILES += dhd_cdc.o
+DHDOFILES += dhd_wlfc.o
+
+#CONFIG_BCMDHD_PCIE := y
+ifneq ($(CONFIG_BCMDHD_PCIE),)
+DHDOFILES += dhd_pcie.o
+DHDOFILES += dhd_pcie_linux.o
+DHDOFILES += pcie_core.o
+DHDOFILES += dhd_flowring.o
+DHDOFILES += dhd_msgbuf.o
+endif
+
+#CONFIG_BCMDHD_USB := y
+ifneq ($(CONFIG_BCMDHD_USB),)
+DHDOFILES += dbus.o
+DHDOFILES += dbus_usb.o
+DHDOFILES += dbus_usb_linux.o
+DHDOFILES += dhd_cdc.o
+DHDOFILES += dhd_wlfc.o
+endif
+
+#CONFIG_VTS_SUPPORT := y
+ifneq ($(CONFIG_VTS_SUPPORT),)
+DHDOFILES += bcmxtlv.o
+DHDOFILES += dhd_rtt.o
+DHDOFILES += bcm_app_utils.o
+endif
+
+#CONFIG_DHD_USE_STATIC_BUF := y
+obj-{CONFIG_DHD_USE_STATIC_BUF} += dhd_static_buf.o
+
+ifneq ($(CONFIG_WIRELESS_EXT),)
+DHDOFILES += wl_iw.o
+DHDOFILES += wl_escan.o
+endif
+
+ifneq ($(CONFIG_CFG80211),)
+DHDOFILES += wl_cfg80211.o
+DHDOFILES += wl_cfgp2p.o
+DHDOFILES += wl_linux_mon.o
+DHDOFILES += wl_cfg_btcoex.o
+DHDOFILES += wl_cfgvendor.o
+DHDOFILES += dhd_cfg80211.o
+endif
+
+obj-${CONFIG_BCMDHD} += bcmdhd.o
+bcmdhd-objs += $(DHDOFILES)

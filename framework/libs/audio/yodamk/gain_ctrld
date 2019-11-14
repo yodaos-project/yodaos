@@ -1,0 +1,16 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2011 OpenWrt.org
+
+START=89
+STOP=2
+
+start(){
+#  /usr/bin/opt_test 30 407 12 51
+#  amixer cset iface=CARD,name='Global Playback Volume (DB)' :-1
+	amixer cset name='DAC HPOUT Left Volume'  30
+	amixer cset name='DAC HPOUT Right Volume' 30
+}
+
+stop(){
+	echo "stop"
+}

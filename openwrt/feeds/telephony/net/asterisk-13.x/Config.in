@@ -1,0 +1,11 @@
+menu "Advanced configuration"
+	depends on PACKAGE_asterisk13
+
+config ASTERISK13_LOW_MEMORY
+	bool "Optimize Asterisk 13 for low memory usage"
+	default n
+	help
+	  Warning: this feature is known to cause problems with some modules.
+	  Disable it if you experience problems like segmentation faults.
+
+endmenu

@@ -1,0 +1,465 @@
+--- a/bluetooth.c
++++ b/bluetooth.c
+@@ -1,345 +0,0 @@
+-/*
+-* Miax
+-*
+-*  Copyright (C) 2004 by Ubaldo Porcheddu <ubaldo@eja.it>
+-*
+-* This program is free software; you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License as published by
+-* the Free Software Foundation; either version 2 of the License, or
+-* (at your option) any later version.
+-*
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+-* General Public License for more details.
+-*
+-* You should have received a copy of the GNU General Public License
+-* along with this program; if not, write to the Free Software
+-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+-*/
+-
+-#include <stdio.h>
+-#include <errno.h>
+-#include <fcntl.h>
+-#include <unistd.h>
+-#include <stdlib.h>
+-#include <signal.h>
+-#include <termios.h>
+-#include <sys/wait.h>
+-#include <sys/time.h>
+-#include <sys/ioctl.h>
+-#include <sys/socket.h>
+-#include <bluetooth/bluetooth.h>
+-#include <bluetooth/hci.h>
+-#include <bluetooth/hci_lib.h>
+-#include <bluetooth/sco.h>
+-#include <bluetooth/rfcomm.h>
+-#include "iaxclient_lib.h"
+-
+-#define RTP 320
+-#define AFRAME 48
+-
+-static int	fd_audio, il=0, ol=0, audio=0, compression=0;
+-static char	dev_audio[10], in[512], out[512];
+-static int	fd_modem, call=0, callsetup=0, m_status=0;
+-static bdaddr_t	src, dst;
+-static int 	btchannel=3;
+-static int 	init=0;
+-extern int debug;
+-
+-int bt_init(char *devs) {
+-	int l;
+-
+-	if (init == 0) {	
+-		l=strlen(devs);
+-		str2ba(strtok(devs,"/"), &src);
+-		str2ba(strtok(NULL,"/"), &dst);
+-		if (l > 35) { btchannel=atoi(strtok(NULL,"/")); }
+-		init=1;
+-		}
+-	return 0;
+-	}
+-
+-
+-int rfcomm_connect(bdaddr_t *src, bdaddr_t *dst, int channel) {
+-
+-	struct sockaddr_rc addr;
+-	int s;
+-
+-	if ((s = socket(PF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM)) < 0) {
+-		return -1;
+-		}
+-	memset(&addr, 0, sizeof(addr));
+-	addr.rc_family = AF_BLUETOOTH;
+-	bacpy(&addr.rc_bdaddr, src);
+-	addr.rc_channel = 0;
+-	if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+- 		close(s);
+-		return -1;
+-		}
+-	memset(&addr, 0, sizeof(addr));
+-	addr.rc_family = AF_BLUETOOTH;
+-	bacpy(&addr.rc_bdaddr, dst);
+-	addr.rc_channel = channel;
+-	if (connect(s, (struct sockaddr *)&addr, sizeof(addr)) < 0 ){
+-		close(s);
+-		return -1;
+-		}
+-
+-	return s;
+-	}
+-
+-
+-int sco_connect(bdaddr_t *src, bdaddr_t *dst) {
+-
+-	struct sockaddr_sco addr;
+-	struct sco_conninfo conn;
+-	struct sco_options opts;
+-	int s, size;
+-
+-	if ((s = socket(PF_BLUETOOTH, SOCK_SEQPACKET, BTPROTO_SCO)) < 0) {
+-		return -1;
+-		}
+-	memset(&addr, 0, sizeof(addr));
+-	addr.sco_family = AF_BLUETOOTH;
+-	bacpy(&addr.sco_bdaddr, src);
+-	if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+-		close(s);
+-		return -1;
+-		}
+-	memset(&addr, 0, sizeof(addr));
+-	addr.sco_family = AF_BLUETOOTH;
+-	bacpy(&addr.sco_bdaddr, dst);
+-	if (connect(s, (struct sockaddr *)&addr, sizeof(addr)) < 0 ){
+-		close(s);
+-		return -1;
+-		}
+-
+-	return s;
+-	}
+- 
+-
+-int bt_audio_init(char *dev, int enc) {
+-
+-	compression=enc;
+-	return bt_init(dev);
+-	}
+-
+-
+-int bt_audio_open() { 
+-
+-	if ((fd_audio = sco_connect(&src, &dst)) < 0) {
+-		perror("Can't connect SCO audio channel");
+-		close(fd_modem);
+-		return -1;
+-		}
+-	audio=1;
+-	fprintf(stderr, "BT audio ready.\n");
+-
+-	return fd_audio;
+-	}
+-
+-
+-int bt_audio_close() { 
+-	
+-	audio=-1;
+-	
+-	return close(fd_audio);
+-	}
+-
+-
+-int bt_audio_out(struct iaxc_call *call, void *encoded) {
+-
+-	char buf[512], data[RTP];
+-	int i=0,n=0,x=0,y=0,z=0;
+-	
+-	if (audio == 0) { bt_audio_open(); }
+-	if (audio == 1) {
+-		
+-		y=RTP+ol;
+-		memmove(buf,out,ol);
+-
+-		if (compression == 0) {
+-			memmove(data,encoded,RTP);	                                                    
+-			}
+-		else {	
+-			if (!call->gsmin) { call->gsmin = gsm_create(); }
+-			gsm_decode(call->gsmin, encoded, data);
+-			}
+-		
+-		for(i=ol;i<y;i++) {	
+-			buf[i]=data[z++];
+-			}
+-
+-		for (i=0;i<y;i++){
+-			data[x++]=buf[i];
+-			if (x==AFRAME) {
+-				write(fd_audio,data,AFRAME);
+-				x=0;
+-				}
+-			}
+-		z=(y-x);
+-		for (ol=0;ol<x;ol++) { out[ol]=buf[z++]; }
+-		}
+-	
+-	return z;
+-	}
+-
+-
+-int bt_audio_in(struct iaxc_call *call) {
+-
+-	char buf[RTP+RTP], data[AFRAME], dtmf_c;
+-	int i,x=0,y=0;
+-	gsm_frame fo;
+-	
+-	if (audio == 1) {
+-		y=il;
+-		memmove(buf,in,il);	
+-
+-		while(y < RTP) {
+-			read(fd_audio, data, AFRAME);
+-			for (i=0;i<AFRAME;i++) {
+-				if (y==RTP) { x=i; }
+-				buf[y++]=data[i];
+-				}
+-			}
+-		il=y-RTP;
+-		for (i=0;i<il;i++) { in[i]=data[x++]; }
+-			if ((dtmf_c=dtmf(buf)) > 0) { 
+-				if (debug > 4) { fprintf(stderr, "Miax: dtmf %c\n", dtmf_c); }
+-				iax_send_dtmf(call->session,dtmf_c);
+-				}
+-	
+-		if ( compression == 0) {
+-					iax_send_voice(call->session, AST_FORMAT_SLINEAR, buf , RTP);
+-					}
+-		else {
+-		if(!call->gsmout) { call->gsmout = gsm_create(); }
+-			gsm_encode(call->gsmout, (short *) buf, (void *)&fo);
+-			iax_send_voice(call->session, AST_FORMAT_GSM, (char *)&fo, sizeof(gsm_frame));
+-			}
+-		}
+-
+-	return 1;
+-	}
+-
+-
+-int bt_modem_init(char *dev) {
+-
+-	char *buf,tmp[1024];
+-	int n=0,z=-1;
+-	
+-	bt_init(dev);
+-
+-	if ((fd_modem = rfcomm_connect(&src, &dst, btchannel)) < 0) {
+-		perror("Can't connect RFCOMM channel");
+-		return -1;
+-		}
+-
+-	bt_modem("ATZ\r",tmp);
+-	bt_modem("ATE1\r",tmp);
+-	bt_modem("AT+CIND=?\r",tmp);
+-	buf=strtok(tmp,"(");
+-	while( buf=strtok(NULL,"))") ) { 
+-		n++;
+-		if (strstr(buf,"\"call\"")) { call=n; z++;}
+-		if (strstr(buf,"\"callsetup\"")) { callsetup=n; z++; }
+-		}
+-	
+-	z+=bt_modem("AT+CLIP=1\r",tmp);			
+-	z+=bt_modem("AT+CMER=3,0,0,1\r",tmp);	
+-	fprintf(stderr, "BT modem ready.\n");
+-
+-	m_status=1;
+-	
+-	return fd_modem;
+-	}
+-
+-int bt_modem_close() {
+-
+-	char buf[256];
+-	int l=0;
+-
+-	if (m_status > 1) { 
+-		m_status=-1;
+-		bt_modem("AT+CHUP\r",buf);
+-		l=close(fd_modem);
+-		}
+-
+-	return l;
+-	}
+-
+-
+-int bt_modem(char* send, char *receive) {
+-	
+-	int l=0;
+-	fd_set rfds;
+-	struct timeval tv;
+-	int retval;
+-    
+-	FD_ZERO(&rfds);
+-	FD_SET(fd_modem, &rfds);
+-	tv.tv_sec = 1;
+-	tv.tv_usec = 0;
+-
+-	if (strlen(send)) { write(fd_modem,send,strlen(send)); }
+-
+-	if (m_status >= 0) {
+-		if (retval = select(fd_modem+1, &rfds, NULL, NULL, &tv) > 0) {  
+-			memset(receive,0,1024);
+-			l=read(fd_modem,receive,1024);
+-			if (debug > 3) { fprintf(stderr, "%s\n", receive); }
+-			}	
+-		}	
+-
+-	return l;
+-	}
+-
+-
+-int bt_modem_loop(int status, char *number) {
+-
+-	char buf[1024], tmp[1024];
+-
+-	if (m_status < 0) { return -1; }
+-    
+-    	if (status == 130 && m_status != 3) {
+-    		bt_modem("ATA\r",tmp);
+-    		m_status=3;
+-    		status=0;
+-    		return 100;
+-    		}
+-	if (status == 100 && m_status != 2) {
+-		sprintf(buf,"ATDT%s;\r",number);
+-		bt_modem(buf,tmp);
+-		status=0;
+-		m_status=2;
+-		}    	
+-
+-    
+-	if (bt_modem("",buf)) {  
+-
+-		sprintf(tmp,"+CIEV: %d,0",callsetup);
+-                if (strstr(buf,tmp) && m_status != 5) { 
+-                	m_status=5;
+-	                return 130; 
+-	                }
+-
+-		sprintf(tmp,"+CIEV: %d,0",call);
+-                if (strstr(buf,tmp)) { return -5; }
+-        
+-                if (strstr(buf,"+CLIP:") && m_status != 4) { 
+-                	strcpy(tmp,strtok(buf,"\""));
+-                	strcpy(number,strtok(NULL,"\""));
+-                	m_status=4;
+-                	return 101;
+-                	}
+-                if (strstr(buf,"ERROR")) { return 1; }
+-                if (strstr(buf,"BUSY")) { return -2; }
+-		if (strstr(buf,"NO DIALTONE")) { return -3; }
+-		if (strstr(buf,"NO CARRIER")) { return -4; }
+-                if (strstr(buf,"RING")) { return 2; }
+-                if (strstr(buf,"OK")) { return 1; }                                   
+-		}
+-			
+-	return 0;
+-	}
+--- a/Makefile
++++ b/Makefile
+@@ -1,6 +1,6 @@
+ OFLAGS= -02 -g
+ CFLAGS= -Iiax/ -Igsm/inc $(CPPFLAGS) -DIAXC_IAX2 -DLIBIAX -DPOSIXSLEEP -DLINUX $(OFLAGS)
+-SYSLIBS=-lpthread -lm -lbluetooth
++SYSLIBS=-lpthread -lm
+ 
+ 
+ OBJS=\
+@@ -28,14 +28,13 @@ OBJS=\
+ 	iax/iaxclient_lib.o \
+ 	dtmf.o \
+ 	oss.o \
+-	bluetooth.o \
+ 	modem.o \
+ 	miax.o
+ 
+ all: $(OBJS)
+ 	$(CC) $(OBJS) $(CFLAGS) $(LDFLAGS) $(SYSLIBS) -o miax
+ 
+-static: $(OBJS) bluetooth.o 
++static: $(OBJS)
+ 	$(CC) $(OBJS) $(CFLAGS) $(LDFLAGS) $(SYSLIBS) -static -o miax
+ 
+ clean: 
+--- a/miax.c
++++ b/miax.c
+@@ -130,7 +130,6 @@ void usage() {
+ 	fprintf(stderr, " -a 	audio device\n");
+ 	fprintf(stderr, " -g 	gsm codec\n");
+ 	fprintf(stderr, " -m 	modem device\n");
+-	fprintf(stderr, " -b 	bluetooth device\n");
+ 	fprintf(stderr, " -i 	modem init string\n");
+ 	fprintf(stderr, " -l 	log level\n");
+ 	fprintf(stderr, " -o 	log output\n");
+--- a/miax.h
++++ b/miax.h
+@@ -23,55 +23,53 @@
+ 
+ int 	debug=0;
+ int	status=0;
+-int 	bt; //bluetooth
++int	bt; //bluetooth
+ int	m=0; //modem
+ char	number[1024];
+ 
+-int audio_init(char *dev, int compression) { 
+-	(bt) ?  bt_audio_init(dev, compression) : oss_audio_init(dev, compression); 
++int audio_init(char *dev, int compression) {
++	oss_audio_init(dev, compression);
+ 	}
+ 
+-int audio_open() { 
+-	(bt) ?  bt_audio_open() : oss_audio_open(); 
++int audio_open() {
++	oss_audio_open();
+ 	}
+ 
+-int audio_out(struct iaxc_call *call, void *encoded) { 
+-	(bt) ?  bt_audio_out(call,encoded) : oss_audio_out(call,encoded) ; 
++int audio_out(struct iaxc_call *call, void *encoded) {
++	oss_audio_out(call,encoded) ;
+ 	}
+ 
+-int audio_in(struct iaxc_call *call) { 
+-	(bt) ?  bt_audio_in(call) : oss_audio_in(call) ; 
++int audio_in(struct iaxc_call *call) {
++	oss_audio_in(call) ;
+ 	}
+ 
+-int audio_close () { 
+-	(bt) ?  bt_audio_close() : oss_audio_close() ; 
++int audio_close () {
++	oss_audio_close() ;
+ 	}
+ 
+-int modem_init(char *dev) { 
+-	(bt) ?  bt_modem_init(dev) : tty_modem_init(dev) ; 
++int modem_init(char *dev) {
++	tty_modem_init(dev) ;
+ 	}
+ 
+-int modem(char *val) { 
++int modem(char *val) {
+ 	char tmp[1024];
+-	
+-	(bt) ?  bt_modem(val, tmp) : tty_modem(val, tmp) ; 
++
++	tty_modem(val, tmp) ;
+ 	}
+ 
+-int modem_close() { 
+-	(bt) ?  bt_modem_close() : tty_modem_close() ; 
++int modem_close() {
++	tty_modem_close() ;
+ 	}
+ 
+-int modem_loop(int status, char *number) { 
+-	if (bt) { return bt_modem_loop(status, number); } 
+-	else { return tty_modem_loop(status, number); } 
++int modem_loop(int status, char *number) {
++	return tty_modem_loop(status, number);
+ 	}
+ 
+ int miax_loop(int status, char *number) {
+-	if (m > 0 && bt > 0) { return bt_modem_loop(status, number); }
+-	if (m > 0 && bt == 0) { return tty_modem_loop(status, number); }
+-	if (m == 0) { 
++	if (m > 0) { return tty_modem_loop(status, number); }
++	if (m == 0) {
+ 		printf("\nMiax console.\t[h] to hangup or quit\n");
+-		return console_loop(status, number); 
++		return console_loop(status, number);
+ 		}
+ 	}
+ #endif

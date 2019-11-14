@@ -1,0 +1,17 @@
+--- a/Makefile
++++ b/Makefile
+@@ -80,12 +80,12 @@ include/dahdi/version.h: FORCE
+ 	fi
+ 	@rm -f $@.tmp
+ 
+-prereq: include/dahdi/version.h firmware-loaders
++prereq: include/dahdi/version.h
+ 
+ stackcheck: $(CHECKSTACK) modules
+ 	objdump -d drivers/dahdi/*.ko drivers/dahdi/*/*.ko | $(CHECKSTACK)
+ 
+-install: all install-modules install-include install-firmware install-xpp-firm
++install: all install-modules install-include
+ 	@echo "###################################################"
+ 	@echo "###"
+ 	@echo "### DAHDI installed successfully."

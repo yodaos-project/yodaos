@@ -1,0 +1,26 @@
+--- a/squashfs-tools/Makefile	2014-05-12 02:56:00.000000000 +0800
++++ b/squashfs-tools/Makefile	2018-08-07 00:46:09.339874507 +0800
+@@ -151,9 +151,8 @@ endif
+ 
+ ifeq ($(XZ_SUPPORT),1)
+ CFLAGS += -DXZ_SUPPORT
+-MKSQUASHFS_OBJS += xz_wrapper.o
+-UNSQUASHFS_OBJS += xz_wrapper.o
+-LIBS += -llzma
++MKSQUASHFS_OBJS += xz_wrapper.o $(LZMA_LIB)
++UNSQUASHFS_OBJS += xz_wrapper.o $(LZMA_LIB)
+ COMPRESSORS += xz
+ endif
+ 
+@@ -171,9 +170,8 @@ endif
+ 
+ ifeq ($(LZ4_SUPPORT),1)
+ CFLAGS += -DLZ4_SUPPORT
+-MKSQUASHFS_OBJS += lz4_wrapper.o
+-UNSQUASHFS_OBJS += lz4_wrapper.o
+-LIBS += -llz4
++MKSQUASHFS_OBJS += lz4_wrapper.o $(LZ4_LIB)
++UNSQUASHFS_OBJS += lz4_wrapper.o $(LZ4_LIB)
+ COMPRESSORS += lz4
+ endif
+ 

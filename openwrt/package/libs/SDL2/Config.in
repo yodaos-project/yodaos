@@ -1,0 +1,5 @@
+menu "SDL2 configuration"
+	config SDL2_DIRECTFB
+	bool "enable sdl2 dependency libdirectFB"
+	default n
+endmenu

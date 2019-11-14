@@ -1,0 +1,228 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2008 Alina Friedrichsen
+# Copyright (C) 2011 OpenWrt.org
+
+START=50
+
+SERVICE_USE_PID=1
+
+siproxd_bin="/usr/sbin/siproxd"
+siproxd_conf_dir="/var/etc/siproxd"
+siproxd_conf_prefix="$siproxd_conf_dir/siproxd-"
+siproxd_registration_dir="/var/lib/siproxd"
+siproxd_registration_prefix="$siproxd_registration_dir/siproxd-"
+siproxd_pid_dir="/var/run/siproxd"
+
+append_conf_if_set() {
+	local _val=$(eval "echo \$`echo $1`")
+	[ -n "$_val" ] &&
+	echo "$1" = "$_val" >> "$siproxd_conf_prefix$cfg.conf"
+}
+
+deal_with_lists () {
+	echo "$2" = "$1" >> "$siproxd_conf_prefix$cfg.conf"
+}
+
+start_instance() {
+	local cfg="$1"
+	local _int_inbound
+	local _int_outbound
+	local _dev_inbound
+	local _dev_outbound
+
+	config_get _int_inbound "$cfg" interface_inbound
+	config_get _int_outbound "$cfg" interface_outbound
+
+	scan_interfaces
+	network_get_physdev _dev_inbound $_int_inbound
+	network_get_physdev _dev_outbound $_int_outbound
+
+	config_load 'siproxd'
+	config_get if_inbound "$cfg" if_inbound $_dev_inbound
+	config_get if_outbound "$cfg" if_outbound $_dev_outbound
+
+	config_get host_outbound "$cfg" host_outbound
+	config_get hosts_allow_reg "$cfg" hosts_allow_reg
+	config_get hosts_allow_sip "$cfg" hosts_allow_sip
+	config_get hosts_deny_sip "$cfg" hosts_deny_sip
+	config_get sip_listen_port "$cfg" sip_listen_port 5060
+	config_get_bool daemonize "$cfg" daemonize 1
+	config_get silence_log "$cfg" silence_log 1
+	config_get user "$cfg" user nobody
+	config_get chrootjail "$cfg" chrootjail
+	config_get registration_file "$cfg" registration_file "$siproxd_registration_prefix$cfg.reg"
+	config_get autosave_registrations "$cfg" autosave_registrations 300
+	config_get pid_file "$cfg" pid_file "$siproxd_pid_dir/siproxd-$cfg.pid"
+	config_get_bool rtp_proxy_enable "$cfg" rtp_proxy_enable 1
+	config_get rtp_port_low "$cfg" rtp_port_low 7070
+	config_get rtp_port_high "$cfg" rtp_port_high 7089
+	config_get rtp_timeout "$cfg" rtp_timeout 300
+	config_get rtp_dscp "$cfg" rtp_dscp 46
+	config_get sip_dscp "$cfg" sip_dscp 0
+	config_get rtp_input_dejitter "$cfg" rtp_input_dejitter 0
+	config_get rtp_output_dejitter "$cfg" rtp_output_dejitter 0
+	config_get tcp_timeout "$cfg" tcp_timeout 600
+	config_get tcp_connect_timeout "$cfg" tcp_connect_timeout 500
+	config_get tcp_keepalive "$cfg" tcp_keepalive 20
+	config_get default_expires "$cfg" default_expires 600
+	config_get proxy_auth_realm "$cfg" proxy_auth_realm
+	config_get proxy_auth_passwd "$cfg" proxy_auth_passwd
+	config_get proxy_auth_pwfile "$cfg" proxy_auth_pwfile
+	config_get debug_level "$cfg" debug_level 0x00000000
+	config_get debug_port "$cfg" debug_port 0
+	config_get mask_host "$cfg" mask_host
+	config_get masked_host "$cfg" masked_host
+	config_get ua_string "$cfg" ua_string Siproxd-UA
+	config_get use_rport "$cfg" use_rport 0
+	config_get outbound_proxy_host "$cfg" outbound_proxy_host
+	config_get outbound_proxy_port "$cfg" outbound_proxy_port
+
+	if [ -f "$siproxd_conf_prefix$cfg.conf" ]; then
+		rm "$siproxd_conf_prefix$cfg.conf"
+	fi
+	echo "# auto-generated config file from /etc/config/siproxd" > "$siproxd_conf_prefix$cfg.conf"
+
+	append_conf_if_set if_inbound
+	append_conf_if_set if_outbound
+	append_conf_if_set host_outbound
+	append_conf_if_set hosts_allow_reg
+	append_conf_if_set hosts_allow_sip
+	append_conf_if_set hosts_deny_sip
+	append_conf_if_set sip_listen_port
+	append_conf_if_set daemonize
+	append_conf_if_set silence_log
+	append_conf_if_set user
+	if [ -n "$chrootjail" ]; then
+		if [ ! -d "$chrootjail" ]; then
+			mkdir -p "$chrootjail"
+			chmod 0755 "$chrootjail"
+		fi
+		append_conf_if_set chrootjail
+	fi
+	append_conf_if_set registration_file
+	append_conf_if_set autosave_registrations
+
+	append_conf_if_set pid_file
+	append_conf_if_set rtp_proxy_enable
+	append_conf_if_set rtp_port_low
+	append_conf_if_set rtp_port_high
+	append_conf_if_set rtp_timeout
+	append_conf_if_set rtp_dscp
+	append_conf_if_set sip_dscp
+	append_conf_if_set rtp_input_dejitter
+	append_conf_if_set rtp_output_dejitter
+	append_conf_if_set tcp_timeout
+	append_conf_if_set tcp_connect_timeout
+	append_conf_if_set tcp_keepalive
+	append_conf_if_set default_expires
+	append_conf_if_set proxy_auth_realm
+	append_conf_if_set proxy_auth_passwd
+	append_conf_if_set proxy_auth_pwfile
+	append_conf_if_set debug_level
+	append_conf_if_set debug_port
+	append_conf_if_set mask_host
+	append_conf_if_set masked_host
+	append_conf_if_set ua_string
+	append_conf_if_set use_rport
+	append_conf_if_set outbound_proxy_host
+	append_conf_if_set outbound_proxy_port
+	config_list_foreach "$cfg" 'outbound_domain_name' deal_with_lists "outbound_domain_name"
+	config_list_foreach "$cfg" 'outbound_domain_host' deal_with_lists "outbound_domain_host"
+	config_list_foreach "$cfg" 'outbound_domain_port' deal_with_lists "outbound_domain_port"
+
+	# handle plugins
+	config_get plugindir "$cfg" plugindir "/usr/lib/siproxd/"
+	append_conf_if_set plugindir
+
+	config_list_foreach "$cfg" 'load_plugin' deal_with_lists "load_plugin"
+
+	# plugin_demo.so
+	config_get plugin_demo_string "$cfg" plugin_demo_string
+	append_conf_if_set plugin_demo_string
+
+	# plugin_shortdial.so
+	config_get plugin_shortdial_akey "$cfg" plugin_shortdial_akey
+	append_conf_if_set plugin_shortdial_akey
+	config_list_foreach "$cfg" 'plugin_shortdial_entry' deal_with_lists "plugin_shortdial_entry"
+
+	# plugin_defaulttarget.so
+	config_get_bool plugin_defaulttarget_log "$cfg" plugin_defaulttarget_log
+	append_conf_if_set plugin_defaulttarget_log
+	config_get plugin_defaulttarget_target "$cfg" plugin_defaulttarget_target
+	append_conf_if_set plugin_defaulttarget_target
+
+	# plugin_fix_bogus_via.so
+	config_get plugin_fix_bogus_via_networks "$cfg" plugin_fix_bogus_via_networks
+	append_conf_if_set plugin_fix_bogus_via_networks
+
+	# plugin_stun.so
+	config_get plugin_stun_server "$cfg" plugin_stun_server
+	append_conf_if_set plugin_stun_server
+	config_get plugin_stun_port "$cfg" plugin_stun_port
+	append_conf_if_set plugin_stun_port
+	config_get plugin_stun_period "$cfg" plugin_stun_period
+	append_conf_if_set plugin_stun_period
+
+	# plugin_prefix.so
+	config_get plugin_prefix_akey "$cfg" plugin_prefix_akey
+	append_conf_if_set plugin_prefix_akey
+
+	# plugin_regex.so
+	config_list_foreach "$cfg" 'plugin_regex_desc' deal_with_lists "plugin_regex_desc"
+	config_list_foreach "$cfg" 'plugin_regex_pattern' deal_with_lists "plugin_regex_pattern"
+	config_list_foreach "$cfg" 'plugin_regex_replace' deal_with_lists "plugin_regex_replace"
+
+	# plugin_stripheader.so
+	config_list_foreach "$cfg" 'plugin_stripheader_remove' deal_with_lists "plugin_stripheader_remove"
+
+	# plugin_codecfilter.so
+	config_list_foreach "$cfg" 'plugin_codecfilter_blacklist' deal_with_lists "plugin_codecfilter_blacklist"
+
+	# plugin_siptrunk.so
+	config_list_foreach "$cfg" 'plugin_siptrunk_name' deal_with_lists "plugin_siptrunk_name"
+	config_list_foreach "$cfg" 'plugin_siptrunk_account' deal_with_lists "plugin_siptrunk_account"
+	config_list_foreach "$cfg" 'plugin_siptrunk_numbers_regex' deal_with_lists "plugin_siptrunk_numbers_regex"
+
+	# plugin_fix_DTAG.so
+	config_get plugin_fix_DTAG_networks "$cfg" plugin_fix_DTAG_networks
+	append_conf_if_set plugin_fix_DTAG_networks
+
+	# plugin_fix_fbox_anoncall.so
+	config_get plugin_fix_fbox_anoncall_networks "$cfg" plugin_fix_fbox_anoncall_networks
+	append_conf_if_set plugin_fix_fbox_anoncall_networks
+
+	SERVICE_PID_FILE="$pid_file" \
+	service_start $siproxd_bin --config "$siproxd_conf_prefix$cfg.conf"
+}
+
+stop_instance() {
+	local cfg="$1"
+
+	config_get pid_file "$cfg" pid_file "$siproxd_pid_dir/siproxd-$cfg.pid"
+
+	SERVICE_PID_FILE="$pid_file" \
+	service_stop $siproxd_bin
+}
+
+start() {
+	mkdir -p "$siproxd_conf_dir"
+	chmod 755 "$siproxd_conf_dir"
+
+	mkdir -p "$siproxd_registration_dir"
+	chmod 700 "$siproxd_registration_dir"
+	chown nobody:nogroup "$siproxd_registration_dir"
+
+	mkdir -p "$siproxd_pid_dir"
+	chmod 700 "$siproxd_pid_dir"
+	chown nobody:nogroup "$siproxd_pid_dir"
+
+	include /lib/network
+	. /lib/functions/network.sh
+	config_load 'siproxd'
+	config_foreach start_instance 'siproxd'
+}
+
+stop() {
+	config_load 'siproxd'
+	config_foreach stop_instance 'siproxd'
+}

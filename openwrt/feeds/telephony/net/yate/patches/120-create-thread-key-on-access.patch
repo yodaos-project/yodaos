@@ -1,0 +1,49 @@
+--- a/engine/Thread.cpp
++++ b/engine/Thread.cpp
+@@ -106,21 +106,18 @@ static DWORD getTls()
+     return tls_index;
+ }
+ #else /* _WINDOWS */
+-static pthread_key_t current_key;
+-
+-class ThreadPrivateKeyAlloc
++static pthread_key_t& current_key()
+ {
+-public:
+-    ThreadPrivateKeyAlloc()
+-    {
+-	if (::pthread_key_create(&current_key,ThreadPrivate::destroyFunc)) {
++    static pthread_key_t* current_key = NULL;
++    if (!current_key) {
++	current_key = new pthread_key_t;
++	if (::pthread_key_create(current_key, ThreadPrivate::destroyFunc)) {
+ 	    abortOnBug(true);
+ 	    Debug(DebugFail,"Failed to create current thread key!");
+ 	}
+     }
+-};
+-
+-static ThreadPrivateKeyAlloc keyAllocator;
++    return *current_key;
++}
+ #endif /* _WINDOWS */
+ 
+ static TokenDict s_prio[] = {
+@@ -309,7 +306,7 @@ void ThreadPrivate::run()
+ #ifdef _WINDOWS
+     ::TlsSetValue(getTls(),this);
+ #else
+-    ::pthread_setspecific(current_key,this);
++    ::pthread_setspecific(current_key(),this);
+     pthread_cleanup_push(cleanupFunc,this);
+ #ifdef PTHREAD_CANCEL_ASYNCHRONOUS
+     ::pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,0);
+@@ -421,7 +418,7 @@ ThreadPrivate* ThreadPrivate::current()
+ #ifdef _WINDOWS
+     return reinterpret_cast<ThreadPrivate *>(::TlsGetValue(getTls()));
+ #else
+-    return reinterpret_cast<ThreadPrivate *>(::pthread_getspecific(current_key));
++    return reinterpret_cast<ThreadPrivate *>(::pthread_getspecific(current_key()));
+ #endif
+ }
+ 

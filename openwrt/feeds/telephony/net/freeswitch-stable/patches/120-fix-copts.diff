@@ -1,0 +1,157 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -1941,7 +1941,12 @@ AC_SUBST(OUR_DISABLED_INSTALL_MODS)
+ AC_SUBST(OUR_DISABLED_UNINSTALL_MODS)
+ AC_SUBST(AM_MAKEFLAGS)
+ 
+-ac_configure_args="$ac_configure_args --with-modinstdir=${modulesdir} CONFIGURE_CFLAGS='$CFLAGS $CPPFLAGS' CONFIGURE_CXXFLAGS='$CXXFLAGS $CPPFLAGS' CONFIGURE_LDFLAGS='$LDFLAGS' "
++APR_ADDTO(CONFIGURE_CFLAGS, [$CFLAGS])
++APR_ADDTO(CONFIGURE_CPPFLAGS, [$CPPFLAGS])
++APR_ADDTO(CONFIGURE_CXXFLAGS, [$CXXFLAGS])
++APR_ADDTO(CONFIGURE_LDFLAGS, [$LDFLAGS])
++
++ac_configure_args="$ac_configure_args --with-modinstdir=${modulesdir} CONFIGURE_CFLAGS='$CONFIGURE_CFLAGS' CONFIGURE_CPPFLAGS='$CONFIGURE_CPPFLAGS' CONFIGURE_CXXFLAGS='$CONFIGURE_CXXFLAGS' CONFIGURE_LDFLAGS='$CONFIGURE_LDFLAGS' "
+ 
+ #	--prefix='$prefix' --exec_prefix='$exec_prefix' --libdir='$libdir' --libexecdir='$libexecdir' --bindir='$bindir' --sbindir='$sbindir' \
+ #	--localstatedir='$localstatedir' --datadir='$datadir'"
+--- a/libs/apr-util/configure.ac
++++ b/libs/apr-util/configure.ac
+@@ -20,9 +20,10 @@ dnl Generate ./config.nice for reproduci
+ dnl 
+ APR_CONFIG_NICE(config.nice)
+ 
+-CFLAGS="$CFLAGS $CONFIGURE_CFLAGS"
+-CXXFLAGS="$CXXFLAGS $CONFIGURE_CXXFLAGS"
+-LDFLAGS="$LDFLAGS $CONFIGURE_LDFLAGS"
++APR_ADDTO(CFLAGS, [$CONFIGURE_CFLAGS])
++APR_ADDTO(CPPFLAGS, [$CONFIGURE_CPPFLAGS])
++APR_ADDTO(CXXFLAGS, [$CONFIGURE_CXXFLAGS])
++APR_ADDTO(LDFLAGS, [$CONFIGURE_LDFLAGS])
+ 
+ dnl # Some initial steps for configuration.  We setup the default directory
+ dnl # and which files are to be configured.
+--- a/libs/apr/configure.ac
++++ b/libs/apr/configure.ac
+@@ -20,9 +20,10 @@ sinclude(build/apr_hints.m4)
+ sinclude(build/libtool.m4)
+ sinclude(build/ltsugar.m4)
+ 
+-CFLAGS="$CFLAGS $CONFIGURE_CFLAGS"
+-CXXFLAGS="$CXXFLAGS $CONFIGURE_CXXFLAGS"
+-LDFLAGS="$LDFLAGS $CONFIGURE_LDFLAGS"
++APR_ADDTO(CFLAGS, [$CONFIGURE_CFLAGS])
++APR_ADDTO(CPPFLAGS, [$CONFIGURE_CPPFLAGS])
++APR_ADDTO(CXXFLAGS, [$CONFIGURE_CXXFLAGS])
++APR_ADDTO(LDFLAGS, [$CONFIGURE_LDFLAGS])
+ 
+ dnl Hard-coded inclusion at the tail end of apr_private.h:
+ AH_BOTTOM([
+--- a/libs/iksemel/configure.ac
++++ b/libs/iksemel/configure.ac
+@@ -6,9 +6,12 @@ AC_CONFIG_SRCDIR([configure.ac])
+ AM_INIT_AUTOMAKE
+ AC_CONFIG_HEADERS(include/config.h)
+ 
+-CFLAGS="$CFLAGS $CONFIGURE_CFLAGS"
+-CXXFLAGS="$CXXFLAGS $CONFIGURE_CXXFLAGS"
+-LDFLAGS="$LDFLAGS $CONFIGURE_LDFLAGS"
++m4_include(../apr/build/apr_common.m4)
++
++APR_ADDTO(CFLAGS, [$CONFIGURE_CFLAGS])
++APR_ADDTO(CPPFLAGS, [$CONFIGURE_CPPFLAGS])
++APR_ADDTO(CXXFLAGS, [$CONFIGURE_CXXFLAGS])
++APR_ADDTO(LDFLAGS, [$CONFIGURE_LDFLAGS])
+ 
+ AC_CANONICAL_HOST
+ 
+--- a/libs/libdingaling/configure.ac
++++ b/libs/libdingaling/configure.ac
+@@ -8,9 +8,12 @@ AM_INIT_AUTOMAKE
+ AC_CONFIG_SRCDIR([src])
+ AC_CONFIG_HEADERS([src/config.h])
+ 
+-CFLAGS="$CFLAGS $CONFIGURE_CFLAGS"
+-CXXFLAGS="$CXXFLAGS $CONFIGURE_CXXFLAGS"
+-LDFLAGS="$LDFLAGS $CONFIGURE_LDFLAGS"
++m4_include(../apr/build/apr_common.m4)
++
++APR_ADDTO(CFLAGS, [$CONFIGURE_CFLAGS])
++APR_ADDTO(CPPFLAGS, [$CONFIGURE_CPPFLAGS])
++APR_ADDTO(CXXFLAGS, [$CONFIGURE_CXXFLAGS])
++APR_ADDTO(LDFLAGS, [$CONFIGURE_LDFLAGS])
+ 
+ #Set default language
+ AC_LANG_C
+--- a/libs/sofia-sip/configure.ac
++++ b/libs/sofia-sip/configure.ac
+@@ -13,9 +13,12 @@ dnl ---------------------------
+ dnl update both the version for AC_INIT and the LIBSOFIA_SIP_UA_MAJOR_MINOR
+ AC_INIT([sofia-sip], [1.12.10devel])
+ 
+-CFLAGS="$CFLAGS $CONFIGURE_CFLAGS"
+-CXXFLAGS="$CXXFLAGS $CONFIGURE_CXXFLAGS"
+-LDFLAGS="$LDFLAGS $CONFIGURE_LDFLAGS"
++m4_include(../apr/build/apr_common.m4)
++
++APR_ADDTO(CFLAGS, [$CONFIGURE_CFLAGS])
++APR_ADDTO(CPPFLAGS, [$CONFIGURE_CPPFLAGS])
++APR_ADDTO(CXXFLAGS, [$CONFIGURE_CXXFLAGS])
++APR_ADDTO(LDFLAGS, [$CONFIGURE_LDFLAGS])
+ 
+ AC_CONFIG_SRCDIR([libsofia-sip-ua/sip/sofia-sip/sip.h])
+ AC_CONFIG_MACRO_DIR([m4])
+--- a/libs/spandsp/configure.ac
++++ b/libs/spandsp/configure.ac
+@@ -21,9 +21,12 @@
+ AC_PREREQ([2.59])
+ AC_INIT([spandsp], [1.99.0])
+ 
+-CFLAGS="$CFLAGS $CONFIGURE_CFLAGS"
+-CXXFLAGS="$CXXFLAGS $CONFIGURE_CXXFLAGS"
+-LDFLAGS="$LDFLAGS $CONFIGURE_LDFLAGS"
++m4_include(../apr/build/apr_common.m4)
++
++APR_ADDTO(CFLAGS, [$CONFIGURE_CFLAGS])
++APR_ADDTO(CPPFLAGS, [$CONFIGURE_CPPFLAGS])
++APR_ADDTO(CXXFLAGS, [$CONFIGURE_CXXFLAGS])
++APR_ADDTO(LDFLAGS, [$CONFIGURE_LDFLAGS])
+ 
+ SPANDSP_LT_CURRENT=3
+ SPANDSP_LT_REVISION=0
+--- a/libs/srtp/configure.ac
++++ b/libs/srtp/configure.ac
+@@ -3,9 +3,12 @@ AC_INIT(srtp, 1.4.2, mcgrew@cisco.com)
+ AC_CONFIG_AUX_DIR(build)
+ AM_INIT_AUTOMAKE
+ 
+-CFLAGS="$CFLAGS $CONFIGURE_CFLAGS"
+-CXXFLAGS="$CXXFLAGS $CONFIGURE_CXXFLAGS"
+-LDFLAGS="$LDFLAGS $CONFIGURE_LDFLAGS"
++m4_include(../apr/build/apr_common.m4)
++
++APR_ADDTO(CFLAGS, [$CONFIGURE_CFLAGS])
++APR_ADDTO(CPPFLAGS, [$CONFIGURE_CPPFLAGS])
++APR_ADDTO(CXXFLAGS, [$CONFIGURE_CXXFLAGS])
++APR_ADDTO(LDFLAGS, [$CONFIGURE_LDFLAGS])
+ 
+ #Set default language
+ AC_LANG_C
+--- a/libs/tiff-4.0.2/configure.ac
++++ b/libs/tiff-4.0.2/configure.ac
+@@ -30,11 +30,13 @@ AC_CONFIG_AUX_DIR(config)
+ AC_CONFIG_MACRO_DIR(m4)
+ AC_LANG(C)
+ AC_PROG_LIBTOOL
++m4_include(../apr/build/apr_common.m4)
+ m4_include(m4/acinclude.m4)
+ 
+-CFLAGS="$CFLAGS $CONFIGURE_CFLAGS"
+-CXXFLAGS="$CXXFLAGS $CONFIGURE_CXXFLAGS"
+-LDFLAGS="$LDFLAGS $CONFIGURE_LDFLAGS"
++APR_ADDTO(CFLAGS, [$CONFIGURE_CFLAGS])
++APR_ADDTO(CPPFLAGS, [$CONFIGURE_CPPFLAGS])
++APR_ADDTO(CXXFLAGS, [$CONFIGURE_CXXFLAGS])
++APR_ADDTO(LDFLAGS, [$CONFIGURE_LDFLAGS])
+ 
+ dnl Compute the canonical host (run-time) system type variable
+ AC_CANONICAL_HOST

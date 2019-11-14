@@ -1,0 +1,37 @@
+menu "Configuration"
+	depends on PACKAGE_adbd
+
+config ADB_TCP_CONNECTABLE
+	bool "ADB_TCP_CONNECTABLE"
+	default y
+	help
+		ADB_TCP_CONNECTABLE
+
+config ADB_CONNECT_SECURITY
+	bool "ADB_CONNECT_SECURITY"
+	default n
+	help
+		Need security connect login adb
+
+choice
+	prompt "Select one adb security mode"
+	depends on ADB_CONNECT_SECURITY
+	default ADB_CONNECT_SECURITY_RK
+	help 
+	  Select one adb security mode to encrypt the adb root
+
+config ADB_CONNECT_SECURITY_RK
+	bool "Rokid ADB security mode"
+	help
+		Rokid ADB security mode with password.
+
+config ADB_CONNECT_SECURITY_SIGN
+	bool "ADB security with sigature"
+	help
+		 ADB security with signatyre
+	
+endchoice
+endmenu
+
+
+

@@ -1,0 +1,33 @@
+{
+  "constant": {
+    "notificationNight": "电量低于10%，帮我充上电就早点休息吧，迎接元气满满的一天!",
+    "notification1": "电量低于10%，我不想⾃动关机而断了与你的联系，快去帮我充电或者打开侧面开关进入休眠模式帮我省电吧。",
+    "notification2": "电量低于10%，世界上最遥远的距离就是你迟迟不来找我，而我却在痴痴地等着你为我“续命”。",
+    "batteryLevelFull": "我现在是满电状态，可以放心使用。",
+    "batteryLevel": "当前电量还有百分之%d",
+    "timeToFull100": "电池已充满。",
+    "timeToFull": "充电完成还需要%d小时%d分钟。",
+    "timeToFullDisconnect": "我不在充电状态，当前电量是百分之%d。",
+    "timeToFullPowerLow": "当前设备电量百分之%d，充电功率太小，无法正常完成充电。",
+    "timeToEmptyConnect": "已连接电源，可以放心使用。",
+    "timeToEmptyDisconnect": "当前电量百分之%d，可以使用%d小时%d分钟。",
+    "batteryDisconnect20": "电量百分之%d，还能使用%d小时%d分钟。",
+    "batteryDisconnect19": "电量不足，我最多只能再使用%d小时%d分钟。",
+    "batteryDisconnect19third": "电量不足，打开侧面的休眠开关，最高可待机%d小时%d分钟",
+    "batteryNotEnabled": "当前产品没有电池，使用期间请连接电源"
+  },
+  "resource": {
+    "powerPlug": "./res/power_plug.ogg",
+    "powerPull": "./res/power_pull.ogg",
+    "powerDisconnect10": "./res/lowpower_10.ogg",
+    "powerDisconnect20": "./res/lower_than_20.ogg",
+    "temperature0": "./res/battery_temp_low.ogg",
+    "temperature50": "./res/battery_temp_high.ogg",
+    "lowPower20Idle": "./res/lowpower_20_idle.ogg",
+    "lowPower20Play": "./res/lowpower_20_play.ogg",
+    "lowPower10": "./res/lowpower_10.ogg",
+    "lowPower10Media": "./res/10BatteryTips.ogg",
+    "batteryConnect": "./res/battery_connect.ogg",
+    "batteryDisconnect": "./res/battery_disconnect.ogg"
+  }
+}

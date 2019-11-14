@@ -1,0 +1,10 @@
+--- a/deps/libtuv/src/unix/async.c
++++ b/deps/libtuv/src/unix/async.c
+@@ -198,6 +198,7 @@ void uv__async_send(struct uv__async* wa
+     if (errno == EAGAIN || errno == EWOULDBLOCK)
+       return;
+ 
++  fprintf(stderr, "[FATAL] Unexpected error on uv__async_send: r(%d), len(%zu), errno(%d)\n", r, len, errno);
+   abort();
+ }
+ 

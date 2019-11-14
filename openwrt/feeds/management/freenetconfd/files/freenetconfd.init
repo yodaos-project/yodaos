@@ -1,0 +1,23 @@
+#!/bin/sh /etc/rc.common
+
+START=90
+STOP=10
+
+USE_PROCD=1
+PROG=/sbin/freenetconfd
+
+start_service() {
+
+	if [ ! -d "/etc/netconf" ]; then
+		mkdir -p /etc/netconf
+	fi
+
+	procd_open_instance
+	procd_set_param command "$PROG"
+	procd_close_instance
+}
+
+service_triggers()
+{
+	procd_add_reload_trigger "freenetconfd"
+}

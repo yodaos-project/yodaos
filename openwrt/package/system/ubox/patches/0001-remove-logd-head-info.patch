@@ -1,0 +1,47 @@
+From 9f38ebbdc08903d0ba058abc9b366b780d8a0217 Mon Sep 17 00:00:00 2001
+From: "wenfeng.shi" <wenfeng.shi@rokid.com>
+Date: Sun, 30 Sep 2018 14:20:03 +0800
+Subject: [PATCH] remove logd head info
+
+---
+ log/logread.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/log/logread.c b/log/logread.c
+index e47541a..baef65f 100644
+--- a/log/logread.c
++++ b/log/logread.c
+@@ -66,7 +66,7 @@ static int log_type = LOG_STDOUT;
+ static int log_size, log_udp, log_follow, log_trailer_null = 0;
+ static int log_timestamp;
+ static int logd_conn_tries = LOGD_CONNECT_RETRY;
+-
++/*
+ static const char* getcodetext(int value, CODE *codetable) {
+ 	CODE *i;
+ 
+@@ -76,7 +76,7 @@ static const char* getcodetext(int value, CODE *codetable) {
+ 				return (i->c_name);
+ 	return "<unknown>";
+ };
+-
++*/
+ static void log_handle_reconnect(struct uloop_timeout *timeout)
+ {
+ 	sender.fd = usock((log_udp) ? (USOCK_UDP) : (USOCK_TCP), log_ip, log_port);
+@@ -185,10 +185,8 @@ static int log_notify(struct blob_attr *msg)
+ 			uloop_timeout_set(&retry, 1000);
+ 		}
+ 	} else {
+-		snprintf(buf, sizeof(buf), "%s %s%s.%s%s %s\n",
+-			c, log_timestamp ? buf_ts : "",
+-			getcodetext(LOG_FAC(p) << 3, facilitynames),
+-			getcodetext(LOG_PRI(p), prioritynames),
++		snprintf(buf, sizeof(buf), "%s%s%s\n",
++			log_timestamp ? buf_ts : "",
+ 			(blobmsg_get_u32(tb[LOG_SOURCE])) ? ("") : (" kernel:"), m);
+ 		ret = write(sender.fd, buf, strlen(buf));
+ 	}
+-- 
+1.9.1
+

@@ -1,0 +1,143 @@
+#!/bin/sh /etc/rc.common
+
+#
+# Copyright (C) 2013 OpenWrt.org
+#
+# This is free software, licensed under the GNU General Public License v2.
+# See /LICENSE for more information.
+#
+
+START=99
+STOP=99
+alfred_args=""
+vis_args=""
+facters_dir="/etc/alfred"
+pid_file_alfred="/var/run/alfred.pid"
+pid_file_vis="/var/run/batadv-vis.pid"
+enable=0
+vis_enable=0
+SERVICE_DAEMONIZE=1
+SERVICE_WRITE_PID=1
+
+wait_for_dir()
+{
+	local ifce="$1" dir="$2"
+
+	if ! [ -d "$dir" ] ; then
+		timeout=30
+		echo "${initscript}: waiting $timeout secs for $ifce interface..."
+		for i in $(seq $timeout); do
+			sleep 1
+			[ -d "$dir" ] && break
+			if [ $i == $timeout ] ; then
+				echo "${initscript}: $ifce not detected, alfred not starting."
+				exit 1
+			fi
+		done
+	fi
+}
+
+wait_for_ll_address()
+{
+	local iface="$1"
+	local timeout=30
+
+	echo "${initscript}: waiting $timeout secs for $iface address..."
+	for i in $(seq $timeout); do
+		# We look for
+		# - the link-local address (starts with fe80)
+		# - without tentative flag (bit 0x40 in the flags field; the first char of the flags field begins 38 columns after the fe80 prefix
+		# - on interface $iface
+		if awk '
+			BEGIN { RET=1 }
+			/^fe80.{37} [012389ab]/ { if ($6 == "'"$iface"'") RET=0 }
+			END { exit RET }
+		' /proc/net/if_inet6; then
+			return
+		fi
+		sleep 1
+	done
+
+	echo "${initscript}: $iface address not detected, alfred not starting."
+	exit 1
+}
+
+alfred_start()
+{
+	local args=""
+	local section="$1"
+	local disabled interface mode
+
+	# check if section is disabled
+	config_get_bool disabled "$section" disabled 0
+	[ $disabled = 0 ] || return 1
+
+	args=""
+
+	config_get interface "$section" interface
+	append args "-i $interface"
+
+	config_get mode "$section" mode
+	[ "$mode" = "master" ] && append args "-m"
+
+	config_get batmanif "$section" batmanif
+	append args "-b $batmanif"
+
+	if [ "$batmanif" != "none" ]; then
+		wait_for_dir "$batmanif" "/sys/class/net/$batmanif/mesh"
+	fi
+
+	wait_for_ll_address "$interface"
+
+	append alfred_args "$args"
+	enable=1
+
+	config_get_bool start_vis "$section" start_vis 0
+	if [ "$start_vis" = 1 ] && [ -x /usr/sbin/batadv-vis ]; then
+		vis_enable=1
+		append vis_args "-i $batmanif -s"
+	fi
+
+	config_get_bool run_facters "$section" run_facters 0
+
+	return 0
+}
+
+start()
+{
+	config_load "alfred"
+	config_foreach alfred_start alfred
+
+	if [ "$enable" = "0" ]; then
+		exit 0
+	fi
+
+	echo "${initscript}: starting alfred"
+	SERVICE_PID_FILE="$pid_file_alfred"
+	service_start /usr/sbin/alfred ${alfred_args}
+
+	if [ "$vis_enable" = "1" ]; then
+		echo "${initscript}: starting batadv-vis"
+		SERVICE_PID_FILE="$pid_file_vis"
+		service_start /usr/sbin/batadv-vis ${vis_args}
+	fi
+
+	if [ "$run_facters" = "1" ]; then
+		( for file in $facters_dir/* ; do [ -x $file ] && $file ; done )
+		if ! ( grep -q "for file in $facters_dir/\* ; do " /etc/crontabs/root 2>/dev/null ) ; then
+			echo "*/5 * * * * ( for file in $facters_dir/* ; do [ -x \$file ] && \$file ; done )" >> /etc/crontabs/root
+			/etc/init.d/cron enable
+			/etc/init.d/cron restart
+		fi
+	fi
+}
+
+stop()
+{
+	SERVICE_PID_FILE="$pid_file_alfred"
+	service_stop /usr/sbin/alfred
+	SERVICE_PID_FILE="$pid_file_vis"
+	[ -x /usr/sbin/batadv-vis ] && service_stop /usr/sbin/batadv-vis
+	sed "\|for file in $facters_dir/\* ; do |d" -i /etc/crontabs/root
+	/etc/init.d/cron restart
+}

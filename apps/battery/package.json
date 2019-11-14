@@ -1,0 +1,21 @@
+{
+  "name": "battery",
+  "version": "1.0.0",
+  "description": "Battery Apps for Rokid",
+  "main": "app.js",
+  "metadata": {
+    "hosts": [
+      "battery"
+    ]
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "battery",
+    "rokid",
+    "skill"
+  ],
+  "author": "Yazhong Liu <yorkiefixer@gmail.com>",
+  "license": "MIT"
+}

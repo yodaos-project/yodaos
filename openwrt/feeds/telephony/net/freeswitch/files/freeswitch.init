@@ -1,0 +1,40 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006 OpenWrt.org
+START=90 
+
+DEFAULT=/etc/default/freeswitch
+OPTIONS=""
+
+#boot() {
+#	# Do nothing on boot
+#	exit 0
+#}
+
+start() {
+	[ -f $DEFAULT ] && . $DEFAULT
+	mkdir -p $FS_DIR_DB
+	mkdir -p $FS_DIR_LOG
+	mkdir -p $FS_DIR_RECORDINGS
+	mkdir -p $FS_DIR_VM_STORAGE
+	ulimit -s 240
+	$FS_DIR/usr/bin/freeswitch $OPTIONS -nc
+}
+
+stop() {
+	[ -f $DEFAULT ] && . $DEFAULT
+	$FS_DIR/usr/bin/freeswitch $OPTIONS -stop
+}
+
+restart() {
+	# stopping freeswitch is non-blocking, so we wait until freeswitch's 
+	# event socket is down, and then wait an additional ten seconds so that 
+	# freeswitch should be completely shutdown before we start it again
+	local retval
+	stop
+	fs_cli -x status >/dev/null 2>&1
+	retval=$?
+	while [ $retval -eq 0 ]; do sleep 1; fs_cli -x status >/dev/null 2>&1; retval=$?; done
+	sleep 10
+	start
+}
+

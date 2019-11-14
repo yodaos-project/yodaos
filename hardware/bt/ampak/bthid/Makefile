@@ -1,0 +1,5 @@
+
+EXTRA_CFLAGS += -DLINUX_KERNEL -D_LINUX_ -DEXPORT_SYMTAB
+
+obj-m := bthid.o
+

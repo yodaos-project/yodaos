@@ -1,0 +1,58 @@
+#!/bin/sh /etc/rc.common
+START=85
+
+SERVICE_PID_FILE=/var/run/adbd.pid
+#PROG=/usr/bin/adbd
+
+start () {
+	test -d /sys/kernel/config || mkdir /sys/kernel/config
+	mount -t configfs none /sys/kernel/config
+	mkdir /sys/kernel/config/usb_gadget/g1 -m 0770
+	cd /sys/kernel/config/usb_gadget/g1
+
+	echo 0x2207 > idVendor
+	echo 0x0006 > idProduct
+
+	mkdir strings/0x409 -m 0770
+
+	#SERIAL_NO=`getprop | grep "serialno" | awk  '{print $2}'`
+	#SERIAL_NO=${SERIAL_NO:1}
+	#SERIAL_NO=${SERIAL_NO%?}
+
+	CMD=`cat /proc/cmdline |grep androidboot.serialno`
+	SERIAL_NO=`echo ${CMD#*"androidboot.serialno="} |awk '{print $1}'`
+
+	if [ ! $SERIAL_NO ]; then
+	      SERIAL_NO=0123456789ABCDEF
+	else
+	      echo ${SERIAL_NO}
+	fi
+
+	echo ${SERIAL_NO} > strings/0x409/serialnumber
+
+	echo "rockchip" > strings/0x409/manufacturer
+	echo "rk3xxx" > strings/0x409/product
+
+	mkdir configs/b.1 -m 0770
+	mkdir configs/b.1/strings/0x409 -m 0770
+	echo "adb" > configs/b.1/strings/0x409/configuration
+	echo 500 > configs/b.1/MaxPower
+
+	mkdir functions/ffs.adb
+	ln -s /sys/kernel/config/usb_gadget/g1/functions/ffs.adb /sys/kernel/config/usb_gadget/g1/configs/b.1/ffs.adb
+
+	mkdir -p /dev/usb-ffs/adb
+	mount -o uid=2000,gid=2000 -t functionfs adb /dev/usb-ffs/adb
+
+	cd /
+
+	adbd &
+
+	UDC=`ls /sys/class/udc/| awk '{print $1}'`
+	sleep 2
+	echo $UDC > /sys/kernel/config/usb_gadget/g1/UDC &
+}
+stop () {
+	echo "none" > /sys/kernel/config/usb_gadget/rockchip/UDC
+	killall adbd
+}

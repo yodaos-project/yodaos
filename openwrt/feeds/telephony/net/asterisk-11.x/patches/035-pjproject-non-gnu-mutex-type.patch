@@ -1,0 +1,24 @@
+--- a/res/pjproject/pjlib/src/pj/os_core_unix.c
++++ b/res/pjproject/pjlib/src/pj/os_core_unix.c
+@@ -1091,7 +1091,7 @@ static pj_status_t init_mutex(pj_mutex_t
+ 	return PJ_RETURN_OS_ERROR(rc);
+ 
+     if (type == PJ_MUTEX_SIMPLE) {
+-#if (defined(PJ_LINUX) && PJ_LINUX!=0) || \
++#if (defined(PJ_LINUX) && PJ_LINUX!=0 && defined(__GLIBC__)) || \
+     defined(PJ_HAS_PTHREAD_MUTEXATTR_SETTYPE)
+ 	rc = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_FAST_NP);
+ #elif (defined(PJ_RTEMS) && PJ_RTEMS!=0) || \
+@@ -1101,10 +1101,10 @@ static pj_status_t init_mutex(pj_mutex_t
+ 	rc = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL);
+ #endif
+     } else {
+-#if (defined(PJ_LINUX) && PJ_LINUX!=0) || \
++#if (defined(PJ_LINUX) && PJ_LINUX!=0 && defined(__GLIBC__)) || \
+      defined(PJ_HAS_PTHREAD_MUTEXATTR_SETTYPE)
+ 	rc = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE_NP);
+-#elif (defined(PJ_RTEMS) && PJ_RTEMS!=0) || \
++#elif (defined(PJ_RTEMS) && PJ_RTEMS!=0 && defined(__GLIBC__)) || \
+        defined(PJ_PTHREAD_MUTEXATTR_T_HAS_RECURSIVE)
+ 	// Phil Torre <ptorre@zetron.com>:
+ 	// The RTEMS implementation of POSIX mutexes doesn't include 

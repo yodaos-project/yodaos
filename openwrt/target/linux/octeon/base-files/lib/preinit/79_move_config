@@ -1,0 +1,14 @@
+#!/bin/sh
+# Copyright (C) 2014 OpenWrt.org
+
+move_config() {
+	case "$(cat /tmp/sysinfo/board_name)" in
+		erlite)
+			mount -t vfat /dev/sda1 /mnt
+			mv -f /mnt/sysupgrade.tgz /
+			umount /mnt
+			;;
+	esac
+}
+
+boot_hook_add preinit_mount_root move_config

@@ -1,0 +1,15 @@
+--- a/src/mod/languages/mod_python/freeswitch_python.cpp
++++ b/src/mod/languages/mod_python/freeswitch_python.cpp
+@@ -319,7 +319,12 @@ switch_status_t Session::run_dtmf_callba
+ 	}
+ 
+ 	if ((pyresult = PyEval_CallObject(cb_function, arglist))) {
++#if PY_MAJOR_VERSION < 3
+ 		str = (char *) PyString_AsString(pyresult);
++#else
++		//str = (char *) pyresult->encode('UTF-8');
++		str = (char *) PyUnicode_AsUnicode(pyresult);
++#endif
+ 	} else {
+ 		PyErr_Print();
+ 	}

@@ -1,0 +1,9 @@
+menu "Configuration"
+
+config PROPERTY_SERVICE_AUTO_RUN
+	bool "auto run"
+	default y
+	help
+		property service auto run
+
+endmenu

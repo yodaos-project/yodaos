@@ -1,0 +1,26 @@
+From 51ad382377db9e28f29a9f9f62a961323378ad40 Mon Sep 17 00:00:00 2001
+From: zhulei <lei.zhu@rokid.com>
+Date: Fri, 14 Sep 2018 13:13:50 +0800
+Subject: [PATCH] fix change volume pop
+
+Signed-off-by: zhulei <lei.zhu@rokid.com>
+---
+ src/pulsecore/sink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/pulsecore/sink.c b/src/pulsecore/sink.c
+index aa21822..cb25282 100644
+--- a/src/pulsecore/sink.c
++++ b/src/pulsecore/sink.c
+@@ -2438,7 +2438,7 @@ static void sync_input_volumes_within_thread(pa_sink *s) {
+             continue;
+ 
+         i->thread_info.soft_volume = i->soft_volume;
+-        pa_sink_input_request_rewind(i, 0, true, false, false);
++        //pa_sink_input_request_rewind(i, 0, true, false, false);
+     }
+ }
+ 
+-- 
+1.9.1
+

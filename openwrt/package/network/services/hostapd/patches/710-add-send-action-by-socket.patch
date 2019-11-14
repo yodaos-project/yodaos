@@ -1,0 +1,108 @@
+--- a/wpa_supplicant/ctrl_iface_unix.c
++++ b/wpa_supplicant_orig/ctrl_iface_unix.c
+@@ -28,6 +28,8 @@
+ #include "config.h"
+ #include "wpa_supplicant_i.h"
+ #include "ctrl_iface.h"
++#include "drivers/driver.h"
++#include "driver_i.h"
+ 
+ /* Per-interface ctrl_iface */
+ 
+@@ -59,6 +61,7 @@ struct ctrl_iface_msg {
+ 	size_t len;
+ };
+ 
++static struct sockaddr_un action_addr;
+ 
+ static void wpa_supplicant_ctrl_iface_send(struct wpa_supplicant *wpa_s,
+ 					   const char *ifname, int sock,
+@@ -484,6 +487,75 @@ static void wpa_supplicant_ctrl_iface_ms
+ 	}
+ }
+ 
++static void wpa_supplicant_ctrl_send_action(int sock, void *eloop_ctx,
++                                            void *sock_ctx)
++{
++    struct wpa_supplicant *wpa_s = eloop_ctx;
++    uint8_t buf[2300]= {0};
++    uint8_t iot_mac[6] = {0};
++    struct wpabuf *send_buf = NULL;
++    int ret = 0;
++    int iot_len = 0;
++    int socket_len = strlen(action_addr.sun_path) + sizeof(action_addr.sun_family);
++    
++    ret = recvfrom(sock, buf, sizeof(buf), 0, (struct sockaddr *)&action_addr, &socket_len);
++    wpa_msg(wpa_s, MSG_DEBUG, "action ret %d", ret);
++    if (ret <= 0) {
++        return ;
++    }
++    wpa_msg(wpa_s, MSG_DEBUG, "action ret %d", ret);
++    if (ret < 26) {
++        return ;
++    }
++    memcpy(iot_mac, buf + 4, sizeof(iot_mac));
++
++    iot_len = ret - 26;
++    
++    send_buf = wpabuf_alloc(2 + iot_len);
++    wpabuf_put_u8(send_buf, WLAN_ACTION_PUBLIC);
++    wpabuf_put_u8(send_buf, 180);
++    
++    wpabuf_put_data(send_buf, buf + 26, iot_len);
++
++    if (wpa_drv_send_action(wpa_s, wpa_s->assoc_freq, 0, iot_mac,
++                            wpa_s->own_addr, iot_mac,
++                            wpabuf_head(send_buf), wpabuf_len(send_buf), 0) < 0) {
++        
++        wpa_msg(wpa_s, MSG_ERROR, "action send error");
++    }
++    wpa_msg(wpa_s, MSG_ERROR, "action send ok");
++}
++
++
++static int wpa_action_scoket_init(struct wpa_supplicant *wpa_s,
++                                  struct ctrl_iface_priv *priv) {
++    char *filename="/tmp/action_pipe";
++    int socket_fd = 0;
++    int len = 0;
++    
++    unlink(filename);
++    
++    action_addr.sun_family = AF_UNIX;
++    strncpy(action_addr.sun_path, filename, strlen(filename));
++
++    len = strlen(action_addr.sun_path) + sizeof(action_addr.sun_family);
++
++    socket_fd = socket(AF_UNIX, SOCK_DGRAM, 0);
++    if (socket_fd < 0) {
++        printf("wifi event socket create error %d\n", errno);
++        return -1;
++    }
++
++    if(bind(socket_fd, (struct sockaddr *)&action_addr, len) < 0) {
++        perror("bind error");
++        close(socket_fd);
++        return -1;
++    }
++
++    printf("Bind is ok\n");
++
++    return socket_fd;
++}
+ 
+ static int wpas_ctrl_iface_open_sock(struct wpa_supplicant *wpa_s,
+ 				     struct ctrl_iface_priv *priv)
+@@ -671,6 +743,12 @@ havesock:
+ 
+ 	eloop_register_read_sock(priv->sock, wpa_supplicant_ctrl_iface_receive,
+ 				 wpa_s, priv);
++
++    int socket_fd = wpa_action_scoket_init(wpa_s, priv);
++
++    eloop_register_read_sock(socket_fd, wpa_supplicant_ctrl_send_action,
++                             wpa_s, NULL);
++
+ 	wpa_msg_register_cb(wpa_supplicant_ctrl_iface_msg_cb);
+ 
+ 	os_free(buf);

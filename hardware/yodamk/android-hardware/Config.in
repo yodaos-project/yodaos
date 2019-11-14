@@ -1,0 +1,101 @@
+menu "Hardware Layer Solutions"
+	config LED_HAL_PWM
+          bool "Led HAL via PWM"
+          default n
+
+	config LED_HAL_VSP
+          bool "Led HAL via VSP"
+          default n
+
+	config LED_HAL_I2C
+          bool "Led HAL via I2C"
+          default n
+
+	config LED_HAL_YODASTAGE
+          bool "Led HAL via YODASTAGE"
+          default n
+
+	config LED_HAL_GPIO
+          bool "GPIO Led used"
+          default n
+
+	config BOARD_LED_NUMS
+		int "pwm led nums used"
+		default 5
+
+	config POWER_HAL
+		bool "power manager HAL"
+		default n
+
+	config WIFI_HAL
+		bool "wifi manager HAL"
+		default n
+
+  config ETHNET_HAL
+		bool "ethnet manager HAL"
+		default n
+
+	config MIC_ARRAY_HAL_VSP
+		bool "mic array via vsp I/F"
+		default n
+
+	config MIC_ARRAY_HAL_PCM
+		bool "mic array via pcm I/F"
+		default n
+
+	config KENOBI_MODE
+		bool "mic array using kenobi mode instead of active mode"
+		default n
+
+	config BOARD_MIC_CHANNEL
+		int "mic nums used"
+		default 8
+
+	config BOARD_MIC_SAMPLE_RATE
+		int "mic sample rate used"
+		default 48000
+
+	config BOARD_MIC_BIT_FORMAT
+		int "mic bit format"
+		default 32
+
+	config ROKIDOS_BOARDCONFIG_SOUND_CARDID
+		int "sound card id for pcm device"
+		default 0
+
+	config ROKIDOS_BOARDCONFIG_CAPTURE_DEVICEID
+		int "capture device id for pcm device"
+		default 3
+
+	config BLUETOOTH_USE_BLUEZ
+		bool "bluetooth use bluez"
+		default n
+
+	config BLUETOOTH_USE_BSA_AMPAK
+		bool "bluetooth use bsa ampak"
+		default n
+
+	config BLUETOOTH_USE_BSA_CYPRESS
+		bool "bluetooth use bsa cypress"
+		default n
+    config MODEM_HAL_TTY 
+		bool "Modem HAL TTY"
+		default n
+
+	config BOARD_MODEM_TTY_DEBUG
+		bool "modem tty debug"
+ 		depends on MODEM_HAL_TTY
+		default n 
+
+	config BOARD_MODEM_TTY_BAUD
+		int "default modem tty baudrate"
+ 		depends on MODEM_HAL_TTY
+		default "115200"
+
+	config BOARD_MODEM_TTY_DEV
+		string "default modem tty device name"
+ 		depends on MODEM_HAL_TTY
+		default "/dev/ttyACM1"
+
+endmenu
+

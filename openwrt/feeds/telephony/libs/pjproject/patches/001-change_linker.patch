@@ -1,0 +1,11 @@
+--- a/build/cc-auto.mak.in
++++ b/build/cc-auto.mak.in
+@@ -2,7 +2,7 @@ export CC = @CC@ -c
+ export CXX = @CXX@ -c
+ export AR = @AR@
+ export AR_FLAGS = @AR_FLAGS@
+-export LD = @LD@
++export LD = @CXX@
+ export LDOUT = -o 
+ export RANLIB = @RANLIB@
+ 

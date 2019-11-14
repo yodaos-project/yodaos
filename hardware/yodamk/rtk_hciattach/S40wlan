@@ -1,0 +1,26 @@
+#!/bin/ash
+
+MODULE_PATH=/lib/modules/`uname -r`
+
+
+MY_SRC=`cat /proc/cmdline | awk -F 'androidboot.wifimac=' '{printf $2}'`
+WIFI_MAC=${MY_SRC:0:17}
+MY_CHAR=${WIFI_MAC:0:1}
+
+if [ "$MY_CHAR"x = x ]; then
+    echo "no WIFI MAC:$WIFI_MAC"
+    insmod ${MODULE_PATH}/8723ds.ko
+elif [ "$MY_CHAR"x = " "x ]; then
+    echo "WIFI MAC no data:$WIFI_MAC"
+    insmod ${MODULE_PATH}/8723ds.ko
+else
+    if [ "${WIFI_MAC:2:1}"x = ":"x ]; then
+        echo "MAC:$WIFI_MAC"
+        echo "load 8723ds.ko rtw_initmac=${WIFI_MAC}"
+        insmod ${MODULE_PATH}/8723ds.ko rtw_initmac=${WIFI_MAC}
+    else
+        echo "WIFI MAC not invalid:$WIFI_MAC"
+        insmod ${MODULE_PATH}/8723ds.ko
+    fi
+fi
+

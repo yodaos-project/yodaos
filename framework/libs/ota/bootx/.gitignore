@@ -1,0 +1,26 @@
+#
+# Normal rules
+#
+.*
+*.o
+*.a
+
+#
+# Top-level generic files
+#
+tags
+TAGS
+GPATH
+GRTAGS
+GTAGS
+!.gitignore
+
+#
+# Generated include files
+#
+bootx
+bootx.exe
+
+# cscope files
+cscope.*
+ncscope.*

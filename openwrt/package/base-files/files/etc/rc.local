@@ -1,0 +1,13 @@
+# Put your custom commands here that should be executed once
+# the system init finished. By default this file does nothing.
+
+#cpu conservative adjust
+if [ -f "/sys/devices/system/cpu/cpufreq/conservative/down_threshold" ]; then
+	echo 15 > /sys/devices/system/cpu/cpufreq/conservative/down_threshold
+fi
+
+if [ -f "/sys/devices/system/cpu/cpufreq/conservative/up_threshold" ]; then
+	echo 60 > /sys/devices/system/cpu/cpufreq/conservative/up_threshold
+fi
+
+exit 0

@@ -1,0 +1,44 @@
+menu "Configuration"
+	depends on PACKAGE_libnetconf
+        
+	config LIBNETCONF_ENABLE_DNSSEC
+		bool "Enable support for SSHFP retrieval using DNSSEC for SSH"
+		depends on @BROKEN
+		default n
+
+	config LIBNETCONF_ENABLE_NOTIFICATIONS
+		bool "Enable support for NETCONF Notifications (RFC 5277)"
+		default y
+
+        config LIBNETCONF_ENABLE_TLS
+                bool "Enable support for NETCONF over TLS using OpenSSL"
+                default y
+
+	config LIBNETCONF_ENABLE_URL
+		bool "Enable support of NETCONF URL Capability (RFC 6241)"
+		default y
+
+	config LIBNETCONF_ENABLE_VALIDATION
+		bool "Enable support for configuration data validation (RFC 6241)"
+		default y
+
+	config LIBNETCONF_ENABLE_YANG_SCHEMAS
+		bool "Enable support for YANG format in <get-schema> operation"
+		default y
+
+	config LIBNETCONF_USE_LIBSSH
+		bool "Use libssh library for SSH transport"
+		default y
+		help
+			If this config is selected, the libssh library is 
+			used for SSH transport. Otherwise the system SSH 
+			client is used.
+
+	config LIBNETCONF_WORKING_DIR
+		string "NETCONF working directory"
+		default '/usr/share/libnetconf/'
+		help
+			Path to a working directory of libnetconf, where all
+			the system files are stored, the default value is
+			/usr/share/libnetconf/
+endmenu

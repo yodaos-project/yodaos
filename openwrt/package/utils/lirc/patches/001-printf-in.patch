@@ -1,0 +1,58 @@
+--- a/daemons/lircd.c
++++ b/daemons/lircd.c
+@@ -2433,7 +2433,7 @@ int main(int argc, char **argv)
+ 		opt = options_getstring("lircd:listen_hostport");
+ 		if (opt){
+ 			if (opt2host_port(opt, &address, &port, errmsg) != 0){
+-				fprintf(stderr, errmsg);
++				fprintf(stderr, "%s", errmsg);
+ 				return(EXIT_FAILURE);
+ 			}
+ 		} else
+--- a/tools/irsimsend.c
++++ b/tools/irsimsend.c
+@@ -196,7 +196,7 @@ int parse_uint_arg(const char* optind, c
+
+ 	c = strtol(optarg, NULL, 10);
+ 	if (c > INT_MAX || c < 0 || errno == EINVAL || errno == ERANGE) {
+-		fprintf(stderr, errmsg);
++		fprintf(stderr, "%s", errmsg);
+ 		exit(EXIT_FAILURE);
+ 	}
+ 	return (int) c;
+--- a/tools/irtestcase.c
++++ b/tools/irtestcase.c
+@@ -181,11 +181,11 @@ static int irtestcase(int fd_io, int fd_
+ 		}
+ 	}
+ 	while (nextcode(fd_io, code, sizeof(code)) == 1) {
+-		printf(code);
++		printf("%s", code);
+ 		if (strstr(code, "__EOF") != NULL) {
+ 			exit(0);
+ 		}
+-		fprintf(code_log, code);
++		fprintf(code_log, "%s", code);
+ 		if (opt_lircrc != NULL){
+ 			r = lirc_code2char(config, code, &c);
+ 			while (r == 0 && c != NULL) {
+--- a/tools/lirc-lsplugins.c
++++ b/tools/lirc-lsplugins.c
+@@ -152,7 +152,7 @@ static void line_print(const line_t* lin
+ 	printf("%-20s%-6s%s\n",
+                line->name,  line->flags, line->path);
+ 	if (line->errors)
+-		printf(line->errors);
++		printf("%s", line->errors);
+ }
+
+ static void print_folded_item(const char* arg)
+@@ -178,7 +178,7 @@ static void print_folded_item(const char
+ 			printf(" ");
+ 			pos += 1;
+ 		}
+-		printf(token);
++		printf("%s", token);
+ 		pos += strlen(token);
+ 		token = strtok(NULL, " \t");
+ 	}

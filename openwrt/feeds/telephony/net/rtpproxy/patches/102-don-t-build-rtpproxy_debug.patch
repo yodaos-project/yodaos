@@ -1,0 +1,23 @@
+Index: rtpproxy-2.0.0/src/Makefile.am
+===================================================================
+--- rtpproxy-2.0.0.orig/src/Makefile.am
++++ rtpproxy-2.0.0/src/Makefile.am
+@@ -1,4 +1,4 @@
+-bin_PROGRAMS=rtpproxy rtpproxy_debug
++bin_PROGRAMS=rtpproxy
+ rtpproxy_SOURCES=main.c rtp.h rtp_server.c rtp_server.h \
+   rtpp_defines.h rtpp_log.h rtpp_record.c rtpp_record.h rtpp_session.h \
+   rtpp_util.c rtpp_util.h rtp.c rtp_resizer.c rtp_resizer.h rtpp_session.c \
+Index: rtpproxy-2.0.0/src/Makefile.in
+===================================================================
+--- rtpproxy-2.0.0.orig/src/Makefile.in
++++ rtpproxy-2.0.0/src/Makefile.in
+@@ -78,7 +78,7 @@ PRE_UNINSTALL = :
+ POST_UNINSTALL = :
+ build_triplet = @build@
+ host_triplet = @host@
+-bin_PROGRAMS = rtpproxy$(EXEEXT) rtpproxy_debug$(EXEEXT)
++bin_PROGRAMS = rtpproxy$(EXEEXT)
+ subdir = src
+ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
+ 	$(srcdir)/config.h.in $(top_srcdir)/depcomp

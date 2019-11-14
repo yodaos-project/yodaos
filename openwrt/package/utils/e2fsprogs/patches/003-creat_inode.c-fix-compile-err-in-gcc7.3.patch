@@ -1,0 +1,39 @@
+diff -aburNp e2fsprogs-1.43.1.bk/misc/create_inode.c e2fsprogs-1.43.1/misc/create_inode.c
+--- e2fsprogs-1.43.1.bk/misc/create_inode.c	2019-05-15 21:42:12.448571545 +0800
++++ e2fsprogs-1.43.1/misc/create_inode.c	2019-05-15 21:42:59.824571251 +0800
+@@ -392,7 +392,7 @@ static ssize_t my_pread(int fd, void *bu
+ }
+ #endif /* !defined HAVE_PREAD64 && !defined HAVE_PREAD */
+ 
+-static errcode_t copy_file_range(ext2_filsys fs, int fd, ext2_file_t e2_file,
++static errcode_t local_copy_file_range(ext2_filsys fs, int fd, ext2_file_t e2_file,
+ 				 off_t start, off_t end, char *buf,
+ 				 char *zerobuf)
+ {
+@@ -466,7 +466,7 @@ static errcode_t try_lseek_copy(ext2_fil
+ 
+ 		data_blk = data & ~(fs->blocksize - 1);
+ 		hole_blk = (hole + (fs->blocksize - 1)) & ~(fs->blocksize - 1);
+-		err = copy_file_range(fs, fd, e2_file, data_blk, hole_blk, buf,
++		err = local_copy_file_range(fs, fd, e2_file, data_blk, hole_blk, buf,
+ 				      zerobuf);
+ 		if (err)
+ 			return err;
+@@ -516,7 +516,7 @@ static errcode_t try_fiemap_copy(ext2_fi
+ 		}
+ 		for (i = 0, ext = ext_buf; i < fiemap_buf->fm_mapped_extents;
+ 		     i++, ext++) {
+-			err = copy_file_range(fs, fd, e2_file, ext->fe_logical,
++			err = local_copy_file_range(fs, fd, e2_file, ext->fe_logical,
+ 					      ext->fe_logical + ext->fe_length,
+ 					      buf, zerobuf);
+ 			if (err)
+@@ -569,7 +569,7 @@ static errcode_t copy_file(ext2_filsys f
+ 		goto out;
+ #endif
+ 
+-	err = copy_file_range(fs, fd, e2_file, 0, statbuf->st_size, buf,
++	err = local_copy_file_range(fs, fd, e2_file, 0, statbuf->st_size, buf,
+ 			      zerobuf);
+ out:
+ 	ext2fs_free_mem(&zerobuf);

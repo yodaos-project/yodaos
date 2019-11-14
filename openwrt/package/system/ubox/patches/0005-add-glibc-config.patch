@@ -1,0 +1,37 @@
+From 939d9848eb95ba03bd2e0774515fa3cf0d45a2ba Mon Sep 17 00:00:00 2001
+From: "huan.zhang" <huan.zhang@rokid.com>
+Date: Tue, 25 Jun 2019 20:16:58 +0800
+Subject: [PATCH] add glibc config
+
+---
+ log/logd.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/log/logd.c b/log/logd.c
+index 66a9b05..903ced1 100644
+--- a/log/logd.c
++++ b/log/logd.c
+@@ -25,7 +25,9 @@
+ #include <libubus.h>
+ 
+ #include "syslog.h"
++#ifdef __GLIBC__
+ #include <malloc.h>
++#endif
+ 
+ int debug = 0;
+ static struct blob_buf b;
+@@ -262,8 +264,10 @@ main(int argc, char **argv)
+ 		}
+ 	}
+ 	log_size *= 1024;
++#ifdef __GLIBC__
+         mallopt(M_TRIM_THRESHOLD, 32 * 1024);
+         mallopt(M_MMAP_THRESHOLD, 64 * 1024);
++#endif
+ 	uloop_init();
+ 	log_init(log_size);
+ 	conn.cb = ubus_connect_handler;
+-- 
+2.18.0
+

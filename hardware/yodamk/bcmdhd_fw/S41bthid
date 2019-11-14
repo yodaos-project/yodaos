@@ -1,0 +1,3 @@
+#!/bin/ash
+
+insmod bthid.ko

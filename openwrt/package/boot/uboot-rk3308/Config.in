@@ -1,0 +1,10 @@
+menu "RK3308 UBOOT Configuration"
+
+config SUB128M 
+	bool
+	prompt "subtract 128M  support"
+	default n
+	help
+	  select memory subtract 128 M.
+
+endmenu

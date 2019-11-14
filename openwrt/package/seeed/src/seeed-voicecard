@@ -1,0 +1,80 @@
+#!/bin/sh /etc/rc.common
+START=99
+STOP=15
+ 
+start() {
+	set -x
+# 	exec 1>/var/log/r.common.log 2>&1
+	mount  /dev/mmcblk0p1 /mnt
+	mount -o remount /  /
+	if [ ! -d "/var/lib/alsa" ]; then 
+       mkdir /var/lib/alsa
+    fi
+	
+	#enable i2c interface
+	grep -q "dtparam=i2c_arm=on" /mnt/config.txt || \
+    echo "dtparam=i2c_arm=on" >> /mnt/config.txt
+    
+    grep -q "dtparam=spi=on" /mnt/config.txt || \
+    echo "dtparam=spi=on" >> /mnt/config.txt
+	
+
+	sleep 1
+#     is_1a=$(i2cdetect -y  1 0x1a 0x1a | grep 1a | awk '{print $2}')
+#     is_35=$(i2cdetect -y  1 0x35 0x35 | grep 35 | awk '{print $2}')
+#     is_3b=$(i2cdetect -y  1 0x3b 0x3b | grep 3b | awk '{print $2}')
+    
+  
+    if [  -f "/etc/asound.conf" ]; then 
+        rm /etc/asound.conf
+    fi
+  
+   
+
+#    if [ "x${is_1a}" == "x1a" ] && [ "x${is_35}" == "x" ] ; then
+#        echo "install 2mic"
+#        grep -q "dtoverlay=seeed-2mic-voicecard" /mnt/config.txt || \
+#        echo "dtoverlay=seeed-2mic-voicecard" >> /mnt/config.txt
+#        sleep 1
+#        echo "create 2mic asound configure file"
+#        ln -s /etc/voicecard/asound_2mic.conf /etc/asound.conf
+#  
+#        echo "create 2mic asound status file"
+#        ln -s /etc/voicecard/wm8960_asound.state /var/lib/alsa/asound.state
+#    fi
+
+#   if [ "x${is_3b}" == "x3b" ] && [ "x${is_35}" == "x" ] ; then
+      echo "install 4mic"
+      grep -q "dtoverlay=seeed-4mic-voicecard" /mnt/config.txt || \
+      echo "dtoverlay=seeed-4mic-voicecard" >> /mnt/config.txt
+      sleep 1
+      echo "create 4mic asound configure file"
+      ln -s /etc/voicecard/asound_4mic.conf /etc/asound.conf
+
+      echo "create 4mic asound status file"
+      ln -s /etc/voicecard/ac108_asound.state /var/lib/alsa/asound.state
+#   fi
+
+#    if [ "x${is_3b}" == "x3b" ] && [ "x${is_35}" == "x35" ] ; then
+#        echo "install 6mic"
+#        grep -q "dtoverlay=seeed-8mic-voicecard" /mnt/config.txt || \
+#        echo "dtoverlay=seeed-8mic-voicecard" >> /mnt/config.txt
+#        sleep 1
+#        echo "create 6mic asound configure file"
+#        ln -s /etc/voicecard/asound_6mic.conf /etc/asound.conf
+#  
+#        echo "create 6mic asound status file"
+#        ln -s /etc/voicecard/ac108_6mic.state /var/lib/alsa/asound.state
+#    fi
+
+   alsactl restore
+
+#Fore 3.5mm ('headphone') jack
+   amixer cset numid=3 1 
+   umount /mnt
+}
+ 
+stop() {
+   echo stop
+}
+

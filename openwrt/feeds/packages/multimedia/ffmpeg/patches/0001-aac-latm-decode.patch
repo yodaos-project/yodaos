@@ -1,0 +1,500 @@
+diff -aburNp ffmpeg-3.2.7_orig/libavcodec/aacdec.c ffmpeg-3.2.7/libavcodec/aacdec.c
+--- ffmpeg-3.2.7_orig/libavcodec/aacdec.c	2018-07-19 16:11:57.063787438 +0800
++++ ffmpeg-3.2.7/libavcodec/aacdec.c	2018-07-19 16:22:40.000000000 +0800
+@@ -284,42 +284,48 @@ static int latm_decode_audio_specific_co
+     AACContext *ac        = &latmctx->aac_ctx;
+     AVCodecContext *avctx = ac->avctx;
+     MPEG4AudioConfig m4ac = { 0 };
++    GetBitContext gbc;
+     int config_start_bit  = get_bits_count(gb);
+     int sync_extension    = 0;
+-    int bits_consumed, esize;
++    int bits_consumed, esize, i;
+ 
+-    if (asclen) {
++    if (asclen > 0) {
+         sync_extension = 1;
+         asclen         = FFMIN(asclen, get_bits_left(gb));
+-    } else
+-        asclen         = get_bits_left(gb);
+-
+-    if (config_start_bit % 8) {
+-        avpriv_request_sample(latmctx->aac_ctx.avctx,
+-                              "Non-byte-aligned audio-specific config");
+-        return AVERROR_PATCHWELCOME;
++        init_get_bits(&gbc, gb->buffer, config_start_bit + asclen);
++        skip_bits_long(&gbc, config_start_bit);
++    } else if (asclen == 0) {
++        gbc = *gb;
++    } else {
++        return AVERROR_INVALIDDATA;
+     }
+-    if (asclen <= 0)
++
++    if (get_bits_left(gb) <= 0)
+         return AVERROR_INVALIDDATA;
+-    bits_consumed = decode_audio_specific_config(NULL, avctx, &m4ac,
+-                                         gb->buffer + (config_start_bit / 8),
+-                                         asclen, sync_extension);
+ 
+-    if (bits_consumed < 0)
++    bits_consumed = decode_audio_specific_config_gb(NULL, avctx, &m4ac,
++                                                    &gbc, config_start_bit,
++                                                    sync_extension);
++
++    if (bits_consumed < config_start_bit)
+         return AVERROR_INVALIDDATA;
++    bits_consumed -= config_start_bit;
++
++    if (asclen == 0)
++      asclen = bits_consumed;
+ 
+     if (!latmctx->initialized ||
+         ac->oc[1].m4ac.sample_rate != m4ac.sample_rate ||
+         ac->oc[1].m4ac.chan_config != m4ac.chan_config) {
+ 
+-        if(latmctx->initialized) {
+-            av_log(avctx, AV_LOG_INFO, "audio config changed\n");
++        if (latmctx->initialized) {
++            av_log(avctx, AV_LOG_INFO, "audio config changed (sample_rate=%d, chan_config=%d)\n", m4ac.sample_rate, m4ac.chan_config);
+         } else {
+             av_log(avctx, AV_LOG_DEBUG, "initializing latmctx\n");
+         }
+         latmctx->initialized = 0;
+ 
+-        esize = (bits_consumed+7) / 8;
++        esize = (asclen + 7) / 8;
+ 
+         if (avctx->extradata_size < esize) {
+             av_free(avctx->extradata);
+@@ -329,12 +335,15 @@ static int latm_decode_audio_specific_co
+         }
+ 
+         avctx->extradata_size = esize;
+-        memcpy(avctx->extradata, gb->buffer + (config_start_bit/8), esize);
++        gbc = *gb;
++        for (i = 0; i < esize; i++) {
++          avctx->extradata[i] = get_bits(&gbc, 8);
++        }
+         memset(avctx->extradata+esize, 0, AV_INPUT_BUFFER_PADDING_SIZE);
+     }
+-    skip_bits_long(gb, bits_consumed);
++    skip_bits_long(gb, asclen);
+ 
+-    return bits_consumed;
++    return 0;
+ }
+ 
+ static int read_stream_mux_config(struct LATMContext *latmctx,
+@@ -375,8 +384,6 @@ static int read_stream_mux_config(struct
+             int ascLen = latm_get_value(gb);
+             if ((ret = latm_decode_audio_specific_config(latmctx, gb, ascLen)) < 0)
+                 return ret;
+-            ascLen -= ret;
+-            skip_bits_long(gb, ascLen);
+         }
+ 
+         latmctx->frame_length_type = get_bits(gb, 3);
+@@ -451,7 +458,7 @@ static int read_audio_mux_element(struct
+     } else if (!latmctx->aac_ctx.avctx->extradata) {
+         av_log(latmctx->aac_ctx.avctx, AV_LOG_DEBUG,
+                "no decoder config found\n");
+-        return AVERROR(EAGAIN);
++        return 1;
+     }
+     if (latmctx->audio_mux_version_A == 0) {
+         int mux_slot_length_bytes = read_payload_length_info(latmctx, gb);
+@@ -488,8 +495,8 @@ static int latm_decode_frame(AVCodecCont
+     if (muxlength > avpkt->size)
+         return AVERROR_INVALIDDATA;
+ 
+-    if ((err = read_audio_mux_element(latmctx, &gb)) < 0)
+-        return err;
++    if ((err = read_audio_mux_element(latmctx, &gb)))
++        return (err < 0) ? err : avpkt->size;
+ 
+     if (!latmctx->initialized) {
+         if (!avctx->extradata) {
+diff -aburNp ffmpeg-3.2.7_orig/libavcodec/aacdec_template.c ffmpeg-3.2.7/libavcodec/aacdec_template.c
+--- ffmpeg-3.2.7_orig/libavcodec/aacdec_template.c	2018-07-19 16:11:56.975787436 +0800
++++ ffmpeg-3.2.7/libavcodec/aacdec_template.c	2018-07-19 16:28:16.000000000 +0800
+@@ -719,6 +719,13 @@ static void decode_channel_map(uint8_t l
+     }
+ }
+ 
++static inline void relative_align_get_bits(GetBitContext *gb,
++                                           int reference_position) {
++    int n = (reference_position - get_bits_count(gb) & 7);
++    if (n)
++        skip_bits(gb, n);
++}
++
+ /**
+  * Decode program configuration element; reference: table 4.2.
+  *
+@@ -726,7 +733,7 @@ static void decode_channel_map(uint8_t l
+  */
+ static int decode_pce(AVCodecContext *avctx, MPEG4AudioConfig *m4ac,
+                       uint8_t (*layout_map)[3],
+-                      GetBitContext *gb)
++                      GetBitContext *gb, int byte_align_ref)
+ {
+     int num_front, num_side, num_back, num_lfe, num_assoc_data, num_cc;
+     int sampling_index;
+@@ -756,7 +763,7 @@ static int decode_pce(AVCodecContext *av
+     if (get_bits1(gb))
+         skip_bits(gb, 3); // mixdown_coeff_index and pseudo_surround
+ 
+-    if (get_bits_left(gb) < 4 * (num_front + num_side + num_back + num_lfe + num_assoc_data + num_cc)) {
++    if (get_bits_left(gb) < 5 * (num_front + num_side + num_back + num_cc) + 4 *(num_lfe + num_assoc_data + num_cc)) {
+         av_log(avctx, AV_LOG_ERROR, "decode_pce: " overread_err);
+         return -1;
+     }
+@@ -774,7 +781,7 @@ static int decode_pce(AVCodecContext *av
+     decode_channel_map(layout_map + tags, AAC_CHANNEL_CC,    gb, num_cc);
+     tags += num_cc;
+ 
+-    align_get_bits(gb);
++    relative_align_get_bits(gb, byte_align_ref);
+ 
+     /* comment field, first byte is length */
+     comment_len = get_bits(gb, 8) * 8;
+@@ -796,6 +803,7 @@ static int decode_pce(AVCodecContext *av
+  */
+ static int decode_ga_specific_config(AACContext *ac, AVCodecContext *avctx,
+                                      GetBitContext *gb,
++                                     int get_bit_alignment,
+                                      MPEG4AudioConfig *m4ac,
+                                      int channel_config)
+ {
+@@ -819,7 +827,7 @@ static int decode_ga_specific_config(AAC
+ 
+     if (channel_config == 0) {
+         skip_bits(gb, 4);  // element_instance_tag
+-        tags = decode_pce(avctx, m4ac, layout_map, gb);
++        tags = decode_pce(avctx, m4ac, layout_map, gb, get_bit_alignment);
+         if (tags < 0)
+             return tags;
+     } else {
+@@ -941,37 +949,25 @@ static int decode_eld_specific_config(AA
+  * @param   ac          pointer to AACContext, may be null
+  * @param   avctx       pointer to AVCCodecContext, used for logging
+  * @param   m4ac        pointer to MPEG4AudioConfig, used for parsing
+- * @param   data        pointer to buffer holding an audio specific config
+- * @param   bit_size    size of audio specific config or data in bits
++ * @param   gb          buffer holding an audio specific config
++ * @param   get_bit_alignment relative alignment for byte align operations
+  * @param   sync_extension look for an appended sync extension
+  *
+  * @return  Returns error status or number of consumed bits. <0 - error
+  */
+-static int decode_audio_specific_config(AACContext *ac,
++static int decode_audio_specific_config_gb(AACContext *ac,
+                                         AVCodecContext *avctx,
+                                         MPEG4AudioConfig *m4ac,
+-                                        const uint8_t *data, int64_t bit_size,
++                                           GetBitContext *gb,
++                                           int get_bit_alignment,
+                                         int sync_extension)
+ {
+-    GetBitContext gb;
+     int i, ret;
++    GetBitContext gbc = *gb;
+ 
+-    if (bit_size < 0 || bit_size > INT_MAX) {
+-        av_log(avctx, AV_LOG_ERROR, "Audio specific config size is invalid\n");
++    if ((i = ff_mpeg4audio_get_config_gb(m4ac, &gbc, sync_extension)) < 0)
+         return AVERROR_INVALIDDATA;
+-    }
+ 
+-    ff_dlog(avctx, "audio specific config size %d\n", (int)bit_size >> 3);
+-    for (i = 0; i < bit_size >> 3; i++)
+-        ff_dlog(avctx, "%02x ", data[i]);
+-    ff_dlog(avctx, "\n");
+-
+-    if ((ret = init_get_bits(&gb, data, bit_size)) < 0)
+-        return ret;
+-
+-    if ((i = avpriv_mpeg4audio_get_config(m4ac, data, bit_size,
+-                                          sync_extension)) < 0)
+-        return AVERROR_INVALIDDATA;
+     if (m4ac->sampling_index > 12) {
+         av_log(avctx, AV_LOG_ERROR,
+                "invalid sampling rate index %d\n",
+@@ -986,20 +982,21 @@ static int decode_audio_specific_config(
+         return AVERROR_INVALIDDATA;
+     }
+ 
+-    skip_bits_long(&gb, i);
++    skip_bits_long(gb, i);
+ 
+     switch (m4ac->object_type) {
+     case AOT_AAC_MAIN:
+     case AOT_AAC_LC:
++    case AOT_AAC_SSR:
+     case AOT_AAC_LTP:
+     case AOT_ER_AAC_LC:
+     case AOT_ER_AAC_LD:
+-        if ((ret = decode_ga_specific_config(ac, avctx, &gb,
++        if ((ret = decode_ga_specific_config(ac, avctx, gb, get_bit_alignment,
+                                             m4ac, m4ac->chan_config)) < 0)
+             return ret;
+         break;
+     case AOT_ER_AAC_ELD:
+-        if ((ret = decode_eld_specific_config(ac, avctx, &gb,
++        if ((ret = decode_eld_specific_config(ac, avctx, gb,
+                                               m4ac, m4ac->chan_config)) < 0)
+             return ret;
+         break;
+@@ -1017,7 +1014,33 @@ static int decode_audio_specific_config(
+             m4ac->sample_rate, m4ac->sbr,
+             m4ac->ps);
+ 
+-    return get_bits_count(&gb);
++    return get_bits_count(gb);
++}
++
++static int decode_audio_specific_config(AACContext *ac,
++                                        AVCodecContext *avctx,
++                                        MPEG4AudioConfig *m4ac,
++                                        const uint8_t *data, int64_t bit_size,
++                                        int sync_extension)
++{
++    int i, ret;
++    GetBitContext gb;
++
++    if (bit_size < 0 || bit_size > INT_MAX) {
++        av_log(avctx, AV_LOG_ERROR, "Audio specific config size is invalid\n");
++        return AVERROR_INVALIDDATA;
++    }
++
++    ff_dlog(avctx, "audio specific config size %d\n", (int)bit_size >> 3);
++    for (i = 0; i < bit_size >> 3; i++)
++        ff_dlog(avctx, "%02x ", data[i]);
++    ff_dlog(avctx, "\n");
++
++    if ((ret = init_get_bits(&gb, data, bit_size)) < 0)
++        return ret;
++
++    return decode_audio_specific_config_gb(ac, avctx, m4ac, &gb, 0,
++                                           sync_extension);
+ }
+ 
+ /**
+@@ -2940,10 +2963,11 @@ static int aac_decode_frame_int(AVCodecC
+ {
+     AACContext *ac = avctx->priv_data;
+     ChannelElement *che = NULL, *che_prev = NULL;
+-    enum RawDataBlockType elem_type, elem_type_prev = TYPE_END;
++    enum RawDataBlockType elem_type, che_prev_type = TYPE_END;
+     int err, elem_id;
+     int samples = 0, multiplier, audio_found = 0, pce_found = 0;
+     int is_dmono, sce_count = 0;
++    int payload_alignment;
+ 
+     ac->frame = data;
+ 
+@@ -2966,6 +2990,7 @@ static int aac_decode_frame_int(AVCodecC
+     // This may lead to an undefined profile being signaled
+     ac->avctx->profile = ac->oc[1].m4ac.object_type - 1;
+ 
++    payload_alignment = get_bits_count(gb);
+     ac->tags_mapped = 0;
+     // parse
+     while ((elem_type = get_bits(gb, 3)) != TYPE_END) {
+@@ -2986,7 +3011,7 @@ static int aac_decode_frame_int(AVCodecC
+                 err = AVERROR_INVALIDDATA;
+                 goto fail;
+             }
+-            samples = 1024;
++            samples = ac->oc[1].m4ac.frame_length_short ? 960 : 1024;
+             che->present = 1;
+         }
+ 
+@@ -3026,7 +3051,8 @@ static int aac_decode_frame_int(AVCodecC
+                 goto fail;
+             }
+ 
+-            tags = decode_pce(avctx, &ac->oc[1].m4ac, layout_map, gb);
++            tags = decode_pce(avctx, &ac->oc[1].m4ac, layout_map, gb,
++                              payload_alignment);
+             if (tags < 0) {
+                 err = tags;
+                 break;
+@@ -3034,6 +3060,7 @@ static int aac_decode_frame_int(AVCodecC
+             if (pce_found) {
+                 av_log(avctx, AV_LOG_ERROR,
+                        "Not evaluating a further program_config_element as this construct is dubious at best.\n");
++                pop_output_configuration(ac);
+             } else {
+                 err = output_configure(ac, layout_map, tags, OC_TRIAL_PCE, 1);
+                 if (!err)
+@@ -3052,7 +3079,7 @@ static int aac_decode_frame_int(AVCodecC
+                     goto fail;
+             }
+             while (elem_id > 0)
+-                elem_id -= decode_extension_payload(ac, gb, elem_id, che_prev, elem_type_prev);
++                elem_id -= decode_extension_payload(ac, gb, elem_id, che_prev, che_prev_type);
+             err = 0; /* FIXME */
+             break;
+ 
+@@ -3061,8 +3088,10 @@ static int aac_decode_frame_int(AVCodecC
+             break;
+         }
+ 
++        if (elem_type < TYPE_DSE) {
+         che_prev       = che;
+-        elem_type_prev = elem_type;
++            che_prev_type = elem_type;
++        }
+ 
+         if (err)
+             goto fail;
+diff -aburNp ffmpeg-3.2.7_orig/libavcodec/mpeg4audio.c ffmpeg-3.2.7/libavcodec/mpeg4audio.c
+--- ffmpeg-3.2.7_orig/libavcodec/mpeg4audio.c	2018-07-19 16:11:57.067787438 +0800
++++ ffmpeg-3.2.7/libavcodec/mpeg4audio.c	2018-07-19 16:30:48.000000000 +0800
+@@ -78,69 +78,62 @@ static inline int get_sample_rate(GetBit
+         avpriv_mpeg4audio_sample_rates[*index];
+ }
+ 
+-int avpriv_mpeg4audio_get_config(MPEG4AudioConfig *c, const uint8_t *buf,
+-                                 int bit_size, int sync_extension)
++int ff_mpeg4audio_get_config_gb(MPEG4AudioConfig *c, GetBitContext *gb,
++                                int sync_extension)
+ {
+-    GetBitContext gb;
+     int specific_config_bitindex, ret;
+-
+-    if (bit_size <= 0)
+-        return AVERROR_INVALIDDATA;
+-
+-    ret = init_get_bits(&gb, buf, bit_size);
+-    if (ret < 0)
+-        return ret;
+-
+-    c->object_type = get_object_type(&gb);
+-    c->sample_rate = get_sample_rate(&gb, &c->sampling_index);
+-    c->chan_config = get_bits(&gb, 4);
++    int start_bit_index = get_bits_count(gb);
++    c->object_type = get_object_type(gb);
++    c->sample_rate = get_sample_rate(gb, &c->sampling_index);
++    c->chan_config = get_bits(gb, 4);
+     if (c->chan_config < FF_ARRAY_ELEMS(ff_mpeg4audio_channels))
+         c->channels = ff_mpeg4audio_channels[c->chan_config];
+     c->sbr = -1;
+     c->ps  = -1;
+     if (c->object_type == AOT_SBR || (c->object_type == AOT_PS &&
+         // check for W6132 Annex YYYY draft MP3onMP4
+-        !(show_bits(&gb, 3) & 0x03 && !(show_bits(&gb, 9) & 0x3F)))) {
++        !(show_bits(gb, 3) & 0x03 && !(show_bits(gb, 9) & 0x3F)))) {
+         if (c->object_type == AOT_PS)
+             c->ps = 1;
+         c->ext_object_type = AOT_SBR;
+         c->sbr = 1;
+-        c->ext_sample_rate = get_sample_rate(&gb, &c->ext_sampling_index);
+-        c->object_type = get_object_type(&gb);
++        c->ext_sample_rate = get_sample_rate(gb, &c->ext_sampling_index);
++        c->object_type = get_object_type(gb);
+         if (c->object_type == AOT_ER_BSAC)
+-            c->ext_chan_config = get_bits(&gb, 4);
++            c->ext_chan_config = get_bits(gb, 4);
+     } else {
+         c->ext_object_type = AOT_NULL;
+         c->ext_sample_rate = 0;
+     }
+-    specific_config_bitindex = get_bits_count(&gb);
++    specific_config_bitindex = get_bits_count(gb);
+ 
+     if (c->object_type == AOT_ALS) {
+-        skip_bits(&gb, 5);
+-        if (show_bits_long(&gb, 24) != MKBETAG('\0','A','L','S'))
+-            skip_bits_long(&gb, 24);
++        skip_bits(gb, 5);
++        if (show_bits_long(gb, 24) != MKBETAG('\0','A','L','S'))
++            skip_bits_long(gb, 24);
+ 
+-        specific_config_bitindex = get_bits_count(&gb);
++        specific_config_bitindex = get_bits_count(gb);
+ 
+-        if (parse_config_ALS(&gb, c))
+-            return -1;
++        ret = parse_config_ALS(gb, c);
++        if (ret < 0)
++            return ret;
+     }
+ 
+     if (c->ext_object_type != AOT_SBR && sync_extension) {
+-        while (get_bits_left(&gb) > 15) {
+-            if (show_bits(&gb, 11) == 0x2b7) { // sync extension
+-                get_bits(&gb, 11);
+-                c->ext_object_type = get_object_type(&gb);
+-                if (c->ext_object_type == AOT_SBR && (c->sbr = get_bits1(&gb)) == 1) {
+-                    c->ext_sample_rate = get_sample_rate(&gb, &c->ext_sampling_index);
++        while (get_bits_left(gb) > 15) {
++            if (show_bits(gb, 11) == 0x2b7) { // sync extension
++                get_bits(gb, 11);
++                c->ext_object_type = get_object_type(gb);
++                if (c->ext_object_type == AOT_SBR && (c->sbr = get_bits1(gb)) == 1) {
++                    c->ext_sample_rate = get_sample_rate(gb, &c->ext_sampling_index);
+                     if (c->ext_sample_rate == c->sample_rate)
+                         c->sbr = -1;
+                 }
+-                if (get_bits_left(&gb) > 11 && get_bits(&gb, 11) == 0x548)
+-                    c->ps = get_bits1(&gb);
++                if (get_bits_left(gb) > 11 && get_bits(gb, 11) == 0x548)
++                    c->ps = get_bits1(gb);
+                 break;
+             } else
+-                get_bits1(&gb); // skip 1 bit
++                get_bits1(gb); // skip 1 bit
+         }
+     }
+ 
+@@ -151,7 +144,24 @@ int avpriv_mpeg4audio_get_config(MPEG4Au
+     if ((c->ps == -1 && c->object_type != AOT_AAC_LC) || c->channels & ~0x01)
+         c->ps = 0;
+ 
+-    return specific_config_bitindex;
++    return specific_config_bitindex - start_bit_index;
++}
++
++
++int avpriv_mpeg4audio_get_config(MPEG4AudioConfig *c, const uint8_t *buf,
++                                 int bit_size, int sync_extension)
++{
++    GetBitContext gb;
++    int ret;
++
++    if (bit_size <= 0)
++        return AVERROR_INVALIDDATA;
++
++    ret = init_get_bits(&gb, buf, bit_size);
++    if (ret < 0)
++        return ret;
++
++    return ff_mpeg4audio_get_config_gb(c, &gb, sync_extension);
+ }
+ 
+ static av_always_inline unsigned int copy_bits(PutBitContext *pb,
+diff -aburNp ffmpeg-3.2.7_orig/libavcodec/mpeg4audio.h ffmpeg-3.2.7/libavcodec/mpeg4audio.h
+--- ffmpeg-3.2.7_orig/libavcodec/mpeg4audio.h	2018-07-19 16:11:57.003787437 +0800
++++ ffmpeg-3.2.7/libavcodec/mpeg4audio.h	2018-07-19 16:30:57.000000000 +0800
+@@ -45,7 +45,17 @@ extern av_export const int avpriv_mpeg4a
+ extern const uint8_t ff_mpeg4audio_channels[8];
+ 
+ /**
+- * Parse MPEG-4 systems extradata to retrieve audio configuration.
++ * Parse MPEG-4 systems extradata from a potentially unaligned GetBitContext to retrieve audio configuration.
++ * @param[in] c        MPEG4AudioConfig structure to fill.
++ * @param[in] gb       Extradata from container.
++ * @param[in] sync_extension look for a sync extension after config if true.
++ * @return On error -1 is returned, on success AudioSpecificConfig bit index in extradata.
++ */
++int ff_mpeg4audio_get_config_gb(MPEG4AudioConfig *c, GetBitContext *gb,
++                                int sync_extension);
++
++/**
++ * Parse MPEG-4 systems extradata from a raw buffer to retrieve audio configuration.
+  * @param[in] c        MPEG4AudioConfig structure to fill.
+  * @param[in] buf      Extradata from container.
+  * @param[in] bit_size Extradata size in bits.

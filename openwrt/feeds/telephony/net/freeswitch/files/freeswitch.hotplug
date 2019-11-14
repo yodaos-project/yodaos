@@ -1,0 +1,65 @@
+#!/bin/sh
+
+. /lib/functions.sh
+LOAD_STATE=1
+
+if [ "$ACTION" = "ifup" ]; then
+	/etc/init.d/freeswitch enabled && {
+		local not_all_up="$(sh -c '
+			. /lib/functions.sh
+
+			LOAD_STATE=1
+			local if_is_down=0
+			local network_ignore=""
+			
+			check_if_down () {
+				local cfg="$1"
+				local up
+				local proto
+				config_get_bool up "$1" up 0
+				config_get proto "$1" proto
+				if [ "$proto" != "none" ] && [ "$up" -ne 1 ]; then
+					local new_down=1
+					local oIFS="$IFS"
+					local ignore
+					IFS=" "
+					for ignore in $network_ignore; do
+						[ "$cfg" = "$ignore" ] && new_down=0
+					done
+					IFS="$oIFS"
+					[ "$new_down" = "1" ] && if_is_down=1
+				fi
+			}
+			
+			append_ignore() {
+				local cfg="$1"
+				local network
+				config_get network "$1" network
+				append network_ignore "$network"
+			}	
+
+			LOAD_STATE=1
+			config_load freeswitch
+			config_foreach append_ignore network_ignore
+			config_load network
+			config_foreach check_if_down interface
+			
+			echo "$if_is_down"
+		')"	
+		[ "$not_all_up" = "0" ] && {
+			local started
+			{
+				mkdir -p /tmp/freeswitch
+				lock /tmp/freeswitch/.start.lck
+				config_load freeswitch
+				config_get started "state" started
+				[ "$started" != "1" ] && {
+					/etc/init.d/freeswitch start
+					uci_set_state freeswitch global state started 1
+				}
+				lock -u /tmp/freeswitch/.start.lck
+			} &
+		}
+	}
+fi
+

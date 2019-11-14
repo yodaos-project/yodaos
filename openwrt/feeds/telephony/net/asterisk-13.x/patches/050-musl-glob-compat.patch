@@ -1,0 +1,31 @@
+--- a/res/ael/ael.flex
++++ b/res/ael/ael.flex
+@@ -79,6 +79,12 @@
+ #if !defined(GLOB_ABORTED)
+ #define GLOB_ABORTED GLOB_ABEND
+ #endif
++#if !defined(GLOB_BRACE)
++#define GLOB_BRACE 0
++#endif
++#if !defined(GLOB_NOMAGIC)
++#define GLOB_NOMAGIC 0
++#endif
+ 
+ #include "asterisk/logger.h"
+ #include "asterisk/utils.h"
+Only in asterisk-11.7.0: res/ael/ael.tab.o
+--- a/res/ael/ael_lex.c
++++ b/res/ael/ael_lex.c
+@@ -838,6 +838,12 @@
+ #if !defined(GLOB_ABORTED)
+ #define GLOB_ABORTED GLOB_ABEND
+ #endif
++#if !defined(GLOB_BRACE)
++#define GLOB_BRACE 0
++#endif
++#if !defined(GLOB_NOMAGIC)
++#define GLOB_NOMAGIC 0
++#endif
+ 
+ #include "asterisk/logger.h"
+ #include "asterisk/utils.h"

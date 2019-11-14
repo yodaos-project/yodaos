@@ -1,0 +1,3 @@
+#!/bin/ash
+
+/usr/bin/unpack > /dev/console &

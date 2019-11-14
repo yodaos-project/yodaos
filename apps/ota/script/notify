@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+help="
+notify <image-version> <image-path>
+"
+
+image_version="$1"
+if test -z "$image_version"; then
+  exit 0
+fi
+
+image_path="$2"
+if test -z "$image_path"; then
+  exit 0
+fi
+
+node /usr/lib/node_modules/@yoda/flora/bin/flora-cli call yodaos.runtime.open-url-format \
+  "[\"yoda-app://ota/upgrade\", [\"version\", \"$image_version\"], [\"image_path\", \"$image_path\"]]" \
+  runtime

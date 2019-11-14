@@ -1,0 +1,15 @@
+Index: pulseaudio-10.0/src/pulsecore/core-util.c
+===================================================================
+--- pulseaudio-10.0.orig/src/pulsecore/core-util.c
++++ pulseaudio-10.0/src/pulsecore/core-util.c
+@@ -1948,6 +1948,10 @@ char *pa_get_runtime_dir(void) {
+          * execution of this function. */
+ 
+         t = pa_sprintf_malloc("%s.tmp", k);
++        struct stat st;
++        if (lstat(t, &st) >= 0) {
++            unlink(t);
++        }
+ 
+         if (make_random_dir_and_link(0700, t) < 0) {
+ 

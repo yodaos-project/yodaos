@@ -1,0 +1,32 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2014 OpenWrt.org
+
+START=99
+APP=asterisk
+OPTIONS=
+DEST=
+BIN_FILE=$DEST/usr/sbin/$APP
+PID_FILE=$DEST/var/run/$APP/$APP.pid
+
+start() {
+       [ -d $DEST/var/run/asterisk ] || mkdir -p $DEST/var/run/asterisk
+       [ -d $DEST/var/log/asterisk ] || mkdir -p $DEST/var/log/asterisk
+       [ -d $DEST/var/spool/asterisk ] || mkdir -p $DEST/var/spool/asterisk
+       [ -d $DEST/var/lib ] || mkdir -p $DEST/var/lib
+       [ -h $DEST/var/lib/asterisk ] || ln -s /usr/lib/asterisk /var/lib/asterisk
+       [ -d $DEST/var/lib/asterisk/keys ] || mkdir -p $DEST/var/lib/asterisk/keys
+       [ -d $DEST/var/log/asterisk/cdr-csv ] || mkdir -p $DEST/var/log/asterisk/cdr-csv
+
+       SERVICE_PID_FILE="/var/run/asterisk/asterisk.pid" \
+       service_start $BIN_FILE $OPTIONS
+}
+
+stop() {
+       SERVICE_PID_FILE="/var/run/asterisk/asterisk.pid" \
+       service_stop $BIN_FILE
+}
+
+reload() {
+       SERVICE_PID_FILE="/var/run/asterisk/asterisk.pid" \
+       service_reload $BIN_FILE
+}

@@ -1,0 +1,20 @@
+{
+    "MODULE": "N720V5", 
+    "ON": [
+        "AT\r\n", 
+        "ATI\r\n", 
+        "AT+CCID\r\n", 
+        "AT+CPIN?\r\n", 
+        "AT+CSQ\r\n", 
+        "AT+CREG?\r\n", 
+        "AT+CGATT?\r\n", 
+        "AT$MYSYSINFO\r\n", 
+        "at$mynetact=0,1\r\n"
+    ], 
+    "OFF": ["at$mynetact=0,0\r\n"], 
+    "STATE": "AT+CCID\r\n", 
+    "STRENGTH": "AT+CSQ\r\n", 
+    "TYPE": "AT$MYSYSINFO\r\n", 
+    "VENDOR": "ATI?\r\n", 
+    "ETH": "eth0"
+}

@@ -1,0 +1,362 @@
+#!/bin/sh
+
+CFG=/etc/board.json
+
+. /usr/share/libubox/jshn.sh
+
+[ -f $CFG ] || exit 1
+
+generate_static_network() {
+	uci -q batch <<-EOF
+		delete network.loopback
+		set network.loopback='interface'
+		set network.loopback.ifname='lo'
+		set network.loopback.proto='static'
+		set network.loopback.ipaddr='127.0.0.1'
+		set network.loopback.netmask='255.0.0.0'
+		delete network.globals
+		set network.globals='globals'
+		set network.globals.ula_prefix='auto'
+	EOF
+
+	if json_is_a dsl object; then
+		json_select dsl
+			if json_is_a atmbridge object; then
+				json_select atmbridge
+					local vpi vci encaps payload
+					json_get_vars vpi vci encaps payload
+					uci -q batch <<-EOF
+						delete network.atm
+						set network.atm='atm-bridge'
+						set network.atm.vpi='$vpi'
+						set network.atm.vci='$vci'
+						set network.atm.encaps='$encaps'
+						set network.atm.payload='$payload'
+					EOF
+				json_select ..
+			fi
+
+			if json_is_a modem object; then
+				json_select modem
+					local type annex firmware tone xfer_mode
+					json_get_vars type annex firmware tone xfer_mode
+					uci -q batch <<-EOF
+						delete network.dsl
+						set network.dsl='dsl'
+						set network.dsl.annex='$annex'
+						set network.dsl.firmware='$firmware'
+						set network.dsl.tone='$tone'
+						set network.dsl.xfer_mode='$xfer_mode'
+					EOF
+				json_select ..
+			fi
+		json_select ..
+	fi
+}
+
+addr_offset=2
+generate_network() {
+	local ifname macaddr protocol type ipaddr netmask
+
+	json_select network
+		json_select "$1"
+			json_get_vars ifname macaddr protocol ipaddr netmask
+		json_select ..
+	json_select ..
+
+	[ -n "$ifname" ] || return
+
+	# force bridge for multi-interface devices (and lan)
+	#case "$1:$ifname" in
+	#	*\ * | lan:*) type="bridge" ;;
+	#esac
+
+	uci -q batch <<-EOF
+		delete network.$1
+		set network.$1='interface'
+		set network.$1.type='$type'
+		set network.$1.ifname='$ifname'
+		set network.$1.proto='none'
+	EOF
+
+	[ -n "$macaddr" ] && uci -q batch <<-EOF
+		delete network.$1_dev
+		set network.$1_dev='device'
+		set network.$1_dev.name='$ifname'
+		set network.$1_dev.macaddr='$macaddr'
+	EOF
+
+	case "$protocol" in
+		static)
+			local ipad
+			case "$1" in
+				lan) ipad=${ipaddr:-"192.168.1.1"} ;;
+				*) ipad=${ipaddr:-"192.168.$((addr_offset++)).1"} ;;
+			esac
+
+			netm=${netmask:-"255.255.255.0"}
+
+			uci -q batch <<-EOF
+				set network.$1.proto='static'
+				set network.$1.ipaddr='$ipad'
+				set network.$1.netmask='$netm'
+				set network.$1.ip6assign='60'
+			EOF
+		;;
+
+		dhcp)
+			# fixup IPv6 slave interface if parent is a bridge
+			[ "$type" = "bridge" ] && ifname="br-$1"
+
+			uci -q batch <<-EOF
+				set network.$1.proto='dhcp'
+				delete network.${1}6
+				set network.${1}6='interface'
+				set network.${1}6.ifname='$ifname'
+				set network.${1}6.proto='dhcpv6'
+			EOF
+		;;
+
+		pppoe)
+			# fixup IPv6 slave interface
+			ifname="pppoe-$1"
+
+			uci -q batch <<-EOF
+				set network.$1.proto='pppoe'
+				set network.$1.username='username'
+				set network.$1.password='password'
+				set network.$1.ipv6='auto'
+				delete network.${1}6
+				set network.${1}6='interface'
+				set network.${1}6.ifname='$ifname'
+				set network.${1}6.proto='dhcpv6'
+			EOF
+		;;
+	esac
+}
+
+generate_switch_vlans_ports() {
+	local switch="$1"
+	local port ports role roles num attr val
+
+	#
+	# autogenerate vlans
+	#
+
+	json_get_keys roles roles
+	json_select roles
+
+	for role in $roles; do
+		json_select "$role"
+			json_get_vars ports
+		json_select ..
+
+		uci -q batch <<-EOF
+			add network switch_vlan
+			set network.@switch_vlan[-1].device='$switch'
+			set network.@switch_vlan[-1].vlan='$role'
+			set network.@switch_vlan[-1].ports='$ports'
+		EOF
+	done
+
+	json_select ..
+
+
+	#
+	# write port specific settings
+	#
+
+	json_get_keys ports ports
+	json_select ports
+
+	for port in $ports; do
+		json_select "$port"
+			json_get_vars num
+
+			if json_is_a attr object; then
+				json_get_keys attr attr
+				json_select attr
+					uci -q batch <<-EOF
+						add network switch_port
+						set network.@switch_port[-1].device='$switch'
+						set network.@switch_port[-1].port=$num
+					EOF
+
+					for attr in $attr; do
+						json_get_var val "$attr"
+						uci -q set network.@switch_port[-1].$attr="$val"
+					done
+				json_select ..
+			fi
+		json_select ..
+	done
+
+	json_select ..
+}
+
+generate_switch() {
+	local key="$1"
+	local vlans
+
+	json_select switch
+	json_select "$key"
+	json_get_vars enable reset blinkrate cpu_port
+
+	uci -q batch <<-EOF
+		add network switch
+		set network.@switch[-1].name='$key'
+		set network.@switch[-1].reset='$reset'
+		set network.@switch[-1].enable_vlan='$enable'
+		set network.@switch[-1].blinkrate='$blinkrate'
+	EOF
+
+	generate_switch_vlans_ports "$1"
+
+	json_select ..
+	json_select ..
+}
+
+generate_rssimon() {
+	local key="$1"
+	local cfg="rssid_$key"
+	local refresh threshold
+
+	json_select rssimon
+	json_select "$key"
+	json_get_vars refresh threshold
+	json_select ..
+	json_select ..
+
+	uci -q batch <<-EOF
+		delete system.$cfg
+		set system.$cfg='rssid'
+		set system.$cfg.dev='$key'
+		set system.$cfg.refresh='$refresh'
+		set system.$cfg.threshold='$threshold'
+	EOF
+}
+
+generate_led() {
+	local key="$1"
+	local cfg="led_$key"
+
+	json_select led
+	json_select "$key"
+	json_get_vars name sysfs type trigger default
+
+	uci -q batch <<-EOF
+		delete system.$cfg
+		set system.$cfg='led'
+		set system.$cfg.name='$name'
+		set system.$cfg.sysfs='$sysfs'
+		set system.$cfg.trigger='$trigger'
+		set system.$cfg.default='$default'
+	EOF
+
+	case "$type" in
+		gpio)
+			local gpio inverted
+			json_get_vars gpio inverted
+			uci -q batch <<-EOF
+				set system.$cfg.trigger='gpio'
+				set system.$cfg.gpio='$gpio'
+				set system.$cfg.inverted='$inverted'
+			EOF
+		;;
+
+		netdev)
+			local device mode
+			json_get_vars device mode
+			uci -q batch <<-EOF
+				set system.$cfg.trigger='netdev'
+				set system.$cfg.mode='$mode'
+				set system.$cfg.dev='$device'
+			EOF
+		;;
+
+		usb)
+			local device
+			json_get_vars device
+			uci -q batch <<-EOF
+				set system.$cfg.trigger='usbdev'
+				set system.$cfg.interval='50'
+				set system.$cfg.dev='$device'
+			EOF
+		;;
+
+		rssi)
+			local iface minq maxq offset factor
+			json_get_vars iface minq maxq offset factor
+			uci -q batch <<-EOF
+				set system.$cfg.trigger='rssi'
+				set system.$cfg.iface='rssid_$iface'
+				set system.$cfg.minq='$minq'
+				set system.$cfg.maxq='$maxq'
+				set system.$cfg.offset='$offset'
+				set system.$cfg.factor='$factor'
+			EOF
+		;;
+
+		switch)
+			local port_mask speed_mask
+			json_get_vars port_mask speed_mask
+			uci -q batch <<-EOF
+				set system.$cfg.port_mask='$port_mask'
+				set system.$cfg.speed_mask='$speed_mask'
+			EOF
+		;;
+
+		timer|oneshot)
+			local delayon delayoff
+			json_get_vars delayon delayoff
+			uci -q batch <<-EOF
+				set system.$cfg.trigger='$type'
+				set system.$cfg.delayon='$delayon'
+				set system.$cfg.delayoff='$delayoff'
+			EOF
+		;;
+	esac
+
+	json_select ..
+	json_select ..
+}
+
+generate_gpioswitch() {
+	local cfg="$1"
+
+	json_select gpioswitch
+		json_select "$cfg"
+			local name pin default
+			json_get_vars name pin default
+			uci -q batch <<-EOF
+				delete system.$cfg
+				set system.$cfg='gpio_switch'
+				set system.$cfg.name='$name'
+				set system.$cfg.gpio_pin='$pin'
+				set system.$cfg.default='$default'
+			EOF
+		json_select ..
+	json_select ..
+}
+
+json_init
+json_load "$(cat ${CFG})"
+
+generate_static_network
+
+json_get_keys keys network
+for key in $keys; do generate_network $key; done
+
+json_get_keys keys switch
+for key in $keys; do generate_switch $key; done
+
+json_get_keys keys rssimon
+for key in $keys; do generate_rssimon $key; done
+
+json_get_keys keys gpioswitch
+for key in $keys; do generate_gpioswitch $key; done
+
+json_get_keys keys led
+for key in $keys; do generate_led $key; done
+
+uci commit

@@ -1,0 +1,26 @@
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -103,8 +103,8 @@
+ #  else Cygwin goes beserk when building...)
+ #
+ sbin_PROGRAMS = siproxd
+-siproxd_LDFLAGS=-export-dynamic
+-siproxd_LDADD = $(LIBLTDL) $(DLOPENPLUGINS)
++siproxd_LDFLAGS=-export-dynamic -lltdl
++siproxd_LDADD = $(DLOPENPLUGINS)
+ siproxd_SOURCES = siproxd.c proxy.c register.c sock.c utils.c \
+ 		  sip_utils.c sip_layer.c log.c readconf.c rtpproxy.c \
+ 		  rtpproxy_relay.c accessctl.c route_processing.c \
+--- a/src/Makefile.in
++++ b/src/Makefile.in
+@@ -377,8 +377,8 @@
+ #
+ plugin_fix_fbox_anoncall_la_SOURCES = plugin_fix_fbox_anoncall.c
+ plugin_fix_fbox_anoncall_la_LDFLAGS = -module -avoid-version -shrext '.so'
+-siproxd_LDFLAGS = -export-dynamic
+-siproxd_LDADD = $(LIBLTDL) $(DLOPENPLUGINS)
++siproxd_LDFLAGS = -export-dynamic -lltdl
++siproxd_LDADD = $(DLOPENPLUGINS)
+ siproxd_SOURCES = siproxd.c proxy.c register.c sock.c utils.c \
+ 		  sip_utils.c sip_layer.c log.c readconf.c rtpproxy.c \
+ 		  rtpproxy_relay.c accessctl.c route_processing.c \

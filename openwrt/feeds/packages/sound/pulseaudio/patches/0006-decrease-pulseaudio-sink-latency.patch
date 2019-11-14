@@ -1,0 +1,26 @@
+From 3583cde2318bf70843310e45c9412b9ef9582321 Mon Sep 17 00:00:00 2001
+From: zhulei <lei.zhu@rokid.com>
+Date: Mon, 8 Oct 2018 23:55:44 +0800
+Subject: [PATCH] 0006-decrease-pulseaudio-sink-latency
+
+Signed-off-by: zhulei <lei.zhu@rokid.com>
+---
+ src/daemon/daemon-conf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/daemon/daemon-conf.c b/src/daemon/daemon-conf.c
+index f0ed0b4..f6934f3 100644
+--- a/src/daemon/daemon-conf.c
++++ b/src/daemon/daemon-conf.c
+@@ -95,7 +95,7 @@ static const pa_daemon_conf default_conf = {
+     .disable_memfd = false,
+     .lock_memory = false,
+     .deferred_volume = true,
+-    .default_n_fragments = 4,
++    .default_n_fragments = 2,
+     .default_fragment_size_msec = 25,
+     .deferred_volume_safety_margin_usec = 8000,
+     .deferred_volume_extra_delay_usec = 0,
+-- 
+1.9.1
+

@@ -1,0 +1,24 @@
+diff -aburNp pulseaudio-10.0.bk/src/pulsecore/memfd-wrappers.h pulseaudio-10.0/src/pulsecore/memfd-wrappers.h
+--- pulseaudio-10.0.bk/src/pulsecore/memfd-wrappers.h	2019-05-14 12:12:12.017317896 +0800
++++ pulseaudio-10.0/src/pulsecore/memfd-wrappers.h	2019-05-14 12:12:39.897317724 +0800
+@@ -33,7 +33,7 @@
+  * a whole conflicts with the original glibc header <fnctl.h>.
+  */
+ 
+-static inline int memfd_create(const char *name, unsigned int flags) {
++static inline int tmp_memfd_create(const char *name, unsigned int flags) {
+     return syscall(SYS_memfd_create, name, flags);
+ }
+ 
+diff -aburNp pulseaudio-10.0.bk/src/pulsecore/shm.c pulseaudio-10.0/src/pulsecore/shm.c
+--- pulseaudio-10.0.bk/src/pulsecore/shm.c	2019-05-14 12:12:12.017317896 +0800
++++ pulseaudio-10.0/src/pulsecore/shm.c	2019-05-14 12:13:04.793317570 +0800
+@@ -161,7 +161,7 @@ static int sharedmem_create(pa_shm *m, p
+ #endif
+ #ifdef HAVE_MEMFD
+     case PA_MEM_TYPE_SHARED_MEMFD:
+-        fd = memfd_create("pulseaudio", MFD_ALLOW_SEALING);
++        fd = tmp_memfd_create("pulseaudio", MFD_ALLOW_SEALING);
+         break;
+ #endif
+     default:

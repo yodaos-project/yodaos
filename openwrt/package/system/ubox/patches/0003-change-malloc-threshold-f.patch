@@ -1,0 +1,37 @@
+From c4adeb52b309a78e99d2315ae79a41e0732f04cd Mon Sep 17 00:00:00 2001
+From: "huan.zhang" <huan.zhang@rokid.com>
+Date: Mon, 15 Apr 2019 23:07:05 +0800
+Subject: [PATCH] TYPE:BF:ID::TITLE:Add malloc threshold change glibc for fix
+ memory explosione TYPE
+ URL:https://bug.rokid-inc.com/zentaopms/www/index.php?m=bug&f=view&id=16021
+ MODULE:openwrt/logd SIDE EFFECT: NULL
+
+---
+ log/logd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/log/logd.c b/log/logd.c
+index 71174c5..3d18e7c 100644
+--- a/log/logd.c
++++ b/log/logd.c
+@@ -24,6 +24,7 @@
+ #include <libubox/ustream.h>
+ #include <libubus.h>
+ #include "syslog.h"
++#include <malloc.h>
+ 
+ int debug = 0;
+ static struct blob_buf b;
+@@ -249,7 +250,8 @@ main(int argc, char **argv)
+ 		}
+ 	}
+ 	log_size *= 1024;
+-
++        mallopt(M_TRIM_THRESHOLD, 32 * 1024);
++        mallopt(M_MMAP_THRESHOLD, 64 * 1024);
+ 	uloop_init();
+ 	log_init(log_size);
+ 	conn.cb = ubus_connect_handler;
+-- 
+2.18.0
+

@@ -1,0 +1,55 @@
+#!/bin/ash
+
+BT_UART=ttyS1
+WIFI_TYPE=mmc0
+
+FILENAME=/sys/bus/mmc/devices/$WIFI_TYPE\:0001/$WIFI_TYPE\:0001\:1/device
+FIRMWARE=/etc/wifi/nb197/bcm43438a1.hcd
+
+if [ ! -f $FILENAME ];then
+  FILENAME=/sys/bus/mmc/devices/mmc0\:0001/mmc0\:0001\:1/device
+  if [ ! -f $FILENAME ];then
+    FILENAME=/sys/bus/mmc/devices/sdio\:0001/sdio\:0001\:1/device
+  fi
+  if [ ! -f $FILENAME ];then
+    FILENAME=/sys/bus/mmc/devices/mmc1\:0001/mmc1\:0001\:1/device
+  fi
+fi
+
+MODULE_PATH=/lib/modules/`uname -r`
+if [ -e ${MODULE_PATH}/uart_control.ko ];then
+  echo "load uart_control.ko..."
+  insmod ${MODULE_PATH}/uart_control.ko
+fi
+
+echo 1 > /sys/class/rfkill/rfkill0/state
+usleep 1000
+echo 0 > /sys/class/rfkill/rfkill0/state
+usleep 5000
+echo 1 > /sys/class/rfkill/rfkill0/state
+
+echo $FILENAME $1
+
+while read LINE
+do
+    echo $LINE
+    case "$LINE" in
+        0xa9a6)
+            echo "FIRMWARE is nb197"
+            FIRMWARE=/etc/wifi/nb197/bcm43438a1.hcd
+            brcm_patchram_plus --enable_hci --no2bytes --tosleep 200000 --baudrate  115200 --patchram $FIRMWARE  /dev/$BT_UART &
+            ;;
+        0xa9bf)
+            echo "FIRMWARE is cm256"
+            FIRMWARE=/etc/wifi/cm256/BCM4345C0.hcd
+            brcm_patchram_plus --enable_hci --no2bytes --tosleep 200000 --baudrate  115200 --patchram $FIRMWARE  /dev/$BT_UART &
+            ;;
+        *)
+    esac
+done < $FILENAME
+
+
+
+
+# load the firmware need time, the the worst time is 2.6 s.
+sleep 3

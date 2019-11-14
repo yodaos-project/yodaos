@@ -1,0 +1,13 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2011 OpenWrt.org
+
+START=89
+STOP=2
+
+start(){
+  /usr/bin/hisitools/set_nau8540.sh
+}
+
+stop(){
+	echo "stop"
+}

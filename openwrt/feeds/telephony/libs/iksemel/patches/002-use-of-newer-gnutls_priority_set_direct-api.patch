@@ -1,0 +1,65 @@
+From 6b213b593c5b499679506a8c169ff3f0f4d6a34f Mon Sep 17 00:00:00 2001
+From: John Papandriopoulos <jpap@users.noreply.github.com>
+Date: Thu, 20 Aug 2015 16:55:39 -0700
+Subject: [PATCH] Use of newer gnutls_priority_set_direct API
+
+---
+ configure.ac |  1 +
+ src/stream.c | 13 +++++++++++++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/configure.ac b/configure.ac
+index 91e69e3..281a044 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -46,6 +46,7 @@ AC_CHECK_FUNCS(getopt_long)
+ AC_CHECK_FUNCS(getaddrinfo)
+ 
+ AM_PATH_LIBGNUTLS(,AC_DEFINE(HAVE_GNUTLS,,"Use libgnutls"))
++AM_PATH_LIBGNUTLS(,AC_CHECK_FUNCS(gnutls_priority_set_direct))
+ 
+ dnl Check -Wall flag of GCC
+ if test "x$GCC" = "xyes"; then
+diff --git a/src/stream.c b/src/stream.c
+index e8a1e8c..7d19a82 100644
+--- a/src/stream.c
++++ b/src/stream.c
+@@ -63,11 +63,20 @@ tls_pull (iksparser *prs, char *buffer, size_t len)
+ static int
+ handshake (struct stream_data *data)
+ {
++#if HAVE_GNUTLS_PRIORITY_SET_DIRECT
++	const char *priorities =
++		"NONE"
++		":+VERS-TLS1.0:+VERS-SSL3.0"
++		":+RSA"
++		":+3DES-CBC:+ARCFOUR-128"
++		":+SHA1:+SHA256:+SHA384:+MD5";
++#else
+ 	const int protocol_priority[] = { GNUTLS_TLS1, GNUTLS_SSL3, 0 };
+ 	const int kx_priority[] = { GNUTLS_KX_RSA, 0 };
+ 	const int cipher_priority[] = { GNUTLS_CIPHER_3DES_CBC, GNUTLS_CIPHER_ARCFOUR, 0};
+ 	const int comp_priority[] = { GNUTLS_COMP_ZLIB, GNUTLS_COMP_NULL, 0 };
+ 	const int mac_priority[] = { GNUTLS_MAC_SHA, GNUTLS_MAC_MD5, 0 };
++#endif
+ 	int ret;
+ 
+ 	if (gnutls_global_init () != 0)
+@@ -80,11 +89,15 @@ handshake (struct stream_data *data)
+ 		gnutls_certificate_free_credentials (data->cred);
+ 		return IKS_NOMEM;
+ 	}
++#if HAVE_GNUTLS_PRIORITY_SET_DIRECT
++	gnutls_priority_set_direct (data->sess, priorities, NULL);
++#else
+ 	gnutls_protocol_set_priority (data->sess, protocol_priority);
+ 	gnutls_cipher_set_priority(data->sess, cipher_priority);
+ 	gnutls_compression_set_priority(data->sess, comp_priority);
+ 	gnutls_kx_set_priority(data->sess, kx_priority);
+ 	gnutls_mac_set_priority(data->sess, mac_priority);
++#endif
+ 	gnutls_credentials_set (data->sess, GNUTLS_CRD_CERTIFICATE, data->cred);
+ 
+ 	gnutls_transport_set_push_function (data->sess, (gnutls_push_func) tls_push);
+-- 
+2.1.4

@@ -1,0 +1,38 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2014 OpenWrt.org
+
+START=99
+
+BINFILE=/usr/sbin/kamailio
+PIDFILE=/var/run/kamailio.pid
+DEFAULTS=/etc/default/kamailio
+CFGFILE=/etc/kamailio/kamailio.cfg
+SHM_MEMORY=8
+PKG_MEMORY=2
+RUN_KAMAILIO=no
+
+start() {
+	# Load startup options if available
+	if [ -f $DEFAULTS ]; then
+		. $DEFAULTS
+	fi
+
+	if [ "$RUN_KAMAILIO" != "yes" ]; then
+		echo "[WARNING] Kamailio not yet configured. Edit /etc/default/kamailio first."
+	else
+		start-stop-daemon -S -x $BINFILE -b -- -P $PIDFILE -f $CFGFILE -m $SHM_MEMORY -M $PKG_MEMORY
+                echo "[INFO] Kamailio has succesfully started."
+        fi
+}
+
+stop() {
+        start-stop-daemon -K -x $BINFILE -p $PIDFILE -q
+        rm -rf $PID_FILE
+}
+
+restart(){
+        echo "[INFO] Restarting kamailio. Waiting 5 seconds before start."
+        stop
+        sleep 5
+        start
+}

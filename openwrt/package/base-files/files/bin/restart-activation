@@ -1,0 +1,5 @@
+#!/bin/sh
+
+/etc/init.d/rklua-activation restart
+/etc/init.d/turenproc restart
+/etc/init.d/homebase restart

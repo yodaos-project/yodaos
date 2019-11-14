@@ -1,0 +1,44 @@
+From 747efb6255cb06e1cd0a8553fd12b9c1f6537d95 Mon Sep 17 00:00:00 2001
+From: John Crispin <john@phrozen.org>
+Date: Tue, 13 Feb 2018 16:33:48 +0100
+Subject: [PATCH] procd: fix ustream deadlock when there are 0 bytes or no
+ newlines
+
+Signed-off-by: John Crispin <john@phrozen.org>
+---
+ service/instance.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/service/instance.c b/service/instance.c
+index 917b003..27e35b1 100644
+--- a/service/instance.c
++++ b/service/instance.c
+@@ -469,18 +469,20 @@ instance_stdio(struct ustream *s, int prio, struct service_instance *in)
+ 	ulog_open(ULOG_SYSLOG, LOG_DAEMON, ident);
+ 
+ 	do {
+-		str = ustream_get_read_buf(s, NULL);
++		str = ustream_get_read_buf(s, &len);
+ 		if (!str)
+ 			break;
+ 
+-		newline = strchr(str, '\n');
+-		if (!newline)
++		newline = memchr(str, '\n', len);
++		if (!newline && (s->r.buffer_len != len))
+ 			break;
+ 
+-		*newline = 0;
++		if (newline) {
++			*newline = 0;
++			len = newline + 1 - str;
++		}
+ 		ulog(prio, "%s\n", str);
+ 
+-		len = newline + 1 - str;
+ 		ustream_consume(s, len);
+ 	} while (1);
+ 
+-- 
+1.9.1
+

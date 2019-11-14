@@ -1,0 +1,142 @@
+--- a/iax/iax.c
++++ b/iax/iax.c
+@@ -45,7 +45,6 @@
+ 
+ #ifndef MACOSX
+ #include <malloc.h>
+-#include <error.h>
+ #endif
+ 
+ #endif
+--- a/miax.c
++++ b/miax.c
+@@ -31,26 +31,26 @@
+ #include "iaxclient_lib.h"
+ #include "miax.h"
+ 
+-FILE *stderr;
++FILE *_stderr;
+ 
+ int miax_closeall(int n) {
+ 
+ 	int l;
+ 
+-	if (debug > 5 ) { fprintf(stderr,"Miax: status: %d\nMiax: event: %d\n",status, n); }
++	if (debug > 5 ) { fprintf(_stderr,"Miax: status: %d\nMiax: event: %d\n",status, n); }
+ 
+ 	if (status >= 0) {
+ 		status=-1;
+ 
+ 		if (n < 0) {
+ 			iaxc_dump_all_calls();
+-			if (debug > 5 ) { fprintf(stderr,"Miax: call dumped.\n"); }
++			if (debug > 5 ) { fprintf(_stderr,"Miax: call dumped.\n"); }
+ 			}
+ 		audio_close();
+-		if (debug > 5 ) { fprintf(stderr,"Miax: audio closed.\n"); }
++		if (debug > 5 ) { fprintf(_stderr,"Miax: audio closed.\n"); }
+ 		if (m > 0) { 
+ 			modem_close(); 
+-			if (debug > 5 ) { fprintf(stderr,"Miax: modem closed.\n"); }
++			if (debug > 5 ) { fprintf(_stderr,"Miax: modem closed.\n"); }
+ 			}
+ 		}
+ 		
+@@ -63,7 +63,7 @@ int miax_callback(struct iax_event *e, i
+ 	switch(e->etype) {
+  		case 0:			//IAX_EVENT_CONNECT
+ 	 		strcpy(number,e->ies.called_number);			
+- 			fprintf(stderr, "Miax: %s is looking for %s\n", e->ies.calling_number, number);
++ 			fprintf(_stderr, "Miax: %s is looking for %s\n", e->ies.calling_number, number);
+  			status=100;
+ 			break;
+ 		case 2: 		//IAX_EVENT_HANGUP:
+@@ -105,7 +105,7 @@ int console_loop(int status, char *numbe
+ 		read(0,buf,sizeof(buf));
+ 		if (status == 100) { return 130; }
+ 		if (strstr(buf,"h")) { 
+-			fprintf(stderr, "Miax: hanging up.\n");
++			fprintf(_stderr, "Miax: hanging up.\n");
+ 			return -1; 
+ 			}
+ 		else { 
+@@ -119,21 +119,21 @@ int console_loop(int status, char *numbe
+ 
+ 
+ void usage() { 
+-	fprintf(stderr, "Usage: miax [-hndupsragmbil]\n\n");
+-	fprintf(stderr, " -h 	this help\n");
+-	fprintf(stderr, " -n 	source number\n");
+-	fprintf(stderr, " -d 	destination number\n");
+-	fprintf(stderr, " -u 	username\n");
+-	fprintf(stderr, " -p 	password\n");
+-	fprintf(stderr, " -s 	server\n");
+-	fprintf(stderr, " -r 	register\n");
+-	fprintf(stderr, " -a 	audio device\n");
+-	fprintf(stderr, " -g 	gsm codec\n");
+-	fprintf(stderr, " -m 	modem device\n");
+-	fprintf(stderr, " -i 	modem init string\n");
+-	fprintf(stderr, " -l 	log level\n");
+-	fprintf(stderr, " -o 	log output\n");
+-	fprintf(stderr, "\nReport bugs to <ubaldo@eja.it>\n");
++	fprintf(_stderr, "Usage: miax [-hndupsragmbil]\n\n");
++	fprintf(_stderr, " -h 	this help\n");
++	fprintf(_stderr, " -n 	source number\n");
++	fprintf(_stderr, " -d 	destination number\n");
++	fprintf(_stderr, " -u 	username\n");
++	fprintf(_stderr, " -p 	password\n");
++	fprintf(_stderr, " -s 	server\n");
++	fprintf(_stderr, " -r 	register\n");
++	fprintf(_stderr, " -a 	audio device\n");
++	fprintf(_stderr, " -g 	gsm codec\n");
++	fprintf(_stderr, " -m 	modem device\n");
++	fprintf(_stderr, " -i 	modem init string\n");
++	fprintf(_stderr, " -l 	log level\n");
++	fprintf(_stderr, " -o 	log output\n");
++	fprintf(_stderr, "\nReport bugs to <ubaldo@eja.it>\n");
+ 	exit(1);
+ 	}
+ 
+@@ -216,7 +216,7 @@ int main(int argc, char **argv) {
+ 	
+ 	printf("miax@eja.it\n");	
+ 
+-	stderr=fopen(log_output,"w");
++	_stderr=fopen(log_output,"w");
+ 	
+ 	iaxc_initialize(1);
+ 
+@@ -233,13 +233,13 @@ int main(int argc, char **argv) {
+ 	if (r > 0) { iaxc_register(username,password,hostname); }
+ 	
+ 	if ( audio_init(audio_dev, compression) < 0) {
+-			fprintf(stderr,"Miax: cannot initialize audio device!\n"); 
++			fprintf(_stderr,"Miax: cannot initialize audio device!\n"); 
+ 			return -1;
+ 			}
+ 	
+ 	if (m > 0) {
+ 		if (modem_init(modem_dev) < 0)  { 
+-			fprintf(stderr,"Miax: cannot initialize modem device!\n"); 
++			fprintf(_stderr,"Miax: cannot initialize modem device!\n"); 
+ 			return -1;
+ 			}
+ 		if (m == 2) { sprintf(buf,"%s\r",modem_i); modem(buf); }
+@@ -252,7 +252,7 @@ int main(int argc, char **argv) {
+ 
+ 	iaxc_start_processing_thread();
+ 
+-	fprintf(stderr, "Miax: ready.\n");
++	fprintf(_stderr, "Miax: ready.\n");
+ 		
+ 	while(status >= 0) {
+ 		n = miax_loop(status, number);  
+@@ -271,7 +271,7 @@ int main(int argc, char **argv) {
+ 			break; 
+ 			}
+ 	    	}
+-	fprintf(stderr, "Miax: bye! :)\n\n");
++	fprintf(_stderr, "Miax: bye! :)\n\n");
+ 	
+ 	exit(0);
+ 	}

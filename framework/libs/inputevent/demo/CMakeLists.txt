@@ -1,0 +1,7 @@
+
+add_executable(input_demo ${CMAKE_CURRENT_SOURCE_DIR}/input_hot.c)
+target_link_libraries(input_demo input-event-hot)
+INSTALL( TARGETS input_demo ${INSTALL_EXPORT}
+     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})

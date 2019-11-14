@@ -1,0 +1,123 @@
+--- a/include/configs/dockstar.h
++++ b/include/configs/dockstar.h
+@@ -17,20 +17,25 @@
+ /*
+  * Version number information
+  */
+-#define CONFIG_IDENT_STRING	"\nSeagate FreeAgent DockStar"
++#define CONFIG_IDENT_STRING	"Seagate FreeAgent DockStar"
+ 
+ /*
+- * High Level Configuration Options (easy to change)
++ * High Level Configuration Options
+  */
+-#define CONFIG_FEROCEON_88FR131	1	/* CPU Core subversion */
+-#define CONFIG_KW88F6281	1	/* SOC Name */
+-#define CONFIG_MACH_DOCKSTAR	/* Machine type */
++#define CONFIG_FEROCEON_88FR131		/* CPU Core subversion */
++#define CONFIG_KW88F6281		/* SOC Name */
+ #define CONFIG_SKIP_LOWLEVEL_INIT	/* disable board lowlevel_init */
+ 
+ /*
++ * Machine type
++ */
++#define CONFIG_MACH_DOCKSTAR
++
++/*
+  * Commands configuration
+  */
+-#define CONFIG_SYS_NO_FLASH		/* Declare no flash (NOR/SPI) */
++#define CONFIG_SYS_NO_FLASH		/* declare no flash (NOR/SPI) */
++#define CONFIG_SYS_MVFS
+ #include <config_cmd_default.h>
+ #define CONFIG_CMD_DHCP
+ #define CONFIG_CMD_ENV
+@@ -38,55 +43,52 @@
+ #define CONFIG_CMD_NAND
+ #define CONFIG_CMD_PING
+ #define CONFIG_CMD_USB
++
+ /*
+  * mv-common.h should be defined after CMD configs since it used them
+  * to enable certain macros
+  */
+ #include "mv-common.h"
+ 
+-#undef CONFIG_SYS_PROMPT	/* previously defined in mv-common.h */
+-#define CONFIG_SYS_PROMPT	"DockStar> "	/* Command Prompt */
++#undef CONFIG_SYS_PROMPT
++#define CONFIG_SYS_PROMPT	"dockstar => "
+ 
+ /*
+- *  Environment variables configurations
++ * Environment variables configuration
+  */
+ #ifdef CONFIG_CMD_NAND
+-#define CONFIG_ENV_IS_IN_NAND		1
+-#define CONFIG_ENV_SECT_SIZE		0x20000	/* 128K */
++#define CONFIG_ENV_IS_IN_NAND
++#define CONFIG_ENV_SECT_SIZE	0x20000
+ #else
+-#define CONFIG_ENV_IS_NOWHERE		1	/* if env in SDRAM */
++#define CONFIG_ENV_IS_NOWHERE
+ #endif
+-/*
+- * max 4k env size is enough, but in case of nand
+- * it has to be rounded to sector size
+- */
+-#define CONFIG_ENV_SIZE			0x20000	/* 128k */
+-#define CONFIG_ENV_ADDR			0x60000
+-#define CONFIG_ENV_OFFSET		0x60000	/* env starts here */
++#define CONFIG_ENV_SIZE		0x20000
++#define CONFIG_ENV_OFFSET	0xe0000
+ 
+ /*
+  * Default environment variables
+  */
+ #define CONFIG_BOOTCOMMAND \
+ 	"setenv bootargs ${console} ${mtdparts} ${bootargs_root}; "	\
+-	"ubi part root; " \
+-	"ubifsmount ubi:root; " \
+-	"ubifsload 0x800000 ${kernel}; " \
+-	"ubifsload 0x1100000 ${initrd}; " \
+-	"bootm 0x800000 0x1100000"
+-
+-#define CONFIG_MTDPARTS		"mtdparts=orion_nand:1m(uboot),-(root)\0"
++	"ubi part ubi; "						\
++	"ubi read 0x800000 kernel; "				\
++	"bootz 0x800000"
++
++#define CONFIG_MTDPARTS \
++	"mtdparts=orion_nand:"				\
++	"0xe0000@0x0(uboot),"				\
++	"0x20000@0xe0000(uboot_env),"			\
++	"0x100000@0x100000(second_stage_uboot),"	\
++	"-@0x200000(ubi)\0"
+ 
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+-	"console=console=ttyS0,115200\0" \
+-	"mtdids=nand0=orion_nand\0" \
+-	"mtdparts="CONFIG_MTDPARTS \
+-	"kernel=/boot/uImage\0" \
+-	"initrd=/boot/uInitrd\0" \
+-	"bootargs_root=ubi.mtd=1 root=ubi0:root rootfstype=ubifs ro\0"
++	"console=console=ttyS0,115200\0"	\
++	"mtdids=nand0=orion_nand\0"		\
++	"mtdparts="CONFIG_MTDPARTS		\
++	"bootargs_root=\0"
+ 
+ /*
+- * Ethernet Driver configuration
++ * Ethernet driver configuration
+  */
+ #ifdef CONFIG_CMD_NET
+ #define CONFIG_MVGBE_PORTS	{1, 0}	/* enable port 0 only */
+@@ -102,7 +110,7 @@
+ #define CONFIG_CMD_UBI
+ #define CONFIG_CMD_UBIFS
+ #define CONFIG_RBTREE
+-#define CONFIG_MTD_DEVICE               /* needed for mtdparts commands */
++#define CONFIG_MTD_DEVICE
+ #define CONFIG_MTD_PARTITIONS
+ #define CONFIG_CMD_MTDPARTS
+ #define CONFIG_LZO

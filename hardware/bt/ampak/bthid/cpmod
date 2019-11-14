@@ -1,0 +1,1 @@
+cp -v bthid.ko /lib/modules/$(uname -r)/kernel/drivers/brcm/bthid.ko

@@ -1,0 +1,46 @@
+--- a/src/mod/event_handlers/mod_radius_cdr/Makefile.am
++++ b/src/mod/event_handlers/mod_radius_cdr/Makefile.am
+@@ -20,7 +20,7 @@ $(RADCLIENT_DIR):
+ 
+ $(RADCLIENT_BUILDDIR)/Makefile: $(RADCLIENT_DIR)
+ 	mkdir -p $(RADCLIENT_BUILDDIR)
+-	cd $(RADCLIENT_BUILDDIR) && $(DEFAULT_VARS) $(RADCLIENT_DIR)/configure $(DEFAULT_ARGS) --srcdir=$(RADCLIENT_DIR)
++	cd $(RADCLIENT_BUILDDIR) && patch -p1 < ../../src/mod/event_handlers/mod_radius_cdr/freeradius-client-1.1.6-configure-in.diff && autoreconf -v -f -i -s && $(DEFAULT_VARS) CFLAGS+="-Wno-cpp" $(RADCLIENT_DIR)/configure $(DEFAULT_ARGS) --srcdir=$(RADCLIENT_DIR)
+ 	$(TOUCH_TARGET)
+ 
+ $(RADCLIENT_LA): $(RADCLIENT_BUILDDIR)/Makefile
+--- /dev/null
++++ b/src/mod/event_handlers/mod_radius_cdr/freeradius-client-1.1.6-configure-in.diff
+@@ -0,0 +1,32 @@
++diff --git a/configure.in b/configure.in
++index 4f194bd..647e9b9 100644
++--- a/configure.in
+++++ b/configure.in
++@@ -209,7 +209,7 @@ AC_CHECK_FUNCS(stricmp random rand snprintf vsnprintf)
++ if test "$ac_cv_func_uname" = 'yes'
++ then
++ 	AC_MSG_CHECKING([for field domainname in struct utsname])
++-	AC_TRY_RUN([
+++	AC_COMPILE_IFELSE([
++ 	#include <sys/utsname.h>
++ 	
++ 	main(int argc, char **argv)
++@@ -224,13 +224,11 @@ then
++ 	)
++ fi
++ 
++-AC_MSG_CHECKING([for /dev/urandom])
++-if test -c /dev/urandom
++-then
++-	AC_MSG_RESULT(yes)
++-	AC_DEFINE(HAVE_DEV_URANDOM)
++-else
++-	AC_MSG_RESULT(no)
+++AC_CACHE_CHECK([/dev/urandom], [ac_cv_dev_urandom],
+++  [ac_cv_dev_urandom=no
+++   if test -c /dev/urandom; then ac_cv_dev_urandom=yes; fi])
+++if test $ac_cv_dev_urandom = yes; then
+++  AC_DEFINE(HAVE_DEV_URANDOM)
++ fi
++ 
++ dnl Determine PATH setting

@@ -1,0 +1,22 @@
+Index: wpa_supplicant-2.6/src/utils/common.c
+===================================================================
+--- wpa_supplicant-2.6.orig/src/utils/common.c	2016-10-03 02:51:11.000000000 +0800
++++ wpa_supplicant-2.6/src/utils/common.c	2018-06-25 13:54:02.292419038 +0800
+@@ -498,12 +498,12 @@
+ 			*txt++ = 't';
+ 			break;
+ 		default:
+-			if (data[i] >= 32 && data[i] <= 126) {
++//			if (data[i] >= 32 && data[i] <= 126) {
+ 				*txt++ = data[i];
+-			} else {
+-				txt += os_snprintf(txt, end - txt, "\\x%02x",
+-						   data[i]);
+-			}
++//			} else {
++//				txt += os_snprintf(txt, end - txt, "\\x%02x",
++//						   data[i]);
++//			}
+ 			break;
+ 		}
+ 	}

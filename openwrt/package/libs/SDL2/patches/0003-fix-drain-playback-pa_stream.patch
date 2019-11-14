@@ -1,0 +1,25 @@
+From 616c44fa445fdbd6ee1e501f8b983c3315d43459 Mon Sep 17 00:00:00 2001
+From: "guanying.zhou" <guanying.zhou@rokid.com>
+Date: Wed, 29 Nov 2017 18:03:13 +0800
+Subject: [PATCH 1/2] fix: drain playback pa_stream
+
+---
+ src/audio/pulseaudio/SDL_pulseaudio.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/audio/pulseaudio/SDL_pulseaudio.c b/src/audio/pulseaudio/SDL_pulseaudio.c
+index 9ced49d..fc12133 100644
+--- a/src/audio/pulseaudio/SDL_pulseaudio.c
++++ b/src/audio/pulseaudio/SDL_pulseaudio.c
+@@ -443,6 +443,8 @@ PULSEAUDIO_CloseDevice(_THIS)
+     if (this->hidden->stream) {
+         if (this->hidden->capturebuf != NULL) {
+             PULSEAUDIO_pa_stream_drop(this->hidden->stream);
++        } else {
++            WaitForPulseOperation(this->hidden->mainloop, PULSEAUDIO_pa_stream_drain(this->hidden->stream, stream_operation_complete_no_op, NULL));
+         }
+         PULSEAUDIO_pa_stream_disconnect(this->hidden->stream);
+         PULSEAUDIO_pa_stream_unref(this->hidden->stream);
+-- 
+2.15.0
+

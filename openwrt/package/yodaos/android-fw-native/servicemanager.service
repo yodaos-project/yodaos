@@ -1,0 +1,11 @@
+[Unit]
+Description=Rokid binder service
+After=syslog.target
+
+[Service]
+UMask=077
+ExecStart=/usr/bin/servicemanager --system --daemonize=no
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

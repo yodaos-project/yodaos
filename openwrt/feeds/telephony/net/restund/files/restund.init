@@ -1,0 +1,15 @@
+#!/bin/sh /etc/rc.common
+#
+# Copyright (C) 2010-2011 OpenWrt.org
+# Copyright (C) 2010 Alfred E. Heggestad
+#
+
+START=60
+
+start() {
+	service_start /usr/sbin/restund
+}
+
+stop() {
+	service_stop /usr/sbin/restund
+}

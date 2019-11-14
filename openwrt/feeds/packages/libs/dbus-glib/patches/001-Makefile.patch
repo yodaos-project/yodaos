@@ -1,0 +1,49 @@
+Index: dbus-glib-0.108/Makefile.am
+===================================================================
+--- dbus-glib-0.108.orig/Makefile.am
++++ dbus-glib-0.108/Makefile.am
+@@ -1,7 +1,7 @@
+ ACLOCAL_AMFLAGS = -I m4
+ GLIB_PC=dbus-glib-1.pc
+ 
+-SUBDIRS=dbus tools test doc
++SUBDIRS=dbus
+ DIST_SUBDIRS=dbus tools test doc m4
+ 
+ pkgconfigdir = $(libdir)/pkgconfig
+Index: dbus-glib-0.108/Makefile.in
+===================================================================
+--- dbus-glib-0.108.orig/Makefile.in
++++ dbus-glib-0.108/Makefile.in
+@@ -403,7 +403,7 @@ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ ACLOCAL_AMFLAGS = -I m4
+ GLIB_PC = dbus-glib-1.pc
+-SUBDIRS = dbus tools test doc
++SUBDIRS = dbus
+ DIST_SUBDIRS = dbus tools test doc m4
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = $(GLIB_PC)
+Index: dbus-glib-0.108/dbus/Makefile.am
+===================================================================
+--- dbus-glib-0.108.orig/dbus/Makefile.am
++++ dbus-glib-0.108/dbus/Makefile.am
+@@ -1,4 +1,4 @@
+-SUBDIRS = . examples
++SUBDIRS = .
+ 
+ AM_CPPFLAGS = \
+ 	-I$(top_srcdir)						\
+Index: dbus-glib-0.108/dbus/Makefile.in
+===================================================================
+--- dbus-glib-0.108.orig/dbus/Makefile.in
++++ dbus-glib-0.108/dbus/Makefile.in
+@@ -608,7 +608,7 @@ target_alias = @target_alias@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-SUBDIRS = . examples
++SUBDIRS = .
+ AM_CPPFLAGS = \
+ 	-I$(top_srcdir)						\
+ 	-I$(top_builddir)					\

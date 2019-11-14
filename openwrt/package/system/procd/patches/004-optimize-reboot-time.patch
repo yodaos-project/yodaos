@@ -1,0 +1,16 @@
+diff --git a/state.c b/state.c
+index 3cdc45e..496de67 100644
+--- a/state.c
++++ b/state.c
+@@ -156,8 +156,10 @@ static void state_enter(void)
+ 			LOG("- reboot -\n");
+ 
+ 		/* Allow time for last message to reach serial console, etc */
++        /* remove the last sleep to optimize reboot time @rokid */
++#if 0
+ 		sleep(1);
+-
++#endif
+ 		/* We have to fork here, since the kernel calls do_exit(EXIT_SUCCESS)
+ 		 * in linux/kernel/sys.c, which can cause the machine to panic when
+ 		 * the init process exits... */

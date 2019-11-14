@@ -1,0 +1,14 @@
+menu "bluetooth_service configs"
+
+    config BT_SERVICE_IPC_BY_FLORA
+        bool "Bluetooth ipc by flora"
+        default y
+    config BT_SERVICE_IPC_BY_ZEROMQ
+        bool "Bluetooth ipc by zeromq"
+        default n
+
+    config BT_SERVICE_HAVE_HFP
+        bool "Bluetooth service have hfp"
+        default n
+endmenu
+

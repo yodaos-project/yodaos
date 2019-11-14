@@ -1,0 +1,3 @@
+#!/bin/sh
+
+rmmod cywdhd.ko

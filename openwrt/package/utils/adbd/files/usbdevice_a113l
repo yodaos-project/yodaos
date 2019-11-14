@@ -1,0 +1,4 @@
+#! /bin/sh
+
+sleep 1
+echo ff500000.dwc2_a > /sys/kernel/config/usb_gadget/amlogic/UDC

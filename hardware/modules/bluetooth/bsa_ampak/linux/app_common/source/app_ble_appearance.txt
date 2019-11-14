@@ -1,0 +1,61 @@
+/*****************************************************************************
+ **
+ **  Name:           app_ble_apearance.txt
+ **
+ **  Description:    Contains BLE appearance description
+ **
+ **  Copyright (c) 2015, Broadcom Corp., All Rights Reserved.
+ **  Broadcom Bluetooth Core. Proprietary and confidential.
+ **
+ *****************************************************************************/
+
+/* Key (6 bits + 10 bits),  Sub-Description, Description */
+
+X(64,  "Generic Phone", "Generic category")
+X(128, "Generic Computer", "Generic category")
+X(192, "Generic Watch", "Generic category")
+X(193, "Watch: Sports Watch", "Watch subtype")
+X(256, "Generic Clock", "Generic category")
+X(320, "Generic Display", "Generic category")
+X(384, "Generic Remote Control", "Generic category")
+X(448, "Generic Eye-glasses", "Generic category")
+X(512, "Generic Tag", "Generic category")
+X(576, "Generic Keyring", "Generic category")
+X(640, "Generic Media Player", "Generic category")
+X(704, "Generic Barcode Scanner", "Generic category")
+X(768, "Generic Thermometer", "Generic category")
+X(769, "Thermometer: Ear", "Thermometer subtype")
+X(832, "Generic Heart rate Sensor", "Generic category")
+X(833, "Heart Rate Sensor: Heart Rate Belt", "Heart Rate Sensor subtype")
+X(896, "Generic Blood Pressure", "Generic category")
+X(897, "Blood Pressure: Arm", "Blood Pressure subtype")
+X(898, "Blood Pressure: Wrist", "Blood Pressure subtype")
+X(960, "Human Interface Device (HID)", "HID Generic")
+X(961, "Keyboard", "HID subtype")
+X(962, "Mouse", "HID subtype")
+X(963, "Joystick", "HID subtype")
+X(964, "Gamepad", "HID subtype")
+X(965, "Digitizer Tablet", "HID subtype")
+X(966, "Card Reader", "HID subtype")
+X(967, "Digital Pen", "HID subtype")
+X(968, "Barcode Scanner", "HID subtype")
+X(1024, "Generic Glucose Meter", "Generic category")
+X(1088, "Generic: Running Walking Sensor", "Generic category")
+X(1089, "Running Walking Sensor: In-Shoe", "Running Walking Sensor subtype")
+X(1090, "Running Walking Sensor: On-Shoe", "Running Walking Sensor subtype")
+X(1091, "Running Walking Sensor: On-Hip", "Running Walking Sensor subtype")
+X(1152, "Generic: Cycling", "Generic category")
+X(1153, "Cycling: Cycling Computer", "Cycling subtype")
+X(1154, "Cycling: Speed Sensor", "Cycling subtype")
+X(1155, "Cycling: Cadence Sensor", "Cycling subtype")
+X(1156, "Cycling: Power Sensor", "Cycling subtype")
+X(1157, "Cycling: Speed and Cadence Sensor", "Cycling subtype")
+X(3136, "Generic: Pulse Oximeter", "Pulse Oximeter Generic Gategory")
+X(3137, "Fingertip", "Pulse Oximeter subtype")
+X(3138, "Wrist Worn", "Pulse Oximeter subtype")
+X(3200, "Generic: Weight Scale", "Weight Scale Generic Category")
+X(5184, "Generic: Outdoor Sports Activity", "Outdoor Sports Activity Generic Category")
+X(5185, "Location Display Device", "Outdoor Sports Activity subtype")
+X(5186, "Location and Navigation Display Device", "Outdoor Sports Activity subtype")
+X(5187, "Location Pod", "Outdoor Sports Activity subtype")
+X(5188, "Location and Navigation Pod", "Outdoor Sports Activity subtype")

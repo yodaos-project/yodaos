@@ -1,0 +1,20 @@
+diff --git a/init/halt.c b/init/halt.c
+index ad12d91..1962a8c 100644
+--- a/init/halt.c
++++ b/init/halt.c
+@@ -112,6 +112,7 @@ int halt_main(int argc UNUSED_PARAM, char **argv)
+ 	for (which = 0; "hpr"[which] != applet_name[0]; which++)
+ 		continue;
+ 
++	printf("which %d\n", which);
+ 	/* Parse and handle arguments */
+ 	opt_complementary = "d+"; /* -d N */
+ 	/* We support -w even if !ENABLE_FEATURE_WTMP,
+@@ -164,6 +165,7 @@ int halt_main(int argc UNUSED_PARAM, char **argv)
+ 			}
+ 		}
+ 	} else {
++		printf("reboot magic 0x%x\n", magic[which]);
+ 		rc = reboot(magic[which]);
+ 	}
+ 

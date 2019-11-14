@@ -1,0 +1,44 @@
+choice
+	prompt "Bootloader (U-Boot, ..)"
+	default UBOOT
+	help
+	  Choose the bootloader
+
+config UBOOT
+	bool "U-Boot"
+	depends on HAVE_LIBUBOOTENV
+	depends on HAVE_ZLIB
+	help
+	  Support for U-Boot
+	  https://www.denx.de/wiki/U-Boot
+
+comment "U-Boot support needs libubootenv, libz"
+	depends on !HAVE_ZLIB
+
+config BOOTLOADER_NONE
+	bool "None"
+	help
+	  No interface to a bootloader
+
+config BOOTLOADER_GRUB
+	bool "GRUB"
+	help
+	  Support for GRUB
+	  https://www.gnu.org/software/grub/
+endchoice
+
+config UBOOT_FWENV
+	string "U-Boot Environment Configuration file"
+	depends on UBOOT
+	default "/etc/fw_env.config"
+	help
+	  This is the file described in U-Boot documentation
+	  in the tools directory. It tells where the U-Boot
+	  environment is saved.
+
+config GRUBENV_PATH
+	string "GRUB Environment block file path"
+	depends on BOOTLOADER_GRUB
+	default "/boot/efi/EFI/BOOT/grub/grubenv"
+	help
+	  Provide path to GRUB environment block file

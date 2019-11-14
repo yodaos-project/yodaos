@@ -1,0 +1,11 @@
+--- a/utils/utils.xml
++++ b/utils/utils.xml
+@@ -41,7 +41,7 @@
+ 	<support_level>extended</support_level>
+   </member>
+   <member name="smsq">
+-	<defaultenabled>no</defaultenabled>
++	<defaultenabled>yes</defaultenabled>
+ 	<depend>popt</depend>
+ 	<support_level>extended</support_level>
+   </member>

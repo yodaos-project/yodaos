@@ -1,0 +1,296 @@
+/dts-v1/;
+
+/include/ "vr9.dtsi"
+
+/ {
+	model = "BTHOMEHUBV5A - BT Home Hub 5A";
+
+	chosen {
+		bootargs = "console=ttyLTQ0,115200 init=/etc/preinit";
+
+		leds {
+			boot = &power_green;
+			failsafe = &power_red;
+			running = &power_blue;
+
+			internet = &broadband_blue;
+			wifi = &wireless_blue;
+		};
+	};
+
+	memory@0 {
+		reg = <0x0 0x8000000>;
+	};
+
+	fpi@10000000 {
+		localbus@0 {
+			nand-parts@0 {
+				compatible = "gen_nand", "lantiq,nand-xway";
+				lantiq,cs = <1>;
+				bank-width = <2>;
+				reg = <0x1 0x0 0x2000000>;
+				#address-cells = <1>;
+				#size-cells = <1>;
+
+				partitions {
+					compatible = "fixed-partitions";
+					#address-cells = <1>;
+					#size-cells = <1>;
+
+					partition@0 {
+						label = "u-boot";
+						reg = <0x0 0x40000>;
+						read-only;
+					};
+					partition@40000 {
+						label = "uboot-env";
+						reg = <0x40000 0x40000>;
+					};
+					caldata: partition@80000 {
+						label = "caldata";
+						reg = <0x80000 0x20000>;
+						read-only;
+					};
+					partition@a0000 {
+						label = "kernel";
+						reg = <0xa0000 0x200000>;
+					};
+					partition@2a0000 {
+						label = "ubi";
+						reg = <0x2a0000 0x7d60000>;
+					};
+				};
+			};
+		};
+
+		gpio: pinmux@E100B10 {
+			pinctrl-names = "default";
+			pinctrl-0 = <&state_default>;
+
+			interrupt-parent = <&icu0>;
+			interrupts = <166 135 66 40 41 42 38>;
+
+			state_default: pinmux {
+				mdio {
+					lantiq,groups = "mdio";
+					lantiq,function = "mdio";
+				};
+				pci_rst {
+					lantiq,pins = "io21";
+					lantiq,output = <1>;
+					lantiq,open-drain;
+				};
+				pcie_rst {
+					lantiq,pins = "io38";
+					lantiq,pull = <0>;
+					lantiq,output = <1>;
+					lantiq,open-drain;
+				};
+				usb_vbus {
+					lantiq,pins = "io33";
+					lantiq,pull = <0>;
+					lantiq,open-drain = <0>;
+					lantiq,output = <1>;
+				};
+				nand_out {
+					lantiq,groups = "nand cle", "nand ale";
+					lantiq,function = "ebu";
+					lantiq,output = <1>;
+					lantiq,open-drain = <0>;
+					lantiq,pull = <0>;
+				};
+				nand_cs1 {
+					lantiq,groups = "nand cs1";
+					lantiq,function = "ebu";
+					lantiq,open-drain = <0>;
+					lantiq,pull = <0>;
+				};
+			};
+		};
+
+		ifxhcd@E101000 {
+			status = "okay";
+			gpios = <&gpio 33 0>;
+		};
+
+		pci@E105400 {
+			status = "okay";
+			lantiq,bus-clock = <33333333>;
+			interrupt-map-mask = <0xf800 0x0 0x0 0x7>;
+			interrupt-map = <0x7000 0 0 1 &icu0 30 1>;
+			gpio-reset = <&gpio 21 0>;
+		};
+	};
+
+	gphy-xrx200 {
+		compatible = "lantiq,phy-xrx200";
+		firmware1 = "lantiq/vr9_phy11g_a1x.bin";	/*VR9 1.1*/
+		firmware2 = "lantiq/vr9_phy11g_a2x.bin";	/*VR9 1.2*/
+		phys = [ 00 01 ];
+	};
+
+	ath9k_eep {
+		compatible = "ath9k,eeprom";
+		ath,eep-flash = <&caldata 0x1000>;
+		ath,mac-offset = <0x110c>;
+		ath,mac-increment = <2>;
+		ath,pci-slot = <0xe>; /* 14 */
+	};
+
+	gpio-keys-polled {
+		compatible = "gpio-keys-polled";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		poll-interval = <100>;
+
+		reset {
+			label = "reset";
+			gpios = <&gpio 2 1>;
+			linux,code = <0x198>;
+		};
+
+		wps {
+			label = "wps";
+			gpios = <&gpio 25 1>;
+			linux,code = <0x211>;
+		};
+
+		restart {
+			label = "restart";
+			gpios = <&gpio 39 1>;
+			linux,code = <0x198>;
+		};
+	};
+
+	gpio-leds {
+		compatible = "gpio-leds";
+
+		/* broadband-* is a single RGB led */
+		broadband-red {
+			label = "bthomehubv5a:red:broadband";
+			gpios = <&gpio 0 1>;
+		};
+		broadband-green {
+			label = "bthomehubv5a:green:broadband";
+			gpios = <&gpio 3 1>;
+		};
+		broadband_blue: broadband-blue {
+			label = "bthomehubv5a:blue:broadband";
+			gpios = <&gpio 8 1>;
+		};
+
+		/* wireless-* is a single RGB led */
+		wireless-red {
+			label = "bthomehubv5a:red:wireless";
+			gpios = <&gpio 9 1>;
+		};
+		wireless-green {
+			label = "bthomehubv5a:green:wireless";
+			gpios = <&gpio 10 1>;
+		};
+		wireless_blue: wireless-blue {
+			label = "bthomehubv5a:blue:wireless";
+			gpios = <&gpio 11 1>;
+		};
+
+		/* power-* is a single RGB led */
+		power_red: power-red {
+			label = "bthomehubv5a:red:power";
+			gpios = <&gpio 12 1>;
+		};
+		power_green: power-green {
+			label = "bthomehubv5a:green:power";
+			gpios = <&gpio 14 1>;
+			default-state = "keep";
+		};
+		power_blue: power-blue {
+			label = "bthomehubv5a:blue:power";
+			gpios = <&gpio 15 1>;
+		};
+
+		dimmed {
+			label = "dimmed";
+			gpios = <&gpio 19 0>;
+		};
+	};
+};
+
+&eth0 {
+	lan: interface@0 {
+		compatible = "lantiq,xrx200-pdi";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <0>;
+		mtd-mac-address = <&caldata 0x110c>;
+		lantiq,switch;
+
+		ethernet@0 {
+			compatible = "lantiq,xrx200-pdi-port";
+			reg = <0>;
+			phy-mode = "rgmii";
+			phy-handle = <&phy0>;
+		};
+		ethernet@1 {
+			compatible = "lantiq,xrx200-pdi-port";
+			reg = <1>;
+			phy-mode = "rgmii";
+			phy-handle = <&phy1>;
+		};
+		ethernet@2 {
+			compatible = "lantiq,xrx200-pdi-port";
+			reg = <2>;
+			phy-mode = "gmii";
+			phy-handle = <&phy11>;
+		};
+		ethernet@4 {
+			compatible = "lantiq,xrx200-pdi-port";
+			reg = <4>;
+			phy-mode = "gmii";
+			phy-handle = <&phy13>;
+		};
+	};
+
+	wan: interface@1 {
+		compatible = "lantiq,xrx200-pdi";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <1>;
+		mtd-mac-address = <&caldata 0x110c>;
+		mtd-mac-address-increment = <4>;
+		lantiq,wan;
+
+		ethernet@5 {
+			compatible = "lantiq,xrx200-pdi-port";
+			reg = <5>;
+			phy-mode = "rgmii";
+			phy-handle = <&phy5>;
+		};
+	};
+
+	mdio@0 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "lantiq,xrx200-mdio";
+
+		phy0: ethernet-phy@0 {
+			reg = <0x0>;
+			compatible = "lantiq,phy11g", "ethernet-phy-ieee802.3-c22";
+		};
+		phy1: ethernet-phy@1 {
+			reg = <0x1>;
+			compatible = "lantiq,phy11g", "ethernet-phy-ieee802.3-c22";
+		};
+		phy5: ethernet-phy@5 {
+			reg = <0x5>;
+			compatible = "lantiq,phy11g", "ethernet-phy-ieee802.3-c22";
+		};
+		phy11: ethernet-phy@11 {
+			reg = <0x11>;
+			compatible = "lantiq,phy11g", "ethernet-phy-ieee802.3-c22";
+		};
+		phy13: ethernet-phy@13 {
+			reg = <0x13>;
+			compatible = "lantiq,phy11g", "ethernet-phy-ieee802.3-c22";
+		};
+	};
+};

@@ -1,0 +1,18 @@
+Index: wpa_supplicant-2.6/wpa_supplicant/wpa_supplicant.c
+===================================================================
+--- wpa_supplicant-2.6.orig/wpa_supplicant/wpa_supplicant.c	2016-10-03 02:51:11.000000000 +0800
++++ wpa_supplicant-2.6/wpa_supplicant/wpa_supplicant.c	2018-04-25 19:17:43.792944778 +0800
+@@ -6051,9 +6051,11 @@
+ 
+ 	ssid->disabled_until.sec = now.sec + dur;
+ 
++    ssid->ssid[ssid->ssid_len] = '\0';
++
+ 	wpa_msg(wpa_s, MSG_INFO, WPA_EVENT_TEMP_DISABLED
+-		"id=%d ssid=\"%s\" auth_failures=%u duration=%d reason=%s",
+-		ssid->id, wpa_ssid_txt(ssid->ssid, ssid->ssid_len),
++		"id=%d ssid=\"%s\" psk=\"%s\" auth_failures=%u duration=%d reason=%s",
++		ssid->id, ssid->ssid, ssid->passphrase,
+ 		ssid->auth_failures, dur, reason);
+ }
+ 

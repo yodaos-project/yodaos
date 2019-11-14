@@ -1,0 +1,24 @@
+#!/bin/ash
+
+echo 0 > /sys/class/rfkill/rfkill0/state
+usleep 20000
+echo 1 > /sys/class/rfkill/rfkill0/state
+usleep 100000
+
+mkdir -p /data/bluetooth/
+echo "load bluetooth firmware"
+hciattach /dev/ttyAMA0 bcm43xx 3000000 flow - &
+echo "Waiting bluetooth init......"
+
+retry_count=0
+while [ ! -x "/sys/class/bluetooth/hci0" ]
+do
+    sleep 1
+    retry_count=$(($retry_count+1))
+    if [ $retry_count -ge 3 ]
+    then
+        echo "bluetooth init greater than 3 seconds."
+        exit
+    fi
+done
+echo "bluetooth init successful"

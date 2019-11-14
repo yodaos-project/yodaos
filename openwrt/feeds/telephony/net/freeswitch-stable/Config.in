@@ -1,0 +1,101 @@
+menu "Advanced configuration"
+	depends on PACKAGE_freeswitch-stable
+
+config FS_STABLE_WITH_DEBUG
+	bool "Compile with debug information"
+	default n
+	help
+	  Enable extra debug codepaths, like asserts and extra output. If you
+	  want to get meaningful backtraces see
+	  https://wiki.openwrt.org/doc/devel/debugging for starting points.
+
+config FS_STABLE_WITH_FREETYPE
+	bool "Compile with FreeType support"
+	default y if x86_64
+	help
+	  Add FreeType support to FreeSWITCH
+
+config FS_STABLE_WITH_LIBEDIT
+	bool "Compile with libedit support"
+	default y
+	help
+	  Compile with libedit support to enable command-line history editing
+	  and curses functionality. Of course this feels nicer when interacting
+	  with FreeSWITCH (without it it doesn't feel very interactive at all),
+	  but it adds additional dependencies (libedit, libncursesw, terminfo).
+
+config FS_STABLE_WITH_LIBYUV
+	bool "Compile with libyuv support"
+	default y if x86_64
+	help
+	  Add libyuv support to FreeSWITCH
+
+config FS_STABLE_WITH_ODBC
+	bool "Compile with ODBC support"
+	default y if x86_64
+	help
+	  Enable ODBC support.
+
+config FS_STABLE_WITH_PGSQL
+	bool "Compile with PGSQL support"
+	default y if x86_64
+	help
+	  Enable PostgreSQL support.
+
+config FS_STABLE_WITH_PNG
+	bool "Compile with PNG support"
+	default y if x86_64
+	help
+	  Add PNG support to FreeSWITCH
+
+config FS_STABLE_WITH_SRTP
+	bool "Compile with SRTP support"
+	default y
+	help
+	  Compile with SRTP support.
+
+config FS_STABLE_WITH_V8
+	bool "Compile with V8 support"
+	depends on arm||i386||mipsel||x86_64
+	default y if x86_64
+	help
+	  The sole purpose of this symbol is to prevent mod_v8 from being built
+	  by the build bots. Currently the only exception is x86_64. The build is
+	  time-consuming and the module is quite large, making it an unlikely
+	  choice for devices with limited resources.
+
+	  If you want mod_v8 to become available, select 'y'.
+
+config FS_STABLE_WITH_V8_SNAPSHOT
+	bool "Include heap snapshot"
+	depends on FS_STABLE_WITH_V8
+	default n
+	help
+	  V8 can be built with a heap snapshot for faster initialization. Default
+	  is 'n' because of seemingly random segmentation faults observed when
+	  generating the snapshot.
+
+	  Only select 'y' if you know what you are doing.
+
+config FS_STABLE_WITH_VPX
+	bool "Compile with VPx support"
+	depends on FS_STABLE_WITH_LIBYUV
+	default y if x86_64
+	help
+	  Compile with VPx video codec support
+
+config FS_STABLE_WITH_ZRTP
+	bool "Compile with ZRTP support"
+	depends on aarch64||aarch64_be||arm||armeb||i386||mips||mips64||mips64el||mipsel||powerpc||powerpc64||powerpcle||sparc||x86_64
+	default y if x86_64
+	help
+	  Compile with ZRTP support.
+
+config FS_STABLE_WITH_MODCONF
+	bool "Include module examples"
+	default y if x86_64
+	help
+	  Some modules include examples in their source directory, e.g. xml
+	  snippets. Select y to include them.
+
+endmenu

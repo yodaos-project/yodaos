@@ -1,0 +1,17 @@
+{
+    "ro.boot.firstboot": "1", 
+    "ro.boot.ftm": "", 
+    "ro.boot.hardware": "kamino", 
+    "ro.boot.rokidseed": "201805111000801000000100100021",
+    "ro.boot.serialno": "GX80100100100021",
+    "ro.boot.usid": "1234567890", 
+    "ro.build.version.release": "0.9.3-20180605-220811",
+    "ro.product.locale": "zh-CN", 
+    "ro.rokid.build.bsiren": "XXXXX-TUREN", 
+    "ro.rokid.build.platform": "linux", 
+    "ro.rokid.captureid": "3", 
+    "ro.rokid.playid": "2", 
+    "service.adb.tcp.port": "5555",
+    "ro.boot.devicetypeid": "B9B09AEB2CE04CE08AF76989295175D7",
+    "persist.sys.rokid.sandbox": "0"
+}

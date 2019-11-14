@@ -1,0 +1,8 @@
+config BR2_PACKAGE_PROPERTY
+        bool "rokid porting property to buildroot."
+
+config AUDIO_LINK_CUT
+        bool "disable long term audio link for power saving"
+        default n
+        help
+            If no sound output, need shutdown audio codec for power saving in case of no long term audio link.

@@ -1,0 +1,20 @@
+diff --git a/initd/early.c b/initd/early.c
+index bf519f6..21310f1 100644
+--- a/initd/early.c
++++ b/initd/early.c
+@@ -59,6 +59,7 @@ early_mounts(void)
+ 	mount("sysfs", "/sys", "sysfs", MS_NOATIME | MS_NODEV | MS_NOEXEC | MS_NOSUID, 0);
+ 	mount("cgroup", "/sys/fs/cgroup", "cgroup",  MS_NODEV | MS_NOEXEC | MS_NOSUID, 0);
+ 	mount("tmpfs", "/dev", "tmpfs", MS_NOATIME | MS_NOSUID, "mode=0755,size=512K");
++	mount("tmpfs", "/var", "tmpfs", MS_NOATIME | MS_NOSUID, "mode=0755,size=5M");
+ 	ignore(symlink("/tmp/shm", "/dev/shm"));
+ 	mkdir("/dev/pts", 0755);
+ 	mount("devpts", "/dev/pts", "devpts", MS_NOATIME | MS_NOEXEC | MS_NOSUID, "mode=600");
+@@ -76,6 +77,7 @@ early_mounts(void)
+ 	mkdir("/tmp/run", 0755);
+ 	mkdir("/tmp/lock", 0755);
+ 	mkdir("/tmp/state", 0755);
++	mkdir("/var/run", 0755);
+ 	umask(oldumask);
+ }
+ 

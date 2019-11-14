@@ -1,0 +1,44 @@
+--- a/addons/chan_mobile.c
++++ b/addons/chan_mobile.c
+@@ -27,7 +27,7 @@
+ 
+ /*** MODULEINFO
+ 	<depend>bluetooth</depend>
+-	<defaultenabled>no</defaultenabled>
++	<defaultenabled>yes</defaultenabled>
+ 	<support_level>extended</support_level>
+  ***/
+ 
+--- a/addons/res_config_mysql.c
++++ b/addons/res_config_mysql.c
+@@ -24,7 +24,7 @@
+ 
+ /*** MODULEINFO
+ 	<depend>mysqlclient</depend>
+-	<defaultenabled>no</defaultenabled>
++	<defaultenabled>yes</defaultenabled>
+ 	<support_level>extended</support_level>
+  ***/
+ 
+--- a/res/res_pktccops.c
++++ b/res/res_pktccops.c
+@@ -31,7 +31,7 @@
+  */
+ 
+ /*** MODULEINFO
+-        <defaultenabled>no</defaultenabled>
++	<defaultenabled>yes</defaultenabled>
+ 	<support_level>extended</support_level>
+  ***/
+ 
+--- a/addons/chan_ooh323.c
++++ b/addons/chan_ooh323.c
+@@ -18,7 +18,7 @@
+ 
+ 
+ /*** MODULEINFO
+-	<defaultenabled>no</defaultenabled>
++	<defaultenabled>yes</defaultenabled>
+ 	<support_level>extended</support_level>
+  ***/
+ 

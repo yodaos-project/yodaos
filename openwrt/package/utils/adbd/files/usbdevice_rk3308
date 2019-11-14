@@ -1,0 +1,25 @@
+#! /bin/sh
+
+sleep 1
+dev_path=/sys$1
+state=`cat ${dev_path}/state`
+if [ "$state"x != "config"x  ] ; then
+UDC=`ls /sys/class/udc/| awk '{print $1}'`
+echo $UDC > /sys/kernel/config/usb_gadget/g1/UDC
+functions=`cat /sys/kernel/config/usb_gadget/g1/configs/b.1/strings/0x409/configuration`
+
+# if no "_" string to "cut" command, it will set the full string to output.
+# add "_" to string functions avoiding no "_" case
+i=2
+functions=_${functions}
+
+tmp=`echo $functions | cut -d _ -f $i`
+until [ -z "$tmp" ]; do
+	if [ "$tmp" == "mtp" ]; then
+		mtp-server&
+		break
+	fi
+	i=`expr $i + 1`
+	tmp=`echo $functions | cut -d _ -f $i`
+done
+fi

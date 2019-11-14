@@ -1,0 +1,328 @@
+#
+# For a description of the syntax of this configuration file,
+# see scripts/kbuild/config-language.txt.
+#
+
+mainmenu "Swupdate Configuration"
+
+config HAVE_DOT_CONFIG
+	bool
+	default y
+
+config HAVE_LUA
+	bool
+	option env="HAVE_LUA"
+
+config HAVE_LIBCONFIG
+	bool
+	option env="HAVE_LIBCONFIG"
+
+config HAVE_LIBARCHIVE
+	bool
+	option env="HAVE_LIBARCHIVE"
+
+config HAVE_LIBCURL
+	bool
+	option env="HAVE_LIBCURL"
+
+config HAVE_LIBMTD
+	bool
+	option env="HAVE_LIBMTD"
+
+config HAVE_LIBUBI
+	bool
+	option env="HAVE_LIBUBI"
+
+config HAVE_LIBUBOOTENV
+	bool
+	option env="HAVE_LIBUBOOTENV"
+
+config HAVE_LIBZEROMQ
+	bool
+	option env="HAVE_LIBZEROMQ"
+
+config HAVE_ZLIB
+	bool
+	option env="HAVE_ZLIB"
+
+config HAVE_LIBSSL
+	bool
+	option env="HAVE_LIBSSL"
+
+config HAVE_LIBCRYPTO
+	bool
+	option env="HAVE_LIBCRYPTO"
+
+config HAVE_JSON_C
+	bool
+	option env="HAVE_JSON_C"
+
+menu "Swupdate Settings"
+
+menu "General Configuration"
+
+config SCRIPTS
+	bool "enable pre and postinstall scripts"
+	default y
+	help
+	  Enabling this option, the installer will run
+	  pre- and postinstall scripts, if they are present
+	  in the image. For security reason, this option
+	  can be switched off.
+
+config HW_COMPATIBILITY
+	bool "check for hardware / software compatibility"
+	default n
+	help
+	  If enabled, check if the hardware revision
+	  supports the software version. Detecting the hardware
+	  revision is very board specific, and it cannot be generalized.
+	  For this reason, the software expects that the detected
+	  version is written into a file by a previous software.
+
+config HW_COMPATIBILITY_FILE
+	string "File with detected hardware revisions"
+	depends on HW_COMPATIBILITY
+	default "/etc/hwrevision"
+	help
+	  File where to read the detected hardware revsion
+	  that must be compared with the software version.
+	  The file has simple entries (one per line) in the
+	  format of "major.minor".
+
+config SW_VERSIONS_FILE
+	string "File with detected software version"
+	default "/etc/sw-versions"
+	help
+	  This is an optional file that is scanned at the
+	  beginning to read the installed versions of
+	  all sw-components. Each entry in the file is a
+	  a pair of "name version".
+	  In sw-description,  an image can have the
+	  optional attributes:
+		"name" : key for searching in SW_VERSIONS_FILE
+		"version" : version contained in the .swu
+		"install-if-different" : if set, version
+	  		is compared with the one in SW_VERSIONS_FILE.
+	  The image is installed only if there is a version mismatch.
+	  This lets reduce risks in case of components that are not
+	  safe to be updated, such as the bootloader. Updating it is a risk,
+	  but in some cases it can be required to do it. Having a check,
+	  the risky-component is not always updated.
+
+config MTD
+	bool "MTD support"
+	default y
+	depends on HAVE_LIBMTD
+	help
+	  Enable MTD support.
+
+comment "MTD support needs libmtd"
+	depends on !HAVE_LIBMTD
+
+config LUA
+	bool "lua"
+	default y
+	depends on HAVE_LUA
+	help
+	  Enable Lua interpreter.
+
+comment "Lua support needs a Lua interpreter"
+	depends on !HAVE_LUA
+
+config LUAPKG
+	string "Lua pkg-config name"
+	default "lua"
+	depends on LUA
+	help
+	  Which pkg-config package supplies the Lua API.
+
+# These are auto-selected by other options
+
+config FEATURE_SYSLOG
+	bool #No description makes it a hidden option
+	default n
+	#help
+	#  This option is auto-selected when you select any applet which may
+	#  send its output to syslog. You do not need to select it manually.
+
+endmenu
+
+menu 'Build Options'
+
+config CROSS_COMPILE
+	string "Cross Compiler prefix"
+	default ""
+	help
+	  If you want to build swupdate with a cross compiler, then you
+	  will need to set this to the cross-compiler prefix, for example,
+	  "i386-uclibc-".
+
+	  Native builds leave this empty.
+
+config SYSROOT
+	string "Path to sysroot"
+	default ""
+	help
+	  If you want to build swupdate with a cross compiler, then you
+	  might also need to specify where /usr/include and /usr/lib
+	  will be found.
+
+	  For example, swupdate can be built against an installed
+	  Android NDK, platform version 9, for ARM ABI with
+
+	  CONFIG_SYSROOT=/opt/android-ndk/platforms/android-9/arch-arm
+
+	  Native builds leave this empty.
+
+config EXTRA_CFLAGS
+	string "Additional CFLAGS"
+	default ""
+	help
+	  Additional CFLAGS to pass to the compiler verbatim.
+
+config EXTRA_LDFLAGS
+	string "Additional LDFLAGS"
+	default ""
+	help
+	  Additional LDFLAGS to pass to the linker verbatim.
+
+config EXTRA_LDLIBS
+	string "Additional LDLIBS"
+	default ""
+	help
+	  Additional LDLIBS to pass to the linker with -l.
+
+endmenu
+
+menu 'Debugging Options'
+
+config DEBUG
+	bool "Build Swupdate with extra Debugging symbols"
+	default n
+	help
+	  Say Y here if you wish to examine swupdate internals while applets are
+	  running. This increases the size of the binary considerably, and
+	  should only be used when doing development. If you are doing
+	  development and want to debug swupdate, answer Y.
+
+	  Most people should answer N.
+
+config DEBUG_PESSIMIZE
+	bool "Disable compiler optimizations"
+	default n
+	depends on DEBUG
+	help
+	  The compiler's optimization of source code can eliminate and reorder
+	  code, resulting in an executable that's hard to understand when
+	  stepping through it with a debugger. This switches it off, resulting
+	  in a much bigger executable that more closely matches the source
+	  code.
+
+config WERROR
+	bool "Abort compilation on any warning"
+	default n
+	help
+	  Selecting this will add -Werror to gcc command line.
+
+	  Most people should answer N.
+
+config NOCLEANUP
+	bool "Do not remove temporary files after execution"
+	default n
+	help
+	  After each run, temporary files are removed from
+	  /tmp to restart in a clean state. For debugging purpose,
+	  it helps to check the consistency of the file extracted
+	  by swupdate.
+	  For production, answer N.
+
+endmenu
+
+endmenu
+
+config BOOTLOADER
+	bool
+	default n
+
+source bootloader/Config.in
+
+
+config DOWNLOAD
+	bool "Enable image downloading"
+	default n
+	depends on HAVE_LIBCURL
+	help
+	  Enable update from image URL using libcurl. Files are downloaded
+	  completely before installation begins.
+
+comment "Image downloading support needs libcurl"
+	depends on !HAVE_LIBCURL
+
+config HASH_VERIFY
+	bool "Allow to add sha256 hash to each image"
+	depends on HAVE_LIBSSL
+	help
+	  Allow to add a sha256 hash to an artifact.
+	  This is automatically set in case of Signed Image
+
+config SIGNED_IMAGES
+	bool "Enable verification of signed images"
+	depends on HAVE_LIBSSL
+	select HASH_VERIFY
+comment "Image verification (signed images) needs libssl"
+	depends on !HAVE_LIBSSL
+
+choice
+	prompt "Signature verification algorithm"
+	depends on SIGNED_IMAGES
+	default SIGALG_RAWRSA
+	help
+	  Select if the signature algorithm for signed images is a raw RSA signature
+	  (following PKCS#1.5) or if it uses Cryptographic Message Syntax (CMS).
+
+	config SIGALG_RAWRSA
+			bool "RSA PKCS#1.5"
+
+	config SIGALG_CMS
+			bool "Cryptographic Message Syntax (CMS)"
+
+endchoice
+
+menu "CMS signature verification options"
+depends on SIGALG_CMS
+
+config CMS_IGNORE_EXPIRED_CERTIFICATE
+	bool "Ignore expired certificates"
+	depends on SIGALG_CMS
+
+config CMS_IGNORE_CERTIFICATE_PURPOSE
+	bool "Ignore X.509 certificate purpose"
+	depends on SIGALG_CMS
+endmenu
+
+
+config ENCRYPTED_IMAGES
+	bool "Images can be encrypted with a symmetric key"
+	depends on HAVE_LIBSSL
+comment "Image verification (signed images) needs libssl"
+	depends on !HAVE_LIBSSL
+
+config SURICATTA
+	bool
+	default n
+
+source suricatta/Config.in
+
+config WEBSERVER
+	bool "Enable webserver"
+	default n
+	select MONGOOSE
+	help
+	  Enable update from remote using a webserver on the target.
+
+source mongoose/Config.in
+
+source archival/Config.in
+source parser/Config.in
+source handlers/Config.in

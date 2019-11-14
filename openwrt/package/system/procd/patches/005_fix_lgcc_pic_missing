@@ -1,0 +1,11 @@
+--- a/upgraded/CMakeLists.txt	2017-08-01 14:12:03.000000000 +0800
++++ b/upgraded/CMakeLists.txt	2018-09-29 16:25:26.685317849 +0800
+@@ -11,7 +11,7 @@ set(CMAKE_SHARED_LIBRARY_CXX_FLAGS)
+ set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
+ set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
+ ADD_EXECUTABLE(upgraded upgraded.c ../watchdog.c)
+-TARGET_LINK_LIBRARIES(upgraded ubox rt -lc -lgcc_pic)
++TARGET_LINK_LIBRARIES(upgraded ubox rt -lc )
+ INSTALL(TARGETS upgraded
+ 	RUNTIME DESTINATION sbin
+ )

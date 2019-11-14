@@ -1,0 +1,191 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f86a4d5..3f16c5f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -15,7 +15,7 @@ ADD_LIBRARY(fstools SHARED
+ 		libfstools/ubi.c
+ 		libfstools/rootdisk.c
+ 		libfstools/find.c)
+-TARGET_LINK_LIBRARIES(fstools ubox)
++TARGET_LINK_LIBRARIES(fstools ubox ubi-utils)
+ INSTALL(TARGETS fstools LIBRARY DESTINATION lib)
+ 
+ ADD_LIBRARY(blkid-tiny SHARED
+diff --git a/libfstools/mtd.c b/libfstools/mtd.c
+index 77c71ee..d9bb16c 100644
+--- a/libfstools/mtd.c
++++ b/libfstools/mtd.c
+@@ -219,6 +219,10 @@ static int mtd_volume_identify(struct volume *v)
+ 		return FS_JFFS2;
+ 	}
+ 
++	if (v->type == NANDFLASH) {
++		return FS_UBIFS;
++	}
++
+ 	return FS_NONE;
+ }
+ 
+diff --git a/libfstools/overlay.c b/libfstools/overlay.c
+index 14214a3..1be1ea8 100644
+--- a/libfstools/overlay.c
++++ b/libfstools/overlay.c
+@@ -29,10 +29,12 @@
+ 
+ #include "libfstools.h"
+ #include "volume.h"
++#include "../libubi/libubi-tiny.h"
+ 
+ #define SWITCH_JFFS2 "/tmp/.switch_jffs2"
+ 
+ static bool keep_sysupgrade;
++static unsigned int node_mode = 0666;
+ 
+ static int
+ handle_rmdir(const char *dir)
+@@ -332,6 +334,95 @@ jffs2_switch(struct volume *v)
+ 	return 0;
+ }
+ 
++static void overlay_mknod(const char * path, bool block, int major, int minor)
++{
++	unsigned int _mode = node_mode | (block ? S_IFBLK : S_IFCHR);
++
++	mknod(path, _mode, makedev(major, minor));
++}
++
++static int overlay_mtd_find_index(char *name)
++{
++	FILE *fp = fopen("/proc/mtd", "r");
++	char line[256];
++	char *index = NULL;
++
++	if (!fp)
++		return -1;
++
++	while (!index && fgets(line, sizeof(line), fp)) {
++		if (strstr(line, name)) {
++			char *eol = strstr(line, ":");
++
++			if (!eol)
++				continue;
++
++			*eol = '\0';
++			index = &line[3];
++		}
++	}
++
++	fclose(fp);
++
++	if (!index)
++		return -1;
++
++	return atoi(index);
++}
++
++static int overlay_mtd_find(char *name, char *ret)
++{
++	int index = overlay_mtd_find_index(name);
++	if (index < 0)
++		return -1;
++
++	sprintf(ret, "/dev/mtd%d", index);
++
++	return 0;
++}
++
++static int overlay_mount_ubifs(struct volume *v)
++{
++	char mtd[64];
++	libubi_t libubi;
++	struct ubi_vol_info vinfo;
++
++	overlay_mknod("/dev/ubi0", 0, 249, 0);
++	overlay_mknod("/dev/ubi0_0", 0, 249, 1);
++
++	overlay_mtd_find("rootfs_data", mtd);
++
++	libubi = libubi_open();
++	if (!libubi) {
++		ULOG_ERR("cannot open libubi\n");
++		return -1;
++	}
++
++	if (ubiattach(libubi, mtd)) {
++		ULOG_ERR("cannot attach \"%s\"", mtd);
++		goto error;
++	}
++
++	if (ubi_get_vol_info(libubi, "/dev/ubi0_0", &vinfo)) {
++		if (ubimkvol(libubi, "/dev/ubi0", "rootfs_data", 1)) {
++			ULOG_ERR("cannot make rootfs_data volume\n");
++			return -1;
++		}
++	}
++
++	if (mount("ubi0_0", "/tmp/overlay", "ubifs", MS_NOATIME, NULL)) {
++		ULOG_ERR("mount ubifs error!\n");
++		goto error;
++	}
++
++	libubi_close(libubi);
++	return 0;
++
++error:
++	libubi_close(libubi);
++	return -1;
++}
++
+ static int overlay_mount_fs(struct volume *v)
+ {
+ 	char *fstype = overlay_fs_name(volume_identify(v));
+@@ -341,21 +432,25 @@ static int overlay_mount_fs(struct volume *v)
+ 		return -1;
+ 	}
+ 
+-	if (mount(v->blk, "/tmp/overlay", fstype,
++	if (volume_identify(v) == FS_UBIFS) {
++		overlay_mount_ubifs(v);
++	} else {
++		if (mount(v->blk, "/tmp/overlay", fstype,
+ #ifdef OVL_MOUNT_FULL_ACCESS_TIME
+-		MS_RELATIME,
++			MS_RELATIME,
+ #else
+-		MS_NOATIME,
++			MS_NOATIME,
+ #endif
+ #ifdef OVL_MOUNT_COMPRESS_ZLIB
+-		"compr=zlib"
++			"compr=zlib"
+ #else
+-		NULL
++			NULL
+ #endif
+-		)) {
+-		ULOG_ERR("failed to mount -t %s %s /tmp/overlay: %m\n",
+-		         fstype, v->blk);
+-		return -1;
++			)) {
++			ULOG_ERR("failed to mount -t %s %s /tmp/overlay: %m\n",
++					fstype, v->blk);
++			return -1;
++		}
+ 	}
+ 
+ 	return 0;
+diff --git a/libubi/libubi.c b/libubi/libubi.c
+index 3328ac8..39ea7a5 100644
+--- a/libubi/libubi.c
++++ b/libubi/libubi.c
+@@ -933,8 +933,8 @@ int ubi_probe_node(libubi_t desc, const char *node)
+ 	return 2;
+ 
+ out_not_ubi:
+-	errmsg("\"%s\" has major:minor %d:%d, but this does not correspond to "
+-	       "any existing UBI device or volume", node, major, minor);
++/*	errmsg("\"%s\" has major:minor %d:%d, but this does not correspond to "
++	       "any existing UBI device or volume", node, major, minor); */
+ 	errno = ENODEV;
+ 	return -1;
+ }

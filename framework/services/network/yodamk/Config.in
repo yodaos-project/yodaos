@@ -1,0 +1,9 @@
+menu "Configuration"
+
+config NET_MANAGER_AUTO_RUN
+	bool "auto run"
+	default y
+	help
+		net manager service auto run
+
+endmenu

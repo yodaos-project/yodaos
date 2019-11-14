@@ -1,0 +1,18 @@
+The BTHID driver/module allows a user mode applicatio to submit HID events to the Linux kernel.
+
+To compile the BTHID driver/module:
+> cd /3rdparty/embedded/brcm/linux/bthid
+> make
+
+The Makefile may need to be adapted to the target:
+KDIR := /lib/modules/$(shell uname -r)/build    => For local kernel (currently running)
+KDIR := /opt/brcm/linux                         => For different kernel, it should point to the appropriate kernel version
+
+To install the bthid.ko module, you may have to create a node in /dev:
+mknod /dev/bthid c 10 224
+chmod 666 /dev/bthid 
+
+To load this module:
+insmod bthid.ko
+
+For further information, see BSA Application User Guide document. 

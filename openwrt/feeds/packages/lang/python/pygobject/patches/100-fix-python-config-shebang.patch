@@ -1,0 +1,57 @@
+Index: pygobject-2.16.0/configure
+===================================================================
+--- pygobject-2.16.0.orig/configure
++++ pygobject-2.16.0/configure
+@@ -11692,7 +11692,7 @@ echo $ECHO_N "checking for headers requi
+ py_prefix=`$PYTHON -c "import sys; sys.stdout.write(sys.prefix)"`
+ py_exec_prefix=`$PYTHON -c "import sys; sys.stdout.write(sys.exec_prefix)"`
+ if test -x "$PYTHON-config"; then
+-PYTHON_INCLUDES=`$PYTHON-config --includes 2>/dev/null`
++PYTHON_INCLUDES=`$PYTHON $PYTHON-config --includes 2>/dev/null`
+ else
+ PYTHON_INCLUDES="-I${py_prefix}/include/python${PYTHON_VERSION}"
+ if test "$py_prefix" != "$py_exec_prefix"; then
+@@ -11748,7 +11748,7 @@ CPPFLAGS="$save_CPPFLAGS"
+ echo $ECHO_N "checking for PySignal_SetWakeupFd in Python.h... $ECHO_C" >&6; }
+ py_prefix=`$PYTHON -c "import sys; sys.stdout.write(sys.prefix)"`
+ if test -x "$PYTHON-config"; then
+-PYTHON_INCLUDES=`$PYTHON-config --includes 2>/dev/null`
++PYTHON_INCLUDES=`$PYTHON $PYTHON-config --includes 2>/dev/null`
+ else
+ PYTHON_INCLUDES="-I${py_prefix}/include/python${PYTHON_VERSION}"
+ fi
+Index: pygobject-2.16.0/configure.ac
+===================================================================
+--- pygobject-2.16.0.orig/configure.ac
++++ pygobject-2.16.0/configure.ac
+@@ -76,7 +76,7 @@ JD_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(c
+ AC_MSG_CHECKING([for PySignal_SetWakeupFd in Python.h])
+ py_prefix=`$PYTHON -c "import sys; sys.stdout.write(sys.prefix)"`
+ if test -x "$PYTHON-config"; then
+-PYTHON_INCLUDES=`$PYTHON-config --includes 2>/dev/null`
++PYTHON_INCLUDES=`$PYTHON $PYTHON-config --includes 2>/dev/null`
+ else
+ PYTHON_INCLUDES="-I${py_prefix}/include/python${PYTHON_VERSION}"
+ fi
+Index: pygobject-2.16.0/m4/python.m4
+===================================================================
+--- pygobject-2.16.0.orig/m4/python.m4
++++ pygobject-2.16.0/m4/python.m4
+@@ -46,7 +46,7 @@ dnl deduce PYTHON_INCLUDES
+ py_prefix=`$PYTHON -c "import sys; sys.stdout.write(sys.prefix)"`
+ py_exec_prefix=`$PYTHON -c "import sys; sys.stdout.write(sys.exec_prefix)"`
+ if test -x "$PYTHON-config"; then
+-PYTHON_INCLUDES=`$PYTHON-config --includes 2>/dev/null`
++PYTHON_INCLUDES=`$PYTHON $PYTHON-config --includes 2>/dev/null`
+ else
+ PYTHON_INCLUDES="-I${py_prefix}/include/python${PYTHON_VERSION}"
+ if test "$py_prefix" != "$py_exec_prefix"; then
+@@ -237,7 +237,7 @@ dnl deduce PYTHON_INCLUDES
+ py_prefix=`$PYTHON -c "import sys; sys.stdout.write(sys.prefix)"`
+ py_exec_prefix=`$PYTHON -c "import sys; sys.stdout.write(sys.exec_prefix)"`
+ if test -x "$PYTHON-config"; then
+-PYTHON_INCLUDES=`$PYTHON-config --includes 2>/dev/null`
++PYTHON_INCLUDES=`$PYTHON $PYTHON-config --includes 2>/dev/null`
+ else
+ PYTHON_INCLUDES="-I${py_prefix}/include/python${PYTHON_VERSION}"
+ if test "$py_prefix" != "$py_exec_prefix"; then

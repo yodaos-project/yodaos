@@ -1,0 +1,48 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006-2011 OpenWrt.org
+START=85
+STOP=101
+USE_PROCD=1
+PROG=/usr/bin/adbd
+
+OOM_ADJ=-17
+
+start_service() {
+	[ -e /usr/bin/setusbconfig ] && {
+		/usr/bin/setusbconfig adb
+	}
+	[ -d /sys/kernel/config/usb_gadget ] || {
+		mount -t configfs none /sys/kernel/config
+		mkdir /sys/kernel/config/usb_gadget/g1
+		echo "0x18d1" > /sys/kernel/config/usb_gadget/g1/idVendor
+		echo "0xD002" > /sys/kernel/config/usb_gadget/g1/idProduct
+		mkdir /sys/kernel/config/usb_gadget/g1/strings/0x409
+		echo "Allwinner" > /sys/kernel/config/usb_gadget/g1/strings/0x409/manufacturer
+		echo "Tina" > /sys/kernel/config/usb_gadget/g1/strings/0x409/product
+	}
+	[ -d /sys/kernel/config/usb_gadget/g1/configs/c.1 ] || {
+		mkdir /sys/kernel/config/usb_gadget/g1/configs/c.1
+		echo 0xc0 > /sys/kernel/config/usb_gadget/g1/configs/c.1/bmAttributes
+		echo 500 > /sys/kernel/config/usb_gadget/g1/configs/c.1/MaxPower
+		mkdir /sys/kernel/config/usb_gadget/g1/configs/c.1/strings/0x409
+	}
+	[ -d /sys/kernel/config/usb_gadget/g1/functions/ffs.adb ] || {
+		mkdir /sys/kernel/config/usb_gadget/g1/functions/ffs.adb
+	}
+	[ -e /sys/kernel/config/usb_gadget/g1/configs/c.1/ffs.adb ] || {
+		ln -s /sys/kernel/config/usb_gadget/g1/functions/ffs.adb/ /sys/kernel/config/usb_gadget/g1/configs/c.1/ffs.adb
+	}
+	[ -d /dev/usb-ffs/adb ] || {
+		mkdir /dev/usb-ffs
+		mkdir /dev/usb-ffs/adb
+		mount -o uid=2000,gid=2000 -t functionfs adb /dev/usb-ffs/adb/
+	}
+	procd_open_instance
+	procd_set_param oom_score_adj $OOM_ADJ
+	procd_set_param command $PROG
+	procd_close_instance
+}
+
+shutdown() {
+	echo shutdown
+}

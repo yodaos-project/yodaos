@@ -1,0 +1,32 @@
+#!/bin/ash
+
+echo 0 > /sys/class/rfkill/rfkill0/state
+
+MODULE_PATH=/lib/modules/`uname -r`
+insmod ${MODULE_PATH}/hci_uart.ko
+if [ -e ${MODULE_PATH}/uart_control.ko ];then
+  echo "load uart_control.ko..."
+  insmod ${MODULE_PATH}/uart_control.ko
+fi
+echo 1 > /sys/class/rfkill/rfkill0/state
+usleep 100000
+
+mkdir -p /data/bluetooth/
+echo "load 8723 bs or ds bluetooth firmware"
+/usr/sbin/rtk_hciattach -n -s 115200 ttyS1 rtk_h5 &
+#echo "Waiting bluetooth init......"
+
+#retry_count=0
+#while [ ! -x "/sys/class/bluetooth/hci0" ]
+#do
+#    sleep 1
+#    retry_count=$(($retry_count+1))
+#    if [ $retry_count -ge 3 ]
+#    then
+#        echo "bluetooth init greater than 3 seconds."
+        #killall -9 rtk_hciattach
+#        exit
+#    fi
+#done
+#echo "bluetooth init successful"
+# load the firmware need time, the the worst time is 2.6 s.

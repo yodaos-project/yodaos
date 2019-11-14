@@ -1,0 +1,148 @@
+#
+# For a description of the syntax of this configuration file,
+# see scripts/kbuild/config-language.txt.
+#
+
+menu "Image Handlers"
+
+config UBIVOL
+	bool "ubivol"
+	default n
+	depends on HAVE_LIBUBI
+	depends on MTD
+	help
+	  ubi is the default format for NAND device.
+	  Say Y if you have NAND or you use UBI on
+	  your system.
+
+comment "ubivol support needs libubi"
+	depends on !HAVE_LIBUBI
+
+config UBIBLACKLIST
+	string "List of MTD devices to be excluded for UBI"
+	depends on UBIVOL
+	help
+	  Define a list of MTD devices that are excluded
+	  by scan_mtd_device. The devices are still available
+	  as raw devices.
+	  The list can be set as a string with the mtd numbers.
+	  Examples: "0 1 2"
+	  This excludes mtd0-mtd1-mtd2 to be searched for UBI volumes
+
+config UBIWHITELIST
+	string "List of MTD devices that must have UBI"
+	depends on UBIVOL
+	help
+	  Define a list of MTD devices that are planned to have
+	  always UBI. If first attach fails, the device is erased
+	  and tried again. 
+	  The list can be set as a string with the mtd numbers.
+	  Examples: "0 1 2"
+	  This sets mtd0-mtd1-mtd2 to be used as UBI volumes.
+	  UBIBLACKLIST has priority on UBIWHITELIST.
+
+config UBIVIDOFFSET
+	int "VID Header Offset"
+	depends on UBIVOL
+	default 0
+	help
+	  Force UBI to set a VID header offset to be 2048 bytes
+	  instead of the value reported by the kernel.
+	  In other words, you may ask UBI to avoid using sub-pages.
+	  This is not recommended since this will require
+	  more storage overhead, but may be useful
+	  if your NAND driver incorrectly reports that it can handle
+	  sub-page accesses when it should not.
+
+
+config CFI
+	bool "cfi"
+	depends on MTD
+	default n
+	help
+	  Handler to store images in flash in raw mode,
+	  without UBI
+
+config CFIHAMMING1
+	bool "NAND in raw mode with 1bit Hamming OOB (TI)"
+	depends on MTD
+	default n
+	help
+	  On certain TI's omaps (for example, DM3730 or AM3517),
+	  the first bootloader (MLO or SPL) must be saved with one bit
+	  Hamming correction because this is requested by the SOC's ROM.
+	  However, the Linux driver must use for the rest of the NAND a more
+	  powerful algorithm to make data reliable, and this causes that
+	  it is not possible to update SPL by letting the driver to handle
+	  the OOB area. This handler raws the NAND in raw mode, computing
+	  the ECC with 1 bit Hamming Code and saving it into OOB
+	  (assumes sector size of 512 and page size of 2048).
+
+	  You do not need this if you have not a OMAP SOC.
+
+config RAW
+	bool "raw"
+	default n
+	help
+	  This is a simple handler that simply copies
+	  into the destination.
+
+config LUASCRIPTHANDLER
+	bool "luascript"
+	depends on LUA
+	default n
+	help
+	  Handler to be called for pre- and post scripts
+	  written in Lua.
+
+config SHELLSCRIPTHANDLER
+	bool "shellscript"
+	default n
+	help
+	  Handler to be called for pre- and post scripts
+	  written as shell scripts. The default shell /bin/sh
+	  is called.
+
+config HANDLER_IN_LUA
+	bool "Handlers in LUA"
+	depends on LUASCRIPTHANDLER
+	default n
+	help
+	  Allow to write own handlers in Lua.
+	  They are loaded at the start-up.
+
+config ARCHIVE
+	bool "archive"
+	depends on HAVE_LIBARCHIVE
+	default n
+	help
+	  Handler using the libarchive to extract tarballs
+	  into a filesystem.
+
+comment "archive support needs libarchive"
+	depends on !HAVE_LIBARCHIVE
+
+config REMOTE_HANDLER
+	bool "Remote handler"
+	depends on HAVE_LIBZEROMQ
+	default n
+	help
+	  Sometimes the update process should be done
+	  by another process, where code is already
+	  provided. The remote handler let communicate
+	  an external process with SWUpdate, sending
+	  the image to be updated with the help of the
+	  zeromq library.
+
+comment "remote handler needs zeromq"
+	depends on !HAVE_LIBZEROMQ
+
+
+config BOOTLOADERHANDLER
+	bool "bootloader"
+	default n
+	help
+	  Enable it to change bootloader environment
+	  during the installation process.
+
+endmenu

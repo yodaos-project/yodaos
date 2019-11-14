@@ -1,0 +1,21 @@
+menu "Configuration"
+
+config PRODUCT_OS_NAME
+	string "product name os"
+
+config PRODUCT_NAME
+	string "product name"
+
+config PRODUCT_PATHNAME
+	string "product pathname relative to .products root directory"
+
+config PRODUCT_HAS_TOUCHPAD
+	bool "has touchpad"
+	default n
+	help
+		product has touchpad
+
+config PRODUCT_WITHOUT_JS
+	bool "product without jsruntime"
+
+endmenu

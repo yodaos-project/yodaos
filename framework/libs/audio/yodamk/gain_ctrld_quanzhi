@@ -1,0 +1,23 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2011 OpenWrt.org
+
+START=85
+STOP=2
+
+start(){
+#playback#
+	amixer -D hw:audiocodec cset name='External Speaker Switch' 1
+	amixer -D hw:audiocodec cset name='digital volume' 63
+	amixer -D hw:audiocodec cset name='LINEOUT volume' 20
+	amixer -D hw:audiocodec cset name='Right LINEOUT Mux' 1
+
+#capture#
+	amixer -D hw:audiocodec cset name='Left Input Mixer MIC1 Boost Switch' 1
+	amixer -D hw:audiocodec cset name='Right Input Mixer MIC2 Boost Switch' 1
+	amixer -D hw:audiocodec cset name='Xadc Input Mixer MIC3 Boost Switch' 1
+	amixer -D hw:audiocodec cset name='MIC3 gain volume' 0
+}
+
+stop(){
+	echo "stop"
+}

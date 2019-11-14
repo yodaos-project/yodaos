@@ -1,0 +1,12 @@
+diff -Naru tinyalsa-1.1.1.orig/src/Makefile tinyalsa-1.1.1/src/Makefile
+--- tinyalsa-1.1.1.orig/src/Makefile	2017-10-27 15:00:51.000000000 +0800
++++ tinyalsa-1.1.1/src/Makefile	2017-10-27 16:10:02.484718852 +0800
+@@ -37,7 +37,7 @@
+ 	ln -sf $< $@
+ 
+ libtinyalsa.so.1.1.1: $(OBJECTS)
+-	$(LD) $(LDFLAGS) -shared -Wl,-soname,libtinyalsa.so.1 $^ -o $@
++	$(LD) $(LDFLAGS) -shared $^ -o $@
+ 
+ .PHONY: clean
+ clean:

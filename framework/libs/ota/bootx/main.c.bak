@@ -1,0 +1,137 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "changelog.h"
+#include "help.h"
+
+#include "boot.hpp"
+
+#ifdef WIN32
+#include "getopt.h"
+#else
+#include <unistd.h>
+#endif
+
+#define BOOTX_VERSION "Version : v1.3.1 (20180707)"
+
+char bootx_v[] = "\nNationalChip GX8010 Download Tools\nCopyright (C) 2001-2018 NationalChip Co., Ltd\nALL RIGHTS RESERVED!\n";
+
+void boot_usage_detailed(const char *bootlist)
+{
+	fprintf(stderr, "%s%s\n", BOOTX_VERSION, bootx_v);
+	fprintf(stderr, "Usage: bootx [-m <machine>] [-t <transfer mode>] [-b <bootloader file>] [-c <boot command line>] [-d <serial device>] [-r <rom baudrate>] [-D] [-h] [-H] [-v] [-V]\n");
+	fprintf(stderr, "  -m & -b:if you use -b, you don't need to use -m.\n");
+	fprintf(stderr, "  -m machine list           : %s\n", bootlist);
+	fprintf(stderr, "  -t bootfile transfer mode : s/u/su/nnu\n");
+	fprintf(stderr, "  -c command list           : \n");
+	fprintf(stderr, "     common cmd             : \n");
+	fprintf(stderr, "                            : download <flash addr> <file name>\n");
+	fprintf(stderr, "                            : dump     <flash addr> <len> <file name>\n");
+	fprintf(stderr, "                            : flash erase <flash addr> <length>\n");
+	fprintf(stderr, "                            : flash eraseall\n");
+	fprintf(stderr, "                            : reboot\n");
+	fprintf(stderr, "     specific cmd           : \n");
+	fprintf(stderr, "                <depends on> -t = s\n");
+	fprintf(stderr, "                            : serialdown <flash addr> <file name>\n");
+	fprintf(stderr, "                            : serialdump <flash addr> <len> <file name>\n");
+	fprintf(stderr, "                <depends on> -t = u/su/nnu\n");
+	fprintf(stderr, "                            : usbslavedown <flash addr> <file name>\n");
+	fprintf(stderr, "                            : usbslavedump <flash addr> <len> <file name>\n");
+	fprintf(stderr, "  -D Enter debug mode\n");
+	fprintf(stderr, "  -h Easy help information\n");
+	fprintf(stderr, "  -H Detailed help information\n");
+	fprintf(stderr, "  -v Version info\n");
+	fprintf(stderr, "  -V Version changes\n");
+	fprintf(stderr, "   ex. bootx -m leo      -t s -c download 0 gxscpu.bin\n");
+	fprintf(stderr, "       bootx -b leo.boot -t s -c download 0 mcu.bin    -d /dev/ttyUSB0 -r 57600\n");
+	fprintf(stderr, "       bootx -b leo.boot -t u -c download 0 gxscpu.bin\n");
+}
+
+int main(int argc, char **argv)
+{
+	int ch;
+	int i;
+	const char *dev = NULL, *boot_file = "";
+	char cmd[1024];
+	Boot boot;
+
+	memset(cmd, 0, sizeof(cmd));
+
+	if (argc <= 1) {
+		boot_usage_detailed(boot.GetMachines());
+		exit(EXIT_FAILURE);
+	}
+
+	while((ch = getopt(argc,argv,"c:b:d:m:e:p:s:r:t:DVvhH")) != -1) {
+		switch(ch) {
+			case 'c':
+				strcpy(cmd, optarg);
+				break;
+			case 'b':
+				boot.extern_bootfile = true;
+			case 'm':
+				boot_file = optarg;
+				break;
+			case 'd':
+				dev = optarg;
+				break;
+			case 'e':
+				save_local_ip(optarg);
+				break;
+			case 'p':
+				save_local_ip(optarg);
+				break;
+			case 's':
+				save_stb_ip(optarg);
+				break;
+			case 'r':
+				save_rom_baudrate((unsigned int)strtoul(optarg, 0, 0));
+				break;
+			case 't':
+				if (strcmp (optarg, "s") == 0)
+					boot.SetTransferMode(SERIAL);
+				else if (strcmp (optarg, "u") == 0)
+					boot.SetTransferMode(USBSLAVE);
+				else if (strcmp (optarg, "su") == 0)
+					boot.SetTransferMode(S1_SERIAL_S2_USBSLAVE);
+				else if (strcmp (optarg, "nnu") == 0)
+					boot.SetTransferMode(S1_NONE_S2_NONE_USBSLAVE);
+				else {
+					printf ("unknow transfer mode : %s\n", optarg);
+					exit(EXIT_FAILURE);
+				}
+				break;
+			case 'D':
+				boot.enter_debug_mode = true;
+				boot.Show(true);
+				break;
+			case 'v':
+				printf("%s%s\n", BOOTX_VERSION, bootx_v);
+				exit(EXIT_SUCCESS);
+			case 'V':
+				printf("%s%s\n", BOOTX_VERSION, bootx_v);
+				printf("%s\n", CHANGELOG);
+				exit(EXIT_SUCCESS);
+			case 'h':
+				boot_usage_detailed(boot.GetMachines());
+				exit(EXIT_SUCCESS);
+			case 'H':
+				printf ("%s\n", BOOTX_HELP);
+				exit(EXIT_SUCCESS);
+			default: /* '?' */
+				boot_usage_detailed(boot.GetMachines());
+				exit(EXIT_FAILURE);
+		}
+	}
+
+	printf("%s%s\n", BOOTX_VERSION, bootx_v);
+
+	ch = strlen(cmd);
+	for (i = optind; i < argc; i++)
+		ch += sprintf(cmd + ch, " %s", argv[i]);
+
+	boot.BootCommand(dev, boot_file, cmd);
+
+	return 0;
+}
+

@@ -1,0 +1,26 @@
+Index: tinyalsa-1.1.1/Makefile
+===================================================================
+--- tinyalsa-1.1.1.orig/Makefile	2017-05-24 12:23:57.000000000 +0800
++++ tinyalsa-1.1.1/Makefile	2017-09-06 21:01:26.660138698 +0800
+@@ -11,15 +11,11 @@
+ all:
+ 	$(MAKE) -C src
+ 	$(MAKE) -C utils
+-	$(MAKE) -C doxygen
+-	$(MAKE) -C examples
+ 
+ .PHONY: clean
+ clean:
+ 	$(MAKE) -C src clean
+ 	$(MAKE) -C utils clean
+-	$(MAKE) -C doxygen clean
+-	$(MAKE) -C examples clean
+ 
+ .PHONY: install
+ install:
+@@ -30,5 +26,4 @@
+ 	install include/tinyalsa/version.h $(DESTDIR)$(INCDIR)/
+ 	$(MAKE) -C src install
+ 	$(MAKE) -C utils install
+-	$(MAKE) -C doxygen install
+ 

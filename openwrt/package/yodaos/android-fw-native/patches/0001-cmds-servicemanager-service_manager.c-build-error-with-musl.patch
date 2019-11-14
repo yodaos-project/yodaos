@@ -1,0 +1,10 @@
+--- a/cmds/servicemanager/service_manager.c	2019-06-05 08:37:43.603164158 +0000
++++ b/cmds/servicemanager/service_manager.c	2019-06-26 02:19:08.937321218 +0000
+@@ -8,6 +8,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <stdbool.h>
++#include <unistd.h>
+ 
+ // #include <selinux/android.h>
+ // #include <selinux/avc.h>

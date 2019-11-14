@@ -1,0 +1,5 @@
+bcn_timeout=20
+kso_enable=0
+ccode=CN
+regrev=0
+nv_by_chip=3 43430 0 nvram_ap6212.txt 43430 1 nvram_ap6212a.txt 43430 2 nvram_ap6236.txt;

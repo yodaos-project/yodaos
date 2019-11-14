@@ -1,0 +1,70 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2014 CESNET, z.s.p.o
+
+START=99
+RTPPROXY_BIN="/usr/bin/rtpproxy"
+
+run_instance(){
+	local params="$1"
+
+	${RTPPROXY_BIN} $1
+	echo "[INFO] rtpproxy instance $2 has started"
+}
+
+check_param(){
+	local param="$1"
+	local value="$2"
+	local default_value="$3"
+
+	if [ "$value" != "" ]; then
+		rtpproxy_options=$rtpproxy_options" $param $value"
+	else
+		if [ "$default_value" != "" ]; then
+			rtpproxy_options=$rtpproxy_options" $param $default_value"
+		fi
+	fi
+}
+
+check_special_param(){
+	local param="$1"
+
+	if [ "$param" != "" ]; then
+		rtpproxy_options=$rtpproxy_options" $param"
+	fi
+}
+
+handle_instance() {
+	local site="$1"
+	local socket opts ipaddr ip6addr rtpproxy_options
+
+	config_get socket	"$site" socket
+	config_get opts		"$site" opts
+	config_get ipaddr	"$site" ipaddr
+	config_get ip6addr	"$site" ip6addr
+	config_get user		"$site" user
+
+	check_param "-s" "$socket"
+	check_param "-l" "$ipaddr"
+	check_param "-6" "$ip6addr"
+	check_param "-u" "$user" "nobody"
+	check_special_param "$opts"
+
+	run_instance "$rtpproxy_options" "$site"
+}
+
+start(){
+	config_load rtpproxy
+	local section="global"
+	config_get_bool enabled global enabled 0
+
+	if [ "$enabled" -eq 1 ]; then
+		config_foreach handle_instance instance
+	else
+		echo "[WARNING] rtpproxy not yet configured. Edit /etc/config/rtpproxy first."
+	fi
+}
+
+stop() {
+	killall rtpproxy
+}
+

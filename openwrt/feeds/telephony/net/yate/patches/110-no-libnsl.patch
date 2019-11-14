@@ -1,0 +1,13 @@
+Index: yate/configure.ac
+===================================================================
+--- yate.orig/configure.ac
++++ yate/configure.ac
+@@ -689,7 +689,7 @@ if [[ "x$local_lib" != "xlib" -a ! -d "$
+ fi
+ if [[ -f "$ac_cv_use_mysql/include/mysql/mysql.h" -a -d "$ac_cv_use_mysql/$local_lib/mysql" ]]; then
+ MYSQL_INC="-I$ac_cv_use_mysql/include/mysql"
+-MYSQL_LIB="-L$ac_cv_use_mysql/$local_lib/mysql -lmysqlclient_r -lpthread -lz -lcrypt -lnsl -lm"
++MYSQL_LIB="-L$ac_cv_use_mysql/$local_lib/mysql -lmysqlclient_r -lpthread -lz -lcrypt -lm"
+ MYSQL_VER=`sed -n 's/^.*MYSQL_SERVER_VERSION[[^"]]*"\([[^"]]*\).*$/\1/p' "$ac_cv_use_mysql/include/mysql/mysql_version.h"`
+ HAVE_MYSQL=yes
+ fi

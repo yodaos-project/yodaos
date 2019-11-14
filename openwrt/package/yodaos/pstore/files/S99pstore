@@ -1,0 +1,65 @@
+#!/bin/sh /etc/rc.common
+#
+# download kernel crash log and store in /data
+# @Rokid
+
+START=99
+STOP=9
+
+start(){
+    PSTORE_DIR="/data/log_crash"
+    mkdir -p  $PSTORE_DIR
+    mount -t pstore pstore /mnt
+
+    # max log size < 512KB
+    MAX_SIZE=512
+
+    pstore_size=0
+    cur_size=0
+
+    ls /mnt/*ramoops*
+
+    if [ $? -eq 0 ]
+    then
+        sleep 60
+        pstore_file="crash_$(date +%F_%H-%M-%S).tar.gz"
+        cd $PSTORE_DIR
+        LINES=`ls /mnt/*ramoops* | wc -l`
+
+        if [ $LINES -eq 2 ]
+        then
+            tar czvf $pstore_file -C /mnt console-ramoops-0 dmesg-ramoops-0
+        fi
+
+        if [ $LINES -gt 2 ]
+        then
+            file_1=`ls -lt /mnt/*ramoops*  | awk 'NR=='"$LINES"' { print $9 }'`
+            let LINES=LINES-1
+            file_2=`ls -lt /mnt/*ramoops*  | awk 'NR=='"$LINES"' { print $9 }'`
+            tar czvf $pstore_file -C /mnt console-ramoops-0 $file_1 $file_2
+        fi
+
+        while :
+        do
+            pstore_size=`du -sk $PSTORE_DIR | awk '{ print $1 }'`
+            echo $pstore_size
+            cur_size=`du -sk $PSTORE_DIR/$pstore_file | awk '{ print $1 }'`
+            echo $cur_size
+            let all_size=pstore_size+cur_size
+            echo $all_size
+
+            if [ $all_size -gt $MAX_SIZE ]
+            then
+                file_name=`ls -ltr | awk 'NR==1 { print $9 }'`
+                rm -rf $file_name
+            else
+                break
+            fi
+        done
+    fi
+}
+
+stop(){
+    echo "pstore stop"
+}
+

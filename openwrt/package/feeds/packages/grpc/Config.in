@@ -1,0 +1,2 @@
+config BR2_PACKAGE_SHADOW_NODE
+        bool "Use Node.js in your embeddable devices"

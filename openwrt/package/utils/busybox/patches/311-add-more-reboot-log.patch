@@ -1,0 +1,35 @@
+diff --git a/init/halt.c b/init/halt.c
+index 6df4899..4ffdbec 100644
+--- a/init/halt.c
++++ b/init/halt.c
+@@ -131,6 +131,7 @@ int halt_main(int argc UNUSED_PARAM, char **argv)
+ 	 */
+ 	flags = getopt32(argv, "d:nfwi", &delay);
+ 
++	printf("busybox %s flags: 0x%x\n", __func__, flags);
+ 	sleep(delay);
+ 
+ 	write_wtmp();
+@@ -154,6 +155,7 @@ int halt_main(int argc UNUSED_PARAM, char **argv)
+ 				rc = kill(pidlist[0], signals[which]);
+ 			if (ENABLE_FEATURE_CLEAN_UP)
+ 				free(pidlist);
++			printf("%s: ENABLE_FEATURE_INITRD\n", __func__);
+ 		}
+ 		if (rc) {
+ 			/* talk to init */
+@@ -165,6 +167,7 @@ int halt_main(int argc UNUSED_PARAM, char **argv)
+ 				/* runlevels:
+ 				 * 0 == shutdown
+ 				 * 6 == reboot */
++				printf("%s: ENABLE_FEATURE_CALL_TELINIT\n", __func__);
+ 				execlp(CONFIG_TELINIT_PATH,
+ 						CONFIG_TELINIT_PATH,
+ 						which == 2 ? "6" : "0",
+@@ -181,5 +184,6 @@ int halt_main(int argc UNUSED_PARAM, char **argv)
+ 
+ 	if (rc)
+ 		bb_perror_nomsg_and_die();
++	printf("%s: return %d\n", __func__, rc);
+ 	return rc;
+ }

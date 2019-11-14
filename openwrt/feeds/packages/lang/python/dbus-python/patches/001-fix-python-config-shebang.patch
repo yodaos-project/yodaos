@@ -1,0 +1,30 @@
+Index: dbus-python-1.2.4/configure.ac
+===================================================================
+--- dbus-python-1.2.4.orig/configure.ac
++++ dbus-python-1.2.4/configure.ac
+@@ -78,8 +78,8 @@ AS_IF([test "${PYTHON_LIBS+set}" = set],
+   [AC_MSG_NOTICE([PYTHON_LIBS overridden to: $PYTHON_LIBS])],
+   dnl else
+   [
+-  AC_MSG_CHECKING([for Python library linker flags using ${PYTHON_CONFIG}])
+-  PYTHON_LIBS="$($PYTHON_CONFIG --ldflags)"
++  AC_MSG_CHECKING([for Python library linker flags using ${PYTHON} ${PYTHON_CONFIG}])
++  PYTHON_LIBS="$($PYTHON $PYTHON_CONFIG --ldflags)"
+   AC_MSG_RESULT([$PYTHON_LIBS])
+   ])
+ 
+Index: dbus-python-1.2.4/m4/am-check-python-headers.m4
+===================================================================
+--- dbus-python-1.2.4.orig/m4/am-check-python-headers.m4
++++ dbus-python-1.2.4/m4/am-check-python-headers.m4
+@@ -26,8 +26,8 @@ if test "${PYTHON_INCLUDES+set}" = set;
+   AC_MSG_NOTICE([PYTHON_INCLUDES overridden to: $PYTHON_INCLUDES])
+ else
+   dnl deduce PYTHON_INCLUDES
+-  AC_MSG_CHECKING(for Python headers using $PYTHON_CONFIG --includes)
+-  PYTHON_INCLUDES=`$PYTHON_CONFIG --includes`
++  AC_MSG_CHECKING(for Python headers using $PYTHON $PYTHON_CONFIG --includes)
++  PYTHON_INCLUDES=`$PYTHON $PYTHON_CONFIG --includes`
+   if test $? = 0; then
+     AC_MSG_RESULT($PYTHON_INCLUDES)
+   else

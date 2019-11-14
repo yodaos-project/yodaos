@@ -1,0 +1,28 @@
+/dts-v1/;
+
+#include "bcm6348.dtsi"
+
+#include <dt-bindings/input/input.h>
+
+/ {
+	model = "TECOM GW6000";
+	compatible = "tecom,gw6000", "brcm,bcm6348";
+
+	chosen {
+		bootargs = "root=/dev/mtdblock2 rootfstype=squashfs,jffs2 noinitrd console=ttyS0,115200";
+	};
+
+	gpio-keys-polled {
+		compatible = "gpio-keys-polled";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		poll-interval = <20>;
+		debounce-interval = <60>;
+
+		reset {
+			label = "reset";
+			gpios = <&gpio1 4 1>;
+			linux,code = <KEY_RESTART>;
+		};
+	};
+};

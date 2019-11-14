@@ -1,0 +1,181 @@
+state.ALSA {
+	control.1 {
+		iface MIXER
+		name 'PCM Playback Volume'
+		value 400
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '-10239 - 400'
+			dbmin -9999999
+			dbmax 400
+			dbvalue.0 400
+		}
+	}
+	control.2 {
+		iface MIXER
+		name 'PCM Playback Switch'
+		value true
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 1
+		}
+	}
+	control.3 {
+		iface MIXER
+		name 'PCM Playback Route'
+		value 0
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '0 - 2'
+		}
+	}
+	control.4 {
+		iface PCM
+		name 'IEC958 Playback Default'
+		value '0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+		comment {
+			access 'read write'
+			type IEC958
+			count 1
+		}
+	}
+	control.5 {
+		iface PCM
+		name 'IEC958 Playback Con Mask'
+		value '0200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+		comment {
+			access read
+			type IEC958
+			count 1
+		}
+	}
+	control.6 {
+		iface PCM
+		name 'IEC958 Playback PCM Stream'
+		value '0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+		comment {
+			access 'read write inactive'
+			type IEC958
+			count 1
+		}
+	}
+}
+state.seeed4micvoicec {
+	control.1 {
+		iface MIXER
+		name 'CH1 digital volume'
+		value 222
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '0 - 255'
+			dbmin -11925
+			dbmax 7200
+			dbvalue.0 4725
+		}
+	}
+	control.2 {
+		iface MIXER
+		name 'CH2 digital volume'
+		value 222
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '0 - 255'
+			dbmin -11925
+			dbmax 7200
+			dbvalue.0 4725
+		}
+	}
+	control.3 {
+		iface MIXER
+		name 'CH3 digital volume'
+		value 222
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '0 - 255'
+			dbmin -11925
+			dbmax 7200
+			dbvalue.0 4725
+		}
+	}
+	control.4 {
+		iface MIXER
+		name 'CH4 digital volume'
+		value 222
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '0 - 255'
+			dbmin -11925
+			dbmax 7200
+			dbvalue.0 4725
+		}
+	}
+	control.5 {
+		iface MIXER
+		name 'ADC1 PGA gain'
+		value 0
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '0 - 31'
+			dbmin 0
+			dbmax 3100
+			dbvalue.0 0
+		}
+	}
+	control.6 {
+		iface MIXER
+		name 'ADC2 PGA gain'
+		value 0
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '0 - 31'
+			dbmin 0
+			dbmax 3100
+			dbvalue.0 0
+		}
+	}
+	control.7 {
+		iface MIXER
+		name 'ADC3 PGA gain'
+		value 0
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '0 - 31'
+			dbmin 0
+			dbmax 3100
+			dbvalue.0 0
+		}
+	}
+	control.8 {
+		iface MIXER
+		name 'ADC4 PGA gain'
+		value 0
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '0 - 31'
+			dbmin 0
+			dbmax 3100
+			dbvalue.0 0
+		}
+	}
+}

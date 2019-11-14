@@ -1,0 +1,6 @@
+config BR2_PACKAGE_LIBRPLAYER
+        bool "rokid librplayer sdk"
+        select BR2_PACKAGE_FFMPEG
+        select BR2_PACKAGE_SDL2
+	select BR2_PACKAGE_PULSEAUDIO
+	default y

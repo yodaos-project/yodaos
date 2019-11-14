@@ -1,0 +1,11 @@
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -20,7 +20,7 @@ HAVE_PKG_CONFIG = @HAVE_PKG_CONFIG@
+ 
+ .PHONY: all shared_library test build_table_apps
+ 
+-all: test 
++all: shared_library test
+ 
+ runtest: build_table_apps test
+ 	@echo "running libsrtp test applications..."
