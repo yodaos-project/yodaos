@@ -1,0 +1,186 @@
+CONFIG_TARGET_brcm2708=y
+CONFIG_TARGET_brcm2708_bcm2710=y
+CONFIG_TARGET_brcm2708_bcm2710_RaspberryPi_3B_Plus=y
+CONFIG_DEVEL=y
+CONFIG_TOOLCHAINOPTS=y
+# CONFIG_AI_KAMINO is not set
+CONFIG_AI_RASPI=y
+CONFIG_BLUETOOTH_USE_BLUEZ=y
+CONFIG_BOARD_LED_NUMS=12
+CONFIG_BOARD_MIC_CHANNEL=4
+CONFIG_BT_UART_DEV="ttyAMA0"
+CONFIG_GLIBC_USE_VERSION_2_22=y
+CONFIG_GLIBC_VERSION="2.22"
+CONFIG_GLIBC_VERSION_2_22=y
+CONFIG_LED_HAL_YODASTAGE=y
+CONFIG_LIBC="glibc"
+CONFIG_LIBC_USE_GLIBC=y
+# CONFIG_LIBC_USE_MUSL is not set
+CONFIG_LIBC_VERSION="2.22"
+CONFIG_MIC_ARRAY_HAL_PCM=y
+CONFIG_OPENSSL_ENGINE_CRYPTO=y
+CONFIG_OPENSSL_HARDWARE_SUPPORT=y
+CONFIG_PACKAGE_SDL2=y
+CONFIG_PACKAGE_ai-libs-common=y
+# CONFIG_PACKAGE_aicore is not set
+CONFIG_PACKAGE_aliyunloglite=y
+CONFIG_PACKAGE_alsa-utils=y
+CONFIG_PACKAGE_alsa-utils-seq=y
+CONFIG_PACKAGE_alsa-utils-tests=y
+CONFIG_PACKAGE_android-hardware=y
+CONFIG_PACKAGE_android-kernel-headers=y
+CONFIG_PACKAGE_android-system-core=y
+# CONFIG_PACKAGE_appmedia is not set
+CONFIG_PACKAGE_bluetooth_service=y
+CONFIG_PACKAGE_bluez-daemon=y
+CONFIG_PACKAGE_bluez-libs=y
+CONFIG_PACKAGE_bluez-utils=y
+CONFIG_PACKAGE_cJSON=y
+CONFIG_PACKAGE_dbus-cpp=y
+CONFIG_PACKAGE_dbus-utils=y
+CONFIG_PACKAGE_dhcpcd=y
+# CONFIG_PACKAGE_eesen-master is not set
+CONFIG_PACKAGE_flora=y
+CONFIG_PACKAGE_flora-dispatcher=y
+# CONFIG_PACKAGE_gxavdev is not set
+# CONFIG_PACKAGE_gxffmpegplugin is not set
+# CONFIG_PACKAGE_gxmpd is not set
+# CONFIG_PACKAGE_gxnpu is not set
+# CONFIG_PACKAGE_gxomx is not set
+CONFIG_PACKAGE_hciattach=y
+CONFIG_PACKAGE_httpdns=y
+CONFIG_PACKAGE_httpsession=y
+CONFIG_PACKAGE_i2c-tools=y
+CONFIG_PACKAGE_input-event=y
+CONFIG_PACKAGE_iperf=y
+CONFIG_PACKAGE_jsruntime=y
+CONFIG_PACKAGE_kmod-ac97=y
+CONFIG_PACKAGE_kmod-crypto-hash=y
+CONFIG_PACKAGE_kmod-i2c-bcm2835=y
+CONFIG_PACKAGE_kmod-i2c-core=y
+CONFIG_PACKAGE_kmod-lib-crc-itu-t=y
+CONFIG_PACKAGE_kmod-lib-crc7=y
+CONFIG_PACKAGE_kmod-lib-lzo=y
+CONFIG_PACKAGE_kmod-lib80211=y
+CONFIG_PACKAGE_kmod-mmc-spi=y
+# CONFIG_PACKAGE_kmod-npu is not set
+CONFIG_PACKAGE_kmod-regmap=y
+# CONFIG_PACKAGE_kmod-rtl8192cu is not set
+CONFIG_PACKAGE_kmod-sound-seq=y
+CONFIG_PACKAGE_kmod-sound-soc-ac97=y
+CONFIG_PACKAGE_kmod-sound-soc-bcm2835-i2s=y
+CONFIG_PACKAGE_kmod-sound-soc-core=y
+CONFIG_PACKAGE_kmod-sound-soc-seeed=y
+CONFIG_PACKAGE_kmod-spi-bcm2835=y
+CONFIG_PACKAGE_kmod-spi-bcm2835-aux=y
+CONFIG_PACKAGE_libeloop_mini=y
+CONFIG_PACKAGE_libffmpeg-full=y
+CONFIG_PACKAGE_libgmp=y
+CONFIG_PACKAGE_libical=y
+CONFIG_PACKAGE_libopus=y
+CONFIG_PACKAGE_libpcre=y
+CONFIG_PACKAGE_librplayer=y
+CONFIG_PACKAGE_libssp=y
+CONFIG_PACKAGE_libusb-1.0=y
+CONFIG_PACKAGE_lumenlight=y
+CONFIG_PACKAGE_mutils=y
+CONFIG_PACKAGE_net_manager=y
+CONFIG_PACKAGE_ota_unpack=y
+# CONFIG_PACKAGE_poco-1.7.8p2-all is not set
+CONFIG_PACKAGE_products=y
+CONFIG_PACKAGE_property=y
+CONFIG_PACKAGE_property_service=y
+# CONFIG_PACKAGE_protobuf is not set
+CONFIG_PACKAGE_pulseaudio-profiles=y
+CONFIG_PACKAGE_pulseaudio-tools=y
+CONFIG_PACKAGE_pulseaudio_enable_bluez=y
+CONFIG_PACKAGE_python-crypto=y
+CONFIG_PACKAGE_rkamsex=y
+CONFIG_PACKAGE_rklog=y
+# CONFIG_PACKAGE_rtl8192cu-firmware is not set
+CONFIG_PACKAGE_seeed=y
+# CONFIG_PACKAGE_senseflow is not set
+CONFIG_PACKAGE_shadow-node=y
+CONFIG_PACKAGE_speech=y
+CONFIG_PACKAGE_speech-service=y
+# CONFIG_PACKAGE_sptk-3.9 is not set
+CONFIG_PACKAGE_tinyalsa=y
+CONFIG_PACKAGE_uWS=y
+CONFIG_PACKAGE_vol_ctrl=y
+# CONFIG_PACKAGE_vsp is not set
+CONFIG_PACKAGE_wget=y
+CONFIG_PACKAGE_wpa-cli=y
+CONFIG_PACKAGE_wpa_ctrl=y
+CONFIG_PACKAGE_zlib-dev=y
+CONFIG_PRODUCT_NAME="Rokid-RBPI-3B-Plus"
+CONFIG_PRODUCT_OS_NAME="yodaos"
+CONFIG_PRODUCT_PATHNAME="yodaos/rbpi-3b-plus"
+CONFIG_ROKIDOS_BOARDCONFIG_CAPTURE_DEVICEID=0
+CONFIG_ROKIDOS_BOARDCONFIG_SOUND_CARDID=1
+CONFIG_SSP_SUPPORT=y
+CONFIG_STRIP_ARGS="--strip-all"
+# CONFIG_TARGET_EXT4_JOURNAL is not set
+CONFIG_TARGET_ROOTFS_PARTSIZE=256
+CONFIG_TARGET_SUFFIX="gnu"
+CONFIG_USE_GLIBC=y
+CONFIG_USE_LIBSTDCXX=y
+CONFIG_USE_STRIP=y
+# CONFIG_USE_UCLIBCXX is not set
+CONFIG_WIFI_BT_RPI3B_PLUS=y
+CONFIG_PACKAGE_MAC80211_DEBUGFS=y
+CONFIG_PACKAGE_MAC80211_MESH=y
+# CONFIG_PACKAGE_MAC80211_TRACING is not set
+CONFIG_PACKAGE_bash=y
+CONFIG_PACKAGE_boost=y
+# CONFIG_PACKAGE_boost-atomic is not set
+# CONFIG_PACKAGE_boost-chrono is not set
+CONFIG_PACKAGE_boost-container=y
+# CONFIG_PACKAGE_boost-context is not set
+# CONFIG_PACKAGE_boost-coroutine is not set
+# CONFIG_PACKAGE_boost-date_time is not set
+# CONFIG_PACKAGE_boost-fiber is not set
+# CONFIG_PACKAGE_boost-filesystem is not set
+# CONFIG_PACKAGE_boost-graph is not set
+# CONFIG_PACKAGE_boost-iostreams is not set
+# CONFIG_PACKAGE_boost-log is not set
+# CONFIG_PACKAGE_boost-math is not set
+# CONFIG_PACKAGE_boost-program_options is not set
+# CONFIG_PACKAGE_boost-python is not set
+# CONFIG_PACKAGE_boost-random is not set
+# CONFIG_PACKAGE_boost-regex is not set
+# CONFIG_PACKAGE_boost-serialization is not set
+# CONFIG_PACKAGE_boost-signals is not set
+# CONFIG_PACKAGE_boost-system is not set
+# CONFIG_PACKAGE_boost-thread is not set
+# CONFIG_PACKAGE_boost-timer is not set
+# CONFIG_PACKAGE_boost-wave is not set
+CONFIG_PACKAGE_hostapd-common=y
+CONFIG_PACKAGE_jansson=y
+CONFIG_PACKAGE_kmod-mac80211=y
+CONFIG_PACKAGE_libaudiofile=y
+CONFIG_PACKAGE_libfaad2=y
+CONFIG_PACKAGE_libflac=y
+CONFIG_PACKAGE_libid3tag=y
+CONFIG_PACKAGE_libmad=y
+CONFIG_PACKAGE_libmms=y
+CONFIG_PACKAGE_libmpdclient=y
+CONFIG_PACKAGE_libogg=y
+CONFIG_PACKAGE_libupnp=y
+# CONFIG_PACKAGE_libupnp-sample is not set
+CONFIG_PACKAGE_libvorbis=y
+CONFIG_PACKAGE_libvorbisidec=y
+CONFIG_PACKAGE_mpc=y
+CONFIG_PACKAGE_screen=y
+# CONFIG_PACKAGE_zabbix-extra-mac80211 is not set
+# CONFIG_boost-coroutine2 is not set
+# CONFIG_boost-graph-parallel is not set
+# CONFIG_boost-libs-all is not set
+CONFIG_boost-runtime-shared=y
+# CONFIG_boost-shared-libs is not set
+CONFIG_boost-static-and-shared-libs=y
+# CONFIG_boost-static-libs is not set
+# CONFIG_boost-test-pkg is not set
+# CONFIG_boost-use-name-tags is not set
+# CONFIG_boost-variant-debug is not set
+# CONFIG_boost-variant-profile is not set
+CONFIG_boost-variant-release=y
