@@ -1,4 +1,3 @@
-# Makefile for YodaOS 
 TOP_DIR:=${CURDIR}
 TARGET_DIR:=openwrt
 DEBUG_BUILD:=
@@ -29,4 +28,3 @@ clean:
 	@$(MAKE) -C $(TARGET_DIR) clean
 distclean:
 	@$(MAKE) -C $(TARGET_DIR) distclean
-

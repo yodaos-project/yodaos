@@ -19,10 +19,11 @@ $(eval $(call TestHostCommand,working-make, \
 	Please install GNU make v3.81 or later. (This version has bugs), \
 	$(MAKE) -v | grep -E 'Make (3\.8[1-9]|3\.9[0-9]|[4-9]\.)'))
 
-$(eval $(call TestHostCommand,case-sensitive-fs, \
-	OpenWrt can only be built on a case-sensitive filesystem, \
-	rm -f $(TMP_DIR)/test.*; touch $(TMP_DIR)/test.fs; \
-		test ! -f $(TMP_DIR)/test.FS))
+# disabled because macos doesn't own this.c
+# $(eval $(call TestHostCommand,case-sensitive-fs, \
+# 	OpenWrt can only be built on a case-sensitive filesystem, \
+# 	rm -f $(TMP_DIR)/test.*; touch $(TMP_DIR)/test.fs; \
+# 		test ! -f $(TMP_DIR)/test.FS))
 
 $(eval $(call SetupHostCommand,gcc, \
 	Please install the GNU C Compiler (gcc), \
@@ -32,7 +33,7 @@ $(eval $(call SetupHostCommand,gcc, \
 	gcc48 --version | grep gcc, \
 	gcc47 --version | grep gcc, \
 	gcc46 --version | grep gcc, \
-	gcc --version | grep Apple.LLVM ))
+	gcc --version | grep clang )) # Apple.LLVM for old versions
 
 $(eval $(call TestHostCommand,working-gcc, \
 	Please reinstall the GNU C Compiler - it appears to be broken, \
@@ -47,7 +48,7 @@ $(eval $(call SetupHostCommand,g++, \
 	g++48 --version | grep g++, \
 	g++47 --version | grep g++, \
 	g++46 --version | grep g++, \
-	g++ --version | grep Apple.LLVM ))
+	g++ --version | grep clang )) # Apple.LLVM for old versions
 
 $(eval $(call TestHostCommand,working-g++, \
 	Please reinstall the GNU C++ Compiler - it appears to be broken, \

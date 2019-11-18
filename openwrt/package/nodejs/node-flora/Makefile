@@ -21,7 +21,7 @@ define Package/node-flora
 	SECTION:=libs
 	CATEGORY:=node_modules
 	TITLE:=node-flora
-	DEPENDS:=+libstdcpp +shadow-node +flora +jsruntime
+	DEPENDS:=+libstdcpp +shadow-node +flora
 endef
 
 define Build/Prepare

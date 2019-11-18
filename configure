@@ -1,0 +1,69 @@
+#!/bin/bash
+
+set -o errexit
+
+usage() {
+cat <<USAGE
+Usage: $0 -p <PRODUCT> [-c <DEFCONFIG>]
+Options:
+    -h, --help
+        Display this help message
+    -p, --product
+        The product name
+    -c, --config
+        The config name under the product
+
+USAGE
+}
+
+build_defconfig() {
+    DST=openwrt/.config
+    SRC=products/${PRODUCT}/configs/${DEFCONFIG}_defconfig
+    cp $SRC $DST
+    echo "copied from ${SRC} to ${DST} and ready for building"
+    make -C openwrt defconfig
+}
+
+# set defaults
+PRODUCT=
+DEFCONFIG=
+
+# setup getopt
+options=$(getopt -o hp:c: --long "help,product:config:")
+[ $? -eq 0 ] || {
+    echo -e "\nERROR: Getopt failed. Extra args\n"
+    usage
+    exit 1
+}
+
+set -- "$@"
+for i
+do
+    case "$i" in
+        -h|--help)
+            usage; exit 1;;
+        -p|--product)
+            PRODUCT="$2"; DEFCONFIG="$2"; shift;
+            shift;;
+        -c|--config)
+            DEFCONFIG="$2"; shift;
+            shift;;
+        --)
+            shift; break;;
+    esac
+done
+
+#============================================================
+# prepare build enviroment
+#===========================================================
+if [ -z $PRODUCT ];then
+    usage
+    exit 1
+else
+    echo "selected product(${PRODUCT}) and defconfig is ${DEFCONFIG}_defconfig"
+fi
+
+#============================================================
+# default build all modules, make all image and save stuff
+#============================================================
+build_defconfig
