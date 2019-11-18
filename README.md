@@ -23,7 +23,7 @@ $ apt-get install build-essential subversion libncurses5-dev zlib1g-dev gawk gcc
 For MacOS, you need to install some GNU tools which the openwrt is required:
 
 ```sh
-$ brew install gnu-tar gnu-getopt findutils
+$ brew install gnu-tar gnu-getopt findutils m4
 ```
 
 The openwrt [check gnu-getopt version](./openwrt/include/prereq-build.mk) via the `gnugetopt` command name, so the following link is also required:
