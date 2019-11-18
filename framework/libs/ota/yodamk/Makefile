@@ -4,7 +4,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=ota_unpack
 PKG_VERSION:=
 PKG_RELEASE:=1
-PKG_SOURCE_DIR:=$(ROKID_DIR)/frameworks/native/libs/ota_unpack
+PKG_SOURCE_DIR:=$(ROKID_DIR)/framework/libs/ota
 PKG_CONFIG_DIR:=$(TOPDIR)/../products/$(CONFIG_PRODUCT_PATHNAME)/ota
 PKG_AUTH_DIR:=$(TOPDIR)/../products/$(CONFIG_PRODUCT_PATHNAME)/auth
 PKG_INSTALL:=1

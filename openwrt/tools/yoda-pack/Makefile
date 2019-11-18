@@ -1,17 +1,11 @@
-
-
-
 include $(TOPDIR)/rules.mk
-
-PKG_NAME:=rokid_package
-
+PKG_NAME:=yoda-pack
 
 include $(INCLUDE_DIR)/host-build.mk
-
-PKG_SOURCE_DIR:=$(TOPDIR)/../frameworks/native/libs/ota_unpack
+PKG_SOURCE_DIR:=$(TOPDIR)/../framework/libs/ota
 PKG_CONFIG_DIR:=$(TOPDIR)/../products/$(CONFIG_PRODUCT_PATHNAME)/ota
 
-define Package/rokid_package
+define Package/yoda-pack
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=A library for accessing Linux USB devices
@@ -32,10 +26,10 @@ define Host/Compile
 	$(PKG_SOURCE_DIR)/bootx/util.c  \
 	$(PKG_SOURCE_DIR)/bootx/bootfile/leo_boot.c  \
 	$(PKG_SOURCE_DIR)/bootx/bootfile/leo_mpw_boot.c  \
-	-I$(PKG_SOURCE_DIR) \
-	-I$(PKG_SOURCE_DIR)/bootx \
-	-I/usr/include/libusb-1.0 \
-	-lusb-1.0 -lpthread -o $(HOST_BUILD_DIR)/rokid_unpack
+		-I$(PKG_SOURCE_DIR) \
+		-I$(PKG_SOURCE_DIR)/bootx \
+		-I/usr/include/libusb-1.0 \
+		-lusb-1.0 -lpthread -o $(HOST_BUILD_DIR)/rokid_unpack
 endef
 
 define Host/Install
