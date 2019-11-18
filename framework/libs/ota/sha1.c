@@ -35,7 +35,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <linux/types.h>
 #include "sha1.h"
 
 /*

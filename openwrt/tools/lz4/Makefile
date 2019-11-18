@@ -27,7 +27,6 @@ define Host/Install
 	$(CP) $(HOST_BUILD_DIR)/lz4 $(STAGING_DIR_HOST)/bin
 	$(CP) $(HOST_BUILD_DIR)/lib/*.h $(STAGING_DIR_HOST)/include/
 	$(CP) $(HOST_BUILD_DIR)/lib/liblz4.a $(STAGING_DIR_HOST)/lib/
-	$(CP) $(HOST_BUILD_DIR)/lib/*.so*  $(STAGING_DIR_HOST)/lib/
 endef
 
 define Host/Clean
