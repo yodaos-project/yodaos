@@ -12,14 +12,17 @@ include ./files/python-version.mk
 
 PKG_NAME:=python
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
-PKG_RELEASE:=6
+PKG_RELEASE:=1
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
-PKG_HASH:=35d543986882f78261f97787fd3e06274bfa6df29fac9b4a94f73930ff98f731
+PKG_HASH:=4d43f033cdbd0aa7b7023c81b0e986fd11e653b5248dac9144d508f11812ba41
 
-PKG_LICENSE:=PSF
-PKG_LICENSE_FILES:=LICENSE Modules/_ctypes/libffi_msvc/LICENSE Modules/_ctypes/darwin/LICENSE Modules/_ctypes/libffi/LICENSE Modules/_ctypes/libffi_osx/LICENSE Tools/pybench/LICENSE
+PKG_LICENSE:=Python/2.0
+PKG_LICENSE_FILES:=LICENSE Doc/copyright.rst Doc/license.rst Modules/_ctypes/darwin/LICENSE Modules/_ctypes/libffi/LICENSE Modules/_ctypes/libffi_osx/LICENSE Modules/expat/COPYING
+PKG_CPE_ID:=cpe:/a:python:python
+
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>, Jeffery To <jeffery.to@gmail.com>
 
 # This file provides the necsessary host build variables
 include ./files/python-host.mk
@@ -270,9 +273,11 @@ define Package/python-pip-conf/install
 	$(CP) ./files/pip.conf $(1)/etc
 endef
 
-HOST_LDFLAGS += \
-	-Wl,--no-as-needed -lrt \
-	$$$$(pkg-config --static --libs libcrypto libssl)
+ifeq ($(HOST_OS),Linux)
+HOST_LDFLAGS += -Wl,--no-as-needed -lrt
+endif
+
+HOST_LDFLAGS += $$$$(pkg-config --static --libs libcrypto libssl)
 
 HOST_CONFIGURE_ARGS+= \
 	--without-cxx-main \

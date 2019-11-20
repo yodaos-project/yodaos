@@ -35,7 +35,7 @@ define Package/base-files
   DEPENDS:=+netifd +libc +procd +jsonfilter +SIGNED_PACKAGES:usign +fstools
   TITLE:=Base filesystem for OpenWrt
   URL:=http://openwrt.org/
-  VERSION:=$(PKG_RELEASE)-$(REVISION)
+  VERSION:=$(PKG_RELEASE)
 endef
 
 define Package/base-files/conffiles
@@ -179,9 +179,7 @@ define Package/base-files/install
 	chmod 0600 $(1)/etc/shadow
 	chmod 1777 $(1)/tmp
 	mkdir -p $(1)/system
-	if [ "$(CONFIG_DEBUG)" == "y" ]; then \
-		touch $(1)/etc/coredump; \
-	fi
+
 	$(call ImageConfigOptions,$(1))
 	$(call Package/base-files/install-target,$(1))
 	for conffile in $(1)/etc/config/*; do \
