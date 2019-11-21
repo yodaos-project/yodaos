@@ -1,0 +1,26 @@
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := libmisc
+LOCAL_MODULE_TAGS := optional
+LOCAL_CPP_EXTENSION := .cc
+LOCAL_SRC_FILES := \
+	src/misc/uri.cc
+LOCAL_C_INCLUDES := \
+	$(LOCAL_PATH)/include/misc
+LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_C_INCLUDES)
+include $(BUILD_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := librlog
+LOCAL_MODULE_TAGS := optional
+LOCAL_CPP_EXTENSION := .cc
+LOCAL_SRC_FILES := \
+	src/log/rlog.cc
+LOCAL_C_INCLUDES := \
+	$(LOCAL_PATH)/include/log
+LOCAL_SHARED_LIBRARIES := liblog
+LOCAL_STATIC_LIBRARIES := libmisc
+LOCAL_CPPFLAGS := -std=c++11
+LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_C_INCLUDES)
+include $(BUILD_SHARED_LIBRARY)

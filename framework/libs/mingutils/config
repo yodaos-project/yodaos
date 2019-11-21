@@ -1,0 +1,78 @@
+#!/bin/bash
+
+function print_prompt
+{
+  cat << CONFEOF
+Usage: $0 [OPTION]... [VAR=VALUE]...
+
+Configuration:
+    --help                      display this help and exit
+    --debug                     build for debug
+    --build-demo                build demo
+    --build-dir=DIR             build directory
+    --prefix=PREFIX             install prefix
+    --cmake-modules=DIR         directory of cmake modules file exist
+
+Dependencies:
+    --gtest=DIR                 specify install dir of gtest
+
+Cross Compile:
+    --toolchain=DIR             toolchain install dir
+    --cross-prefix=PREFIX       compiler name prefix
+CONFEOF
+}
+
+builddir="build"
+cmake_modules_dir="cmake"
+
+CMAKE_ARGS=
+for conf_opt
+do
+  case $conf_opt in
+    *=?*) conf_optarg=`expr "X$conf_opt" : '[^=]*=\(.*\)'` ;;
+    *) conf_optarg= ;;
+  esac
+
+  case $conf_opt in
+    --help)
+      print_prompt
+      exit 0
+      ;;
+    --debug)
+      CMAKE_ARGS=(${CMAKE_ARGS[@]} -DBUILD_DEBUG=ON)
+      ;;
+    --build-demo)
+      CMAKE_ARGS=(${CMAKE_ARGS[@]} -DBUILD_DEMO=ON)
+      ;;
+    --build-dir=*)
+      builddir=$conf_optarg
+      ;;
+    --prefix=*)
+      CMAKE_ARGS=(${CMAKE_ARGS[@]} -DCMAKE_INSTALL_PREFIX=$conf_optarg)
+      ;;
+    --cmake-modules=*)
+      cmake_modules_dir=$conf_optarg
+      ;;
+    --gtest=*)
+      CMAKE_ARGS=(${CMAKE_ARGS[@]} -DgtestPrefix=$conf_optarg)
+      ;;
+    --toolchain=*)
+      CMAKE_ARGS=(${CMAKE_ARGS[@]} -DTOOLCHAIN_HOME=$conf_optarg)
+      CROSS_COMPILE=yes
+      ;;
+    --cross-prefix=*)
+      CMAKE_ARGS=(${CMAKE_ARGS[@]} -DCROSS_PREFIX=$conf_optarg)
+      ;;
+  esac
+done
+
+CMAKE_ARGS=(${CMAKE_ARGS[@]} -DCUSTOM_CMAKE_MODULES=$cmake_modules_dir)
+CUR_DIR=`pwd`
+if [ x$CROSS_COMPILE = x"yes" ]; then
+CMAKE_ARGS=(${CMAKE_ARGS[@]} -DCMAKE_TOOLCHAIN_FILE=$cmake_modules_dir/toolchain.cmake)
+fi
+
+mkdir -p $builddir
+cd $builddir
+cmake $CUR_DIR \
+  ${CMAKE_ARGS[@]}

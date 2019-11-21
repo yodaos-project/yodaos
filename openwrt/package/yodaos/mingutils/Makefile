@@ -1,7 +1,7 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=mutils
+PKG_NAME:=mingutils
 PKG_VERSION:=
 PKG_RELEASE:=1
 
@@ -15,14 +15,14 @@ PKG_LICENSE:=GPL-2.0+
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
-define Package/mutils
+define Package/mingutils
   SECTION:=libs
   CATEGORY:=rokid
   TITLE:=mutils
   DEPENDS:=+libstdcpp +libpthread
 endef
 
-define Package/mutils/description
+define Package/mingutils/description
 	property
 endef
 
@@ -45,5 +45,5 @@ define Package/mutils/install
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib*.so $(1)/usr/lib/
 endef
 
-$(eval $(call BuildPackage,mutils))
+$(eval $(call BuildPackage,mingutils))
 
