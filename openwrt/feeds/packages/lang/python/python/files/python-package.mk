@@ -5,7 +5,10 @@
 # See /LICENSE for more information.
 #
 
-$(call include_mk, python-version.mk)
+# Note: include this after `include $(TOPDIR)/rules.mk in your package Makefile
+
+python_mk_path:=$(dir $(lastword $(MAKEFILE_LIST)))
+include $(python_mk_path)python-host.mk
 
 PYTHON_DIR:=$(STAGING_DIR)/usr
 PYTHON_BIN_DIR:=$(PYTHON_DIR)/bin
@@ -32,12 +35,21 @@ ifdef CONFIG_USE_MIPS16
   TARGET_CFLAGS += -mno-mips16 -mno-interlink-mips16
 endif
 
+define PyShebang
+$(SED) "1"'!'"b;s,^#"'!'".*python.*,#"'!'"/usr/bin/python2," -i --follow-symlinks $(1)
+endef
+
 define PyPackage
 
   define Package/$(1)-src
     $(call Package/$(1))
+    DEPENDS:=
+    CONFLICTS:=
+    PROVIDES:=
+    EXTRA_DEPENDS:=
     TITLE+= (sources)
-    DEPENDS:=$$$$(foreach dep,$$$$(filter +python-%,$$$$(DEPENDS)),$$$$(dep)-src)
+    USERID:=
+    MENU:=
   endef
 
   define Package/$(1)-src/description
@@ -65,21 +77,13 @@ define PyPackage
   $(call shexport,PyPackage/$(1)/filespec)
 
   define Package/$(1)/install
-	$(call PyPackage/$(1)/install,$$(1))
-	find $(PKG_INSTALL_DIR) -name "*\.exe" | xargs rm -f
-	if [ -e files/python-package-install.sh ] ; then \
-		$(SHELL) files/python-package-install.sh \
-			"$(PKG_INSTALL_DIR)" "$$(1)" \
-			"$(HOST_PYTHON_BIN)" "$$(2)" \
-			"$$$$$$$$$$(call shvar,PyPackage/$(1)/filespec)" ; \
-	elif [ -e $(STAGING_DIR)/mk/python-package-install.sh ] ; then \
-		$(SHELL) $(STAGING_DIR)/mk/python-package-install.sh \
-			"$(PKG_INSTALL_DIR)" "$$(1)" \
-			"$(HOST_PYTHON_BIN)" "$$(2)" \
-			"$$$$$$$$$$(call shvar,PyPackage/$(1)/filespec)" ; \
-	else \
-		echo "No 'python-package-install.sh' script found" ; \
-		exit 1 ; \
+	$$(call PyPackage/$(1)/install,$$(1))
+	$(SHELL) $(python_mk_path)python-package-install.sh "2" \
+		"$(PKG_INSTALL_DIR)" "$$(1)" \
+		"$(HOST_PYTHON_BIN)" "$$(2)" \
+		"$$$$$$$$$$(call shvar,PyPackage/$(1)/filespec)" && \
+	if [ -d "$$(1)/usr/bin" ]; then \
+		$(call PyShebang,$$(1)/usr/bin/*) ; \
 	fi
   endef
 
@@ -88,8 +92,6 @@ define PyPackage
   endef
   endif # Package/$(1)/install
 endef
-
-$(call include_mk, python-host.mk)
 
 # $(1) => commands to execute before running pythons script
 # $(2) => python script and its arguments
@@ -122,16 +124,23 @@ define Build/Compile/PyMod
 		cd $(PKG_BUILD_DIR)/$(strip $(1)), \
 		./setup.py $(2), \
 		$(3))
-	find $(PKG_INSTALL_DIR) -name "*\.exe" | xargs rm -f
 endef
 
+PYTHON_PKG_SETUP_DIR ?=
+PYTHON_PKG_SETUP_GLOBAL_ARGS ?=
+PYTHON_PKG_SETUP_ARGS ?= --single-version-externally-managed
+PYTHON_PKG_SETUP_VARS ?=
+
 define PyBuild/Compile/Default
-	$(foreach pkg,$(HOST_PYTHON_PACKAGE_BUILD_DEPENDS),
-		$(call host_python_pip_install_host,$(pkg))
+	$(if $(HOST_PYTHON_PACKAGE_BUILD_DEPENDS),
+		$(call Build/Compile/HostPyPipInstall,$(HOST_PYTHON_PACKAGE_BUILD_DEPENDS))
 	)
-	$(call Build/Compile/PyMod,, \
+	$(call Build/Compile/PyMod, \
+		$(PYTHON_PKG_SETUP_DIR), \
+		$(PYTHON_PKG_SETUP_GLOBAL_ARGS) \
 		install --prefix="/usr" --root="$(PKG_INSTALL_DIR)" \
-		--single-version-externally-managed \
+		$(PYTHON_PKG_SETUP_ARGS), \
+		$(PYTHON_PKG_SETUP_VARS) \
 	)
 endef
 
