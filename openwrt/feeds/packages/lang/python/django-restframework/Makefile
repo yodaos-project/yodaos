@@ -8,42 +8,61 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=django-restframework
-PKG_VERSION:=3.5.4
-PKG_RELEASE:=1
+PKG_VERSION:=3.9.0
+PKG_RELEASE:=5
+
+PYPI_NAME:=djangorestframework
+PKG_HASH:=607865b0bb1598b153793892101d881466bd5a991de12bd6229abb18b1c86136
+
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
+PKG_LICENSE_FILES:=LICENSE.md
 
-PKG_SOURCE:=djangorestframework-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://pypi.python.org/packages/e9/24/86dfe19fb82a40a3d7a4c50371a8bd85b9277d3506698bf332a6d41d08f6/
-PKG_BUILD_DIR:=$(BUILD_DIR)/djangorestframework-$(PKG_VERSION)
-PKG_MD5SUM:=979808c387dad8d0ebb6025c39dc7b94
-PKG_BUILD_DEPENDS:=python python-setuptools
-
+include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
+include ../python-package.mk
+include ../python3-package.mk
 
-define Package/django-restframework
+define Package/$(PKG_NAME)/Default
   SUBMENU:=Python
   SECTION:=lang
   CATEGORY:=Languages
-  MAINTAINER:=Gergely Kiss <mail.gery@gmail.com>
   TITLE:=Web APIs for Django, made easy.
-  URL:=http://www.django-rest-framework.org/
-  DEPENDS:=+python +django
+  URL:=https://www.django-rest-framework.org
 endef
 
-define Package/django-restframework/description
+define Package/python-$(PKG_NAME)
+$(call Package/$(PKG_NAME)/Default)
+  DEPENDS:= \
+	+PACKAGE_python-$(PKG_NAME):python \
+	python-django1
+  VARIANT:=python
+  MDEPENDS:=python-django1
+endef
+
+define Package/python-$(PKG_NAME)/description
   Web APIs for Django, made easy.
 endef
 
-define Build/Compile
-	$(call Build/Compile/PyMod,,install --prefix=/usr --root=$(PKG_INSTALL_DIR))
+define Package/python3-$(PKG_NAME)
+$(call Package/$(PKG_NAME)/Default)
+  DEPENDS:= \
+	+PACKAGE_python3-$(PKG_NAME):python3 \
+	python3-django
+  VARIANT:=python3
+  MDEPENDS:=python3-django
 endef
 
-define Package/django-restframework/install
-	$(INSTALL_DIR) $(1)$(PYTHON_PKG_DIR)
-	$(CP) \
-	    $(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR)/* \
-	    $(1)$(PYTHON_PKG_DIR)
+define Package/python3-$(PKG_NAME)/description
+$(call define Package/python-$(PKG_NAME)/description)
+.
+(Variant for Python3)
 endef
 
-$(eval $(call BuildPackage,django-restframework))
+$(eval $(call PyPackage,python-$(PKG_NAME)))
+$(eval $(call BuildPackage,python-$(PKG_NAME)))
+$(eval $(call BuildPackage,python-$(PKG_NAME)-src))
+
+$(eval $(call Py3Package,python3-$(PKG_NAME)))
+$(eval $(call BuildPackage,python3-$(PKG_NAME)))
+$(eval $(call BuildPackage,python3-$(PKG_NAME)-src))

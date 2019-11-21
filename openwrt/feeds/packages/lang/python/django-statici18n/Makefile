@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2007-2017 OpenWrt.org
+# Copyright (C) 2007-2018 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,41 +8,61 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=django-statici18n
-PKG_VERSION:=1.3.0
-PKG_RELEASE:=1
+PKG_VERSION:=1.8.2
+PKG_RELEASE:=5
+
+PYPI_NAME:=$(PKG_NAME)
+PKG_HASH:=ba9eeb3c4517027922645999359f8335fbb9fea04c457123cfbd6b4a36cbeda4
+
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
+PKG_LICENSE_FILES:=LICENSE
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://pypi.python.org/packages/86/6b/2c2e86a7e144ba7b064119eaafb2c8c67665c2a0e722f0819daa9657e551/
-PKG_MD5SUM:=61e22a6f2399f9f829308e4d91b36ee0
-PKG_BUILD_DEPENDS:=python python-setuptools
-
+include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
+include ../python-package.mk
+include ../python3-package.mk
 
-define Package/django-statici18n
+define Package/$(PKG_NAME)/Default
   SUBMENU:=Python
   SECTION:=lang
   CATEGORY:=Languages
-  MAINTAINER:=Gergely Kiss <mail.gery@gmail.com>
-  TITLE:=A Django app that provides helper for generating JavaScript catalog to static files.
-  URL:=http://django-statici18n.readthedocs.org/
-  DEPENDS:=+python +django
+  TITLE:=Helper for generating JavaScript catalog to static files
+  URL:=https://$(PKG_NAME).readthedocs.io
 endef
 
-define Package/django-statici18n/description
+define Package/python-$(PKG_NAME)
+$(call Package/$(PKG_NAME)/Default)
+  DEPENDS:= \
+	+PACKAGE_python-$(PKG_NAME):python \
+	python-django1
+  VARIANT:=python
+  MDEPENDS:=python-django1
+endef
+
+define Package/python-$(PKG_NAME)/description
   A Django app that provides helper for generating JavaScript catalog to static files.
 endef
 
-define Build/Compile
-	$(call Build/Compile/PyMod,,install --prefix=/usr --root=$(PKG_INSTALL_DIR))
+define Package/python3-$(PKG_NAME)
+$(call Package/$(PKG_NAME)/Default)
+  DEPENDS:= \
+	+PACKAGE_python3-$(PKG_NAME):python3 \
+	python3-django
+  VARIANT:=python3
+  MDEPENDS:=python3-django
 endef
 
-define Package/django-statici18n/install
-	$(INSTALL_DIR) $(1)$(PYTHON_PKG_DIR)
-	$(CP) \
-	    $(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR)/* \
-	    $(1)$(PYTHON_PKG_DIR)
+define Package/python3-$(PKG_NAME)/description
+$(call define Package/python-$(PKG_NAME)/description)
+.
+(Variant for Python3)
 endef
 
-$(eval $(call BuildPackage,django-statici18n))
+$(eval $(call PyPackage,python-$(PKG_NAME)))
+$(eval $(call BuildPackage,python-$(PKG_NAME)))
+$(eval $(call BuildPackage,python-$(PKG_NAME)-src))
+
+$(eval $(call Py3Package,python3-$(PKG_NAME)))
+$(eval $(call BuildPackage,python3-$(PKG_NAME)))
+$(eval $(call BuildPackage,python3-$(PKG_NAME)-src))

@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-asn1crypto
-PKG_VERSION:=0.22.0
+PKG_VERSION:=1.2.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=asn1crypto-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://pypi.python.org/packages/67/14/5d66588868c4304f804ebaff9397255f6ec5559e46724c2496e0f26e68d6
-PKG_HASH:=cbbadd640d3165ab24b06ef25d1dca09a3441611ac15f6a6b452474fdf0aed1a
+PKG_SOURCE_URL:=https://pypi.io/packages/source/a/asn1crypto
+PKG_HASH:=87620880a477123e01177a1f73d0f327210b43a3cdbd714efcd2fa49a8d7b384
 
 PKG_LICENSE:=MIT
 PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
@@ -21,8 +21,8 @@ PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(BUILD_VARIANT)-asn1crypto-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
-$(call include_mk, python3-package.mk)
+include ../python-package.mk
+include ../python3-package.mk
 
 PKG_UNPACK:=$(HOST_TAR) -C $(PKG_BUILD_DIR) --strip-components=1 -xzf $(DL_DIR)/$(PKG_SOURCE)
 
@@ -61,5 +61,8 @@ endef
 
 $(eval $(call PyPackage,python-asn1crypto))
 $(eval $(call BuildPackage,python-asn1crypto))
+$(eval $(call BuildPackage,python-asn1crypto-src))
+
 $(eval $(call Py3Package,python3-asn1crypto))
 $(eval $(call BuildPackage,python3-asn1crypto))
+$(eval $(call BuildPackage,python3-asn1crypto-src))

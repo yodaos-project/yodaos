@@ -8,29 +8,27 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-lxml
-PKG_VERSION:=3.7.2
+PKG_VERSION:=4.4.1
 PKG_RELEASE:=1
 
-PKG_SOURCE:=lxml-$(PKG_VERSION).tgz
-PKG_SOURCE_URL:=http://lxml.de/files/
-PKG_HASH:=59d9176360dbc3919e9d4bfca85c1ca64ab4f4ee00e6f119d7150ba887e3410a
-
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(BUILD_VARIANT)-lxml-$(PKG_VERSION)
-PKG_UNPACK=$(HOST_TAR) -C $(PKG_BUILD_DIR) --strip-components=1 -xzf $(DL_DIR)/$(PKG_SOURCE)
+PYPI_NAME:=lxml
+PKG_HASH:=c81cb40bff373ab7a7446d6bbca0190bccc5be3448b47b51d729e37799bb5692
 
 PKG_LICENSE:=BSD
 PKG_LICENSE_FILES:=LICENSES.txt
 PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
+PKG_CPE_ID:=cpe:/a:lxml:lxml
 
+include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
-$(call include_mk, python3-package.mk)
+include ../python-package.mk
+include ../python3-package.mk
 
 define Package/python-lxml/Default
   SECTION:=lang
   CATEGORY:=Languages
   SUBMENU:=Python
-  URL:=http://lxml.de
+  URL:=https://lxml.de
   DEPENDS:=+libxml2 +libxslt +libexslt
 endef
 
@@ -89,6 +87,8 @@ endef
 
 $(eval $(call PyPackage,python-lxml))
 $(eval $(call BuildPackage,python-lxml))
+$(eval $(call BuildPackage,python-lxml-src))
 
 $(eval $(call Py3Package,python3-lxml))
 $(eval $(call BuildPackage,python3-lxml))
+$(eval $(call BuildPackage,python3-lxml-src))

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015-2016 OpenWrt.org
+# Copyright (C) 2015-2019 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,43 +8,42 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-idna
-PKG_VERSION:=2.5
-PKG_RELEASE:=1
+PKG_VERSION:=2.8
+PKG_RELEASE:=2
 
-PKG_SOURCE:=idna-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://pypi.python.org/packages/d8/82/28a51052215014efc07feac7330ed758702fc0581347098a81699b5281cb
-PKG_HASH:=3cb5ce08046c4e3a560fc02f138d0ac63e00f8ce5901a56b32ec8b7994082aab
+PYPI_NAME:=idna
+PKG_HASH:=c357b3f628cf53ae2c4c05627ecc484553142ca23264e593d327bcde5e9c3407
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE.rst
 PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>, Alexandru Ardelean <ardeleanalex@gmail.com>
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(BUILD_VARIANT)-idna-$(PKG_VERSION)
-
+include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
-$(call include_mk, python3-package.mk)
-
-PKG_UNPACK:=$(HOST_TAR) -C $(PKG_BUILD_DIR) --strip-components=1 -xzf $(DL_DIR)/$(PKG_SOURCE)
+include ../python-package.mk
+include ../python3-package.mk
 
 define Package/python-idna/Default
   SECTION:=lang
   CATEGORY:=Languages
   SUBMENU:=Python
+  TITLE:=IDNA library
   URL:=https://github.com/kjd/idna
 endef
 
 define Package/python-idna
 $(call Package/python-idna/Default)
-  TITLE:=python-idna
-  DEPENDS:=+PACKAGE_python-idna:python-light
+  DEPENDS:= \
+      +PACKAGE_python-idna:python-light \
+      +PACKAGE_python-idna:python-codecs
   VARIANT:=python
 endef
 
 define Package/python3-idna
 $(call Package/python-idna/Default)
-  TITLE:=python3-idna
-  DEPENDS:=+PACKAGE_python3-idna:python3-light
+  DEPENDS:= \
+      +PACKAGE_python3-idna:python3-light \
+      +PACKAGE_python3-idna:python3-codecs
   VARIANT:=python3
 endef
 
@@ -56,12 +55,15 @@ from the earlier standard from 2003.
 endef
 
 define Package/python3-idna/description
-$(call define Package/python-idna/description)
+$(call Package/python-idna/description)
 .
 (Variant for Python3)
 endef
 
 $(eval $(call PyPackage,python-idna))
 $(eval $(call BuildPackage,python-idna))
+$(eval $(call BuildPackage,python-idna-src))
+
 $(eval $(call Py3Package,python3-idna))
 $(eval $(call BuildPackage,python3-idna))
+$(eval $(call BuildPackage,python3-idna-src))

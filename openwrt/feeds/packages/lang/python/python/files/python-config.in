@@ -77,3 +77,4 @@ for opt in opt_flags:
                 libs.extend(getvar('LINKFORSHARED').split())
         #print ' '.join(libs)
         print ' '.join(libs).replace(host_prefix, target_prefix)
+

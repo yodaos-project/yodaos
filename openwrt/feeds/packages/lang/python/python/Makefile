@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 # For PYTHON_VERSION
-include ./files/python-version.mk
+include ../python-version.mk
 
 PKG_NAME:=python
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
@@ -25,10 +25,10 @@ PKG_CPE_ID:=cpe:/a:python:python
 PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>, Jeffery To <jeffery.to@gmail.com>
 
 # This file provides the necsessary host build variables
-include ./files/python-host.mk
+include ../python-host.mk
 
 # For PyPackage
-include ./files/python-package.mk
+include ../python-package.mk
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1

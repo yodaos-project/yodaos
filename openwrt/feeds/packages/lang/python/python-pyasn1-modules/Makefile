@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015-2017 OpenWrt.org
+# Copyright (C) 2015-2018 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,48 +8,43 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-pyasn1-modules
-PKG_VERSION:=0.0.11
+PKG_VERSION:=0.2.7
 PKG_RELEASE:=1
 
-PKG_SOURCE:=pyasn1-modules-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://pypi.python.org/packages/de/5f/0c6a1a096bfc2831ee8e2e951f79e6ec23c853c17ab5ba655322bfcde20a
-PKG_HASH:=60d5c80bfee9b79b492d5d8a934b3ecfc523f2f83aaab4ffafa2bbb651d3c67a
+PYPI_NAME:=pyasn1-modules
+PKG_HASH:=0c35a52e00b672f832e5846826f1fb7507907f7d52fba6faa9e3c4cbe874fe4b
 
 PKG_LICENSE:=BSD-2-Clause
 PKG_LICENSE_FILES:=LICENSE.txt
 PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>, Alexandru Ardelean <ardeleanalex@gmail.com>
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(BUILD_VARIANT)-pyasn1-modules-$(PKG_VERSION)
-
+include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
-$(call include_mk, python3-package.mk)
-
-PKG_UNPACK:=$(HOST_TAR) -C $(PKG_BUILD_DIR) --strip-components=1 -xzf $(DL_DIR)/$(PKG_SOURCE)
+include ../python-package.mk
+include ../python3-package.mk
 
 define Package/python-pyasn1-modules/Default
   SECTION:=lang
   CATEGORY:=Languages
   SUBMENU:=Python
-  URL:=http://sourceforge.net/projects/pyasn1/
+  TITLE:=Collection of ASN.1 modules
+  URL:=https://github.com/etingof/pyasn1-modules
 endef
 
 define Package/python-pyasn1-modules
 $(call Package/python-pyasn1-modules/Default)
-  TITLE:=python-pyasn1-modules
-  VARIANT:=python
   DEPENDS:= \
       +PACKAGE_python-pyasn1-modules:python-light \
       +PACKAGE_python-pyasn1-modules:python-pyasn1
+  VARIANT:=python
 endef
 
 define Package/python3-pyasn1-modules
 $(call Package/python-pyasn1-modules/Default)
-  TITLE:=python3-pyasn1-modules
-  VARIANT:=python3
   DEPENDS:= \
       +PACKAGE_python3-pyasn1-modules:python3-light \
       +PACKAGE_python3-pyasn1-modules:python3-pyasn1
+  VARIANT:=python3
 endef
 
 define Package/python-pyasn1-modules/description
@@ -65,5 +60,8 @@ endef
 
 $(eval $(call PyPackage,python-pyasn1-modules))
 $(eval $(call BuildPackage,python-pyasn1-modules))
+$(eval $(call BuildPackage,python-pyasn1-modules-src))
+
 $(eval $(call Py3Package,python3-pyasn1-modules))
 $(eval $(call BuildPackage,python3-pyasn1-modules))
+$(eval $(call BuildPackage,python3-pyasn1-modules-src))

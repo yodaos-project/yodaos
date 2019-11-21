@@ -9,40 +9,60 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=django-appconf
 PKG_VERSION:=1.0.2
-PKG_RELEASE:=1
+PKG_RELEASE:=5
+
+PYPI_NAME:=$(PKG_NAME)
+PKG_HASH:=6a4d9aea683b4c224d97ab8ee11ad2d29a37072c0c6c509896dd9857466fb261
+
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
+PKG_LICENSE_FILES:=LICENSE
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://pypi.python.org/packages/34/b9/d07195652ab494b026f7cb0341dd6e5f2e6e39be177abe05e2cec8bd46e4/
-PKG_MD5SUM:=cc11511a47088bc56531df67cd5d6261
-PKG_BUILD_DEPENDS:=python python-setuptools
-
+include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
+include ../python-package.mk
+include ../python3-package.mk
 
-define Package/django-appconf
+define Package/$(PKG_NAME)/Default
   SUBMENU:=Python
   SECTION:=lang
   CATEGORY:=Languages
-  MAINTAINER:=Gergely Kiss <mail.gery@gmail.com>
-  TITLE:=A helper class for handling configuration defaults of packaged apps gracefully.
-  URL:=http://django-appconf.readthedocs.org/
-  DEPENDS:=+python +django
+  TITLE:=Helper class for handling config defaults
+  URL:=https://$(PKG_NAME).readthedocs.io
 endef
 
-define Package/django-appconf/description
-  A helper class for handling configuration defaults of packaged apps gracefully.
+define Package/python-$(PKG_NAME)
+$(call Package/$(PKG_NAME)/Default)
+  DEPENDS:= \
+	+PACKAGE_python-$(PKG_NAME):python \
+	python-django1
+  VARIANT:=python
+  MDEPENDS:=python-django1
 endef
 
-define Build/Compile
-	$(call Build/Compile/PyMod,,install --prefix=/usr --root=$(PKG_INSTALL_DIR))
+define Package/python-$(PKG_NAME)/description
+  A helper class for handling configuration defaults of packaged apps gracefully
 endef
 
-define Package/django-appconf/install
-	$(INSTALL_DIR) $(1)$(PYTHON_PKG_DIR)
-	$(CP) \
-	    $(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR)/* \
-	    $(1)$(PYTHON_PKG_DIR)
+define Package/python3-$(PKG_NAME)
+$(call Package/$(PKG_NAME)/Default)
+  DEPENDS:= \
+	+PACKAGE_python3-$(PKG_NAME):python3 \
+	python3-django
+  VARIANT:=python3
+  MDEPENDS:=python3-django
 endef
 
-$(eval $(call BuildPackage,django-appconf))
+define Package/python3-$(PKG_NAME)/description
+$(call define Package/python-$(PKG_NAME)/description)
+.
+(Variant for Python3)
+endef
+
+$(eval $(call PyPackage,python-$(PKG_NAME)))
+$(eval $(call BuildPackage,python-$(PKG_NAME)))
+$(eval $(call BuildPackage,python-$(PKG_NAME)-src))
+
+$(eval $(call Py3Package,python3-$(PKG_NAME)))
+$(eval $(call BuildPackage,python3-$(PKG_NAME)))
+$(eval $(call BuildPackage,python3-$(PKG_NAME)-src))

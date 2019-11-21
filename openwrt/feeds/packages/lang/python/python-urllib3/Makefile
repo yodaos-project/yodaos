@@ -8,42 +8,56 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-urllib3
-PKG_VERSION:=1.20
+PKG_VERSION:=1.25.6
 PKG_RELEASE:=1
+
+PKG_MAINTAINER:=Josef Schlehofer <pepe.schlehofer@gmail.com>
 PKG_LICENSE:=MIT
+PKG_LICENSE_FILES:=LICENSE.txt
+PKG_CPE_ID:=cpe:/a:urllib3_project:urllib3
 
-PKG_SOURCE:=urllib3-$(PKG_VERSION).tar.gz
-PKG_BUILD_DIR:=$(BUILD_DIR)/urllib3-$(PKG_VERSION)/
-PKG_SOURCE_URL:=https://pypi.python.org/packages/20/56/a6aa403b0998f857b474a538343ee483f5c02491bd1aebf61d42a3f60f77/
-PKG_MD5SUM:=34691d4e7e20a8e9cdb452ea24fc38e7
-PKG_BUILD_DEPENDS:=python python-setuptools
+PYPI_NAME:=urllib3
+PKG_HASH:=9a107b99a5393caf59c7aa3c1249c16e6879447533d0887f4336dde834c7be86
 
+include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
+include ../python-package.mk
+include ../python3-package.mk
 
-define Package/python-urllib3
+define Package/python-urllib3/Default
   SUBMENU:=Python
   SECTION:=lang
   CATEGORY:=Languages
-  MAINTAINER:=Gergely Kiss <mail.gery@gmail.com>
-  TITLE:=HTTP library with thread-safe connection pooling, file post, and more.
+  TITLE:=Sanity-friendly HTTP client
   URL:=https://urllib3.readthedocs.io/
-  DEPENDS:=+python
+endef
+
+define Package/python-urllib3
+$(call Package/python-urllib3/Default)
+  DEPENDS:=+PACKAGE_python-urllib3:python
+  VARIANT:=python
 endef
 
 define Package/python-urllib3/description
   HTTP library with thread-safe connection pooling, file post, and more.
 endef
 
-define Build/Compile
-	$(call Build/Compile/PyMod,,install --prefix=/usr --root=$(PKG_INSTALL_DIR))
+define Package/python3-urllib3
+$(call Package/python-urllib3/Default)
+  DEPENDS:=+PACKAGE_python3-urllib3:python3
+  VARIANT:=python3
 endef
 
-define Package/python-urllib3/install
-	$(INSTALL_DIR) $(1)$(PYTHON_PKG_DIR)
-	$(CP) \
-	    $(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR)/* \
-	    $(1)$(PYTHON_PKG_DIR)
+define Package/python3-urllib3/description
+$(call Package/python-urllib3/description)
+.
+(Variant for Python3)
 endef
 
+$(eval $(call PyPackage,python-urllib3))
 $(eval $(call BuildPackage,python-urllib3))
+$(eval $(call BuildPackage,python-urllib3-src))
+
+$(eval $(call Py3Package,python3-urllib3))
+$(eval $(call BuildPackage,python3-urllib3))
+$(eval $(call BuildPackage,python3-urllib3-src))
