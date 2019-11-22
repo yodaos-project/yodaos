@@ -432,7 +432,7 @@ add_dependencies(${TARGET_LIB_IOTJS}
   ${TUV_LIBS}
   libhttp-parser
   ${MBEDTLS_LIBS}
-  ${MQTT_LIBS}
+  libmqtt_packet
 )
 add_definitions(
   -DNODE_MAJOR_VERSION=${IOTJS_VERSION_MAJOR}
@@ -453,8 +453,7 @@ target_link_libraries(${TARGET_LIB_IOTJS}
   ${TUV_LIBS}
   libhttp-parser
   ${MBEDTLS_LIBS}
-  ${MQTT_LIBS}
-  ${DBUS_LIBRARY_DIRS}
+  libmqtt_packet
   ${EXTERNAL_LIBS}
 )
 

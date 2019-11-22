@@ -29,10 +29,10 @@ CMAKE_HOST_OPTIONS += \
 	-DFEATURE_PROFILE='$(SHADOW_NODE_SOURCE)/deps/jerry/jerry-core/profiles/es5.1.profile' \
 	-DENABLE_LTO=OFF \
 	-DENABLE_SNAPSHOT=ON \
-	-DENABLE_NAPI=OFF \
-	-DENABLE_JERRYX=OFF \
+	-DENABLE_NAPI=ON \
+	-DENABLE_JERRYX=ON \
 	-DBUILD_LIB_ONLY=OFF \
-	-DINSTALL_PREFIX='/usr'
+	-DINSTALL_PREFIX='$(STAGING_DIR_HOSTPKG)/usr'
 
 CMAKE_OPTIONS += \
 	-DTARGET_ARCH=$(CONFIG_ARCH) \
@@ -70,6 +70,12 @@ define Build/Prepare
 	$(RM) $(PKG_BUILD_DIR)/deps/jerry/jerry-core/include/jerryscript-snapshot.h.rej
 	$(RM) $(PKG_BUILD_DIR)/deps/jerry/tests/unit-core/test-snapshot.c.rej
 	$(call Build/Prepare/Default,)
+endef
+
+define Host/Install
+	$(INSTALL_DIR) $(STAGING_DIR_HOSTPKG)/usr/lib
+	$(INSTALL_DIR) $(STAGING_DIR_HOSTPKG)/usr/bin
+	$(call $(Host/Install/Default,))
 endef
 
 define Build/InstallDev

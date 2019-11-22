@@ -32,9 +32,11 @@ endif()
 
 # path for platform depends files, use full name for default
 # (e.g, i686-linux)
-if (DEFINED TARGET_PLATFORM)
-  set(TUV_PLATFORM_PATH ${TARGET_PLATFORM})
-  include("cmake/option/option_${TARGET_PLATFORM}.cmake") 
+if (DEFINED TARGET_OS AND DEFINED TARGET_ARCH)
+  string(TOLOWER "${TARGET_ARCH}-${TARGET_OS}" TARGET_PLATFORM_L)
+  message(">>### ${TARGET_PLATFORM_L} <<")
+  set(TUV_PLATFORM_PATH "${TARGET_PLATFORM_L}")
+  include("cmake/option/option_${TARGET_PLATFORM_L}.cmake") 
 endif()
 
 string(TOLOWER ${CMAKE_BUILD_TYPE} BUILD_TYPE_L)
