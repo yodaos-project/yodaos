@@ -1,0 +1,1233 @@
+{
+  "count": 23,
+  "size": 100,
+  "data": [
+    {
+      "_id": "S1ExlF7emNm",
+      "updated_at": "2018-07-23T07:11:51.448Z",
+      "created_at": "2018-07-23T06:19:35.992Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "智能家居网桥",
+      "type": "bridge",
+      "deviceId": "SSDP-test-bridge::homebase:device",
+      "deviceInfo": {
+        "priority": 1,
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "alias": "智能家居网桥",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b585",
+      "enTags": [],
+      "zhTags": [
+        "智能家居网桥",
+        "网桥"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "S1ExlF7emNm",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/rJ9cjFWteM.png"
+    },
+    {
+      "_id": "ryQggKQe7Nm",
+      "updated_at": "2018-07-23T11:05:27.856Z",
+      "created_at": "2018-07-23T06:19:35.989Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯19",
+      "type": "light",
+      "deviceId": "ssdp-test-device-19",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯19",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b584",
+      "enTags": [],
+      "zhTags": [
+        "电灯19",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "ryQggKQe7Nm",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "H1GelYmx7VX",
+      "updated_at": "2018-07-23T11:05:27.851Z",
+      "created_at": "2018-07-23T06:19:35.985Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯18",
+      "type": "light",
+      "deviceId": "ssdp-test-device-18",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯18",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b583",
+      "enTags": [],
+      "zhTags": [
+        "电灯18",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "H1GelYmx7VX",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "SJWlgKQeQEX",
+      "updated_at": "2018-07-23T11:05:27.845Z",
+      "created_at": "2018-07-23T06:19:35.981Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯17",
+      "type": "light",
+      "deviceId": "ssdp-test-device-17",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯17",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b582",
+      "enTags": [],
+      "zhTags": [
+        "电灯17",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "SJWlgKQeQEX",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "BkxlgK7xmNQ",
+      "updated_at": "2018-07-23T11:05:27.838Z",
+      "created_at": "2018-07-23T06:19:35.978Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯16",
+      "type": "light",
+      "deviceId": "ssdp-test-device-16",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯16",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b581",
+      "enTags": [],
+      "zhTags": [
+        "电灯16",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "BkxlgK7xmNQ",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "S1klgY7eXEQ",
+      "updated_at": "2018-07-23T11:05:27.832Z",
+      "created_at": "2018-07-23T06:19:35.974Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯15",
+      "type": "light",
+      "deviceId": "ssdp-test-device-15",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯15",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b580",
+      "enTags": [],
+      "zhTags": [
+        "电灯15",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "S1klgY7eXEQ",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "rk0lYmxXN7",
+      "updated_at": "2018-07-23T11:05:27.826Z",
+      "created_at": "2018-07-23T06:19:35.971Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯14",
+      "type": "light",
+      "deviceId": "ssdp-test-device-14",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯14",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b57f",
+      "enTags": [],
+      "zhTags": [
+        "电灯14",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "rk0lYmxXN7",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "By6ltXe7E7",
+      "updated_at": "2018-07-23T11:05:27.817Z",
+      "created_at": "2018-07-23T06:19:35.967Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯13",
+      "type": "light",
+      "deviceId": "ssdp-test-device-13",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯13",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b57e",
+      "enTags": [],
+      "zhTags": [
+        "电灯13",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "By6ltXe7E7",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "S12xt7gQVX",
+      "updated_at": "2018-07-23T11:05:27.811Z",
+      "created_at": "2018-07-23T06:19:35.964Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯12",
+      "type": "light",
+      "deviceId": "ssdp-test-device-12",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯12",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b57d",
+      "enTags": [],
+      "zhTags": [
+        "电灯12",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "S12xt7gQVX",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "rkolYmeXV7",
+      "updated_at": "2018-07-23T11:05:27.803Z",
+      "created_at": "2018-07-23T06:19:35.960Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯11",
+      "type": "light",
+      "deviceId": "ssdp-test-device-11",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯11",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b57c",
+      "enTags": [],
+      "zhTags": [
+        "电灯11",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "rkolYmeXV7",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "BJ9etQg7EX",
+      "updated_at": "2018-07-23T11:05:27.796Z",
+      "created_at": "2018-07-23T06:19:35.956Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯10",
+      "type": "light",
+      "deviceId": "ssdp-test-device-10",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯10",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b57b",
+      "enTags": [],
+      "zhTags": [
+        "电灯10",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "BJ9etQg7EX",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "SJFgYmgXVX",
+      "updated_at": "2018-07-23T07:11:51.436Z",
+      "created_at": "2018-07-23T06:19:35.953Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯9",
+      "type": "light",
+      "deviceId": "ssdp-test-device-9",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯9",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b57a",
+      "enTags": [],
+      "zhTags": [
+        "电灯9",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "SJFgYmgXVX",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "SJ_eF7lQVQ",
+      "updated_at": "2018-07-23T07:11:51.430Z",
+      "created_at": "2018-07-23T06:19:35.949Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯8",
+      "type": "light",
+      "deviceId": "ssdp-test-device-8",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯8",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b579",
+      "enTags": [],
+      "zhTags": [
+        "电灯8",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "SJ_eF7lQVQ",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "BkPltmem47",
+      "updated_at": "2018-07-23T07:11:51.424Z",
+      "created_at": "2018-07-23T06:19:35.945Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯7",
+      "type": "light",
+      "deviceId": "ssdp-test-device-7",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯7",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b578",
+      "enTags": [],
+      "zhTags": [
+        "电灯7",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "BkPltmem47",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "rJ8gYmgmE7",
+      "updated_at": "2018-07-23T07:11:51.418Z",
+      "created_at": "2018-07-23T06:19:35.941Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯6",
+      "type": "light",
+      "deviceId": "ssdp-test-device-6",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯6",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b577",
+      "enTags": [],
+      "zhTags": [
+        "电灯6",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "rJ8gYmgmE7",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "r1BeKXlQE7",
+      "updated_at": "2018-07-23T07:11:51.412Z",
+      "created_at": "2018-07-23T06:19:35.937Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯5",
+      "type": "light",
+      "deviceId": "ssdp-test-device-5",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯5",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b576",
+      "enTags": [],
+      "zhTags": [
+        "电灯5",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "r1BeKXlQE7",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "r1VxtXlX4X",
+      "updated_at": "2018-07-23T07:11:51.404Z",
+      "created_at": "2018-07-23T06:19:35.933Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯4",
+      "type": "light",
+      "deviceId": "ssdp-test-device-4",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯4",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b575",
+      "enTags": [],
+      "zhTags": [
+        "电灯4",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "r1VxtXlX4X",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "BJQxt7eQN7",
+      "updated_at": "2018-07-23T07:11:51.397Z",
+      "created_at": "2018-07-23T06:19:35.929Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯3",
+      "type": "light",
+      "deviceId": "ssdp-test-device-3",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯3",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b574",
+      "enTags": [],
+      "zhTags": [
+        "电灯3",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "BJQxt7eQN7",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "S1MxYQlmNX",
+      "updated_at": "2018-07-23T07:11:51.392Z",
+      "created_at": "2018-07-23T06:19:35.925Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯2",
+      "type": "light",
+      "deviceId": "ssdp-test-device-2",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯2",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b573",
+      "enTags": [],
+      "zhTags": [
+        "电灯2",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "S1MxYQlmNX",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "rJblt7xm4X",
+      "updated_at": "2018-07-23T07:11:51.386Z",
+      "created_at": "2018-07-23T06:19:35.922Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯1",
+      "type": "light",
+      "deviceId": "ssdp-test-device-1",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯1",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b572",
+      "enTags": [],
+      "zhTags": [
+        "电灯1",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "rJblt7xm4X",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "HJxxY7g7NX",
+      "updated_at": "2018-07-23T07:11:51.380Z",
+      "created_at": "2018-07-23T06:19:35.917Z",
+      "homeId": "test_home_test_home",
+      "rokidId": "test_rokid_test_rokid",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "name": "电灯0",
+      "type": "light",
+      "deviceId": "ssdp-test-device-0",
+      "deviceInfo": {
+        "bridgeId": "SSDP-test-bridge::homebase:device"
+      },
+      "parent": "SSDP-test-bridge::homebase:device",
+      "offline": false,
+      "driverId": "ssdp",
+      "driverAccountId": "test_account_test_account",
+      "actions": {
+        "switch": [
+          "on",
+          "off"
+        ],
+        "colo": [
+          "num"
+        ],
+        "volume": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      },
+      "state": {
+        "switch": null,
+        "color": null
+      },
+      "alias": "电灯0",
+      "__v": 0,
+      "removeAt": null,
+      "sortId": "5b557377e0050c005991b571",
+      "enTags": [],
+      "zhTags": [
+        "电灯0",
+        "灯"
+      ],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "HJxxY7g7NX",
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/B1zxcstbtxz.png"
+    },
+    {
+      "_id": "test_rokid_test_rokid",
+      "updated_at": "2018-07-23T11:01:13.238Z",
+      "created_at": "2018-07-18T11:40:18.421Z",
+      "homeId": "test_home_test_home",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "deviceId": "0602041822000014",
+      "deviceInfo": {
+        "wifi": "",
+        "ip": "10.89.2.78",
+        "standAlone": true,
+        "deviceTypeId": "060F941561F24278B8ED71733D7B9507",
+        "platform": "linux"
+      },
+      "offline": false,
+      "type": "rokid",
+      "__v": 0,
+      "name": "若琪-014",
+      "removeAt": null,
+      "sortId": "5b4f27222fcf42006174897b",
+      "enTags": [],
+      "zhTags": [],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "test_rokid_test_rokid",
+      "alias": null,
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/rJ9cjFWteM.png"
+    },
+    {
+      "_id": "HkeplDOV77",
+      "updated_at": "2018-07-16T05:39:02.344Z",
+      "created_at": "2018-07-12T06:36:36.907Z",
+      "homeId": "test_home_test_home",
+      "userId": "testid_testid_testid_testid_testid_testid",
+      "deviceId": "0401051822000053",
+      "deviceInfo": {
+        "wifi": "ROKID.TC",
+        "ip": "10.89.7.187",
+        "standAlone": true,
+        "deviceTypeId": "AA12D7458EAD4AC4A8BF8ABB96FD8B74",
+        "platform": "linux"
+      },
+      "offline": true,
+      "type": "rokid",
+      "__v": 0,
+      "name": "若琪-053",
+      "removeAt": null,
+      "sortId": "5b46f6f41c343d005a8e743d",
+      "enTags": [],
+      "zhTags": [],
+      "tags": [],
+      "disabled": false,
+      "states": [],
+      "capabilities": [],
+      "id": "HkeplDOV77",
+      "message": {
+        "text": "若琪离线",
+        "style": "normal"
+      },
+      "alias": null,
+      "room": {
+        "id": null
+      },
+      "icon": "https://s.rokidcdn.com/homebase/upload/SkYcjKbtxf.png"
+    }
+  ],
+  "isEnd": true
+}

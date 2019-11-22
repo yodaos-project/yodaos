@@ -1,0 +1,19 @@
+language: c
+
+os: linux
+dist: trusty
+sudo: required
+
+before_install:
+  - tools/check-signed-off.sh --travis
+  - tools/apt-get-install-deps.sh
+  - if [[ "$INSTALL_ARM_DEPS" == "yes" ]]; then tools/apt-get-install-arm.sh; fi
+
+install:
+
+script: "make run_test $OPT"
+
+env:
+  - OPT="TUV_BUILD_TYPE=debug"
+  - OPT="TUV_BUILD_TYPE=release"
+  - OPT="TUV_PLATFORM=arm-linux TUV_BOARD=rpi2" INSTALL_ARM_DEPS=yes

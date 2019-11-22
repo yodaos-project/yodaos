@@ -1,0 +1,164 @@
+/* Copyright 2015-present Samsung Electronics Co., Ltd. and other contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include "iotjs_def.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+void iotjs_uncaught_exception(jerry_value_t jexception) {
+  const jerry_value_t process = iotjs_module_get("process");
+
+  jerry_value_t jframes = jerry_get_backtrace();
+  jerry_value_t jonuncaughtexception =
+      iotjs_jval_get_property(process, IOTJS_MAGIC_STRING__ONUNCAUGHTEXCEPTION);
+  IOTJS_ASSERT(jerry_value_is_function(jonuncaughtexception));
+
+  iotjs_jargs_t args = iotjs_jargs_create(3);
+  iotjs_jargs_append_jval(&args, jexception);
+  iotjs_jargs_append_jval(&args, jframes);
+
+  bool throws;
+  jerry_value_t jres =
+      iotjs_jhelper_call(jonuncaughtexception, process, &args, &throws);
+
+  if (throws) {
+    jerry_value_t jres_msg = iotjs_jval_get_property(jres, "message");
+    jerry_size_t msg_size = jerry_get_utf8_string_size(jres_msg);
+    jerry_char_t jmsg_buf[msg_size + 1];
+    jerry_string_to_utf8_char_buffer(jres_msg, jmsg_buf, msg_size);
+    jmsg_buf[msg_size] = '\0';
+    printf("Unexpected error on uncaughtException callback: %s\n", jmsg_buf);
+
+    jerry_release_value(jres_msg);
+  }
+
+  iotjs_jargs_destroy(&args);
+  jerry_release_value(jres);
+  jerry_release_value(jonuncaughtexception);
+  jerry_release_value(jframes);
+
+  if (throws) {
+    iotjs_environment_t* env = iotjs_environment_get();
+
+    if (!iotjs_environment_is_exiting(env)) {
+      iotjs_set_process_exitcode(2);
+      iotjs_environment_go_state_exiting(env);
+    }
+  }
+}
+
+
+void iotjs_process_emit_exit(int code) {
+  const jerry_value_t process = iotjs_module_get("process");
+
+  jerry_value_t jexit =
+      iotjs_jval_get_property(process, IOTJS_MAGIC_STRING_EMITEXIT);
+  IOTJS_ASSERT(jerry_value_is_function(jexit));
+
+  iotjs_jargs_t jargs = iotjs_jargs_create(1);
+  iotjs_jargs_append_number(&jargs, code);
+
+  bool throws;
+  jerry_value_t jres = iotjs_jhelper_call(jexit, process, &jargs, &throws);
+  // print error if there is an uncaught excpetion during 'exit' event
+  if (throws) {
+    iotjs_set_process_exitcode(2);
+    iotjs_uncaught_exception(jres);
+  }
+
+  iotjs_jargs_destroy(&jargs);
+  jerry_release_value(jres);
+  jerry_release_value(jexit);
+}
+
+
+// Calls next tick callbacks registered via `process.nextTick()`.
+bool iotjs_process_next_tick() {
+  iotjs_environment_t* env = iotjs_environment_get();
+
+  if (iotjs_environment_is_exiting(env)) {
+    return false;
+  }
+
+  const jerry_value_t process = iotjs_module_get("process");
+
+  jerry_value_t jon_next_tick =
+      iotjs_jval_get_property(process, IOTJS_MAGIC_STRING__ONNEXTTICK);
+  IOTJS_ASSERT(jerry_value_is_function(jon_next_tick));
+
+  jerry_value_t jres =
+      iotjs_jhelper_call_ok(jon_next_tick, jerry_create_undefined(),
+                            iotjs_jargs_get_empty());
+
+  IOTJS_ASSERT(jerry_value_is_boolean(jres));
+
+  bool ret = iotjs_jval_as_boolean(jres);
+  jerry_release_value(jres);
+  jerry_release_value(jon_next_tick);
+
+  return ret;
+}
+
+
+// Make a callback for the given `function` with `this_` binding and `args`
+// arguments. The next tick callbacks registered via `process.nextTick()`
+// will be called after the callback function `function` returns.
+void iotjs_make_callback(jerry_value_t jfunction, jerry_value_t jthis,
+                         const iotjs_jargs_t* jargs) {
+  jerry_value_t result =
+      iotjs_make_callback_with_result(jfunction, jthis, jargs);
+  jerry_release_value(result);
+}
+
+
+jerry_value_t iotjs_make_callback_with_result(jerry_value_t jfunction,
+                                              jerry_value_t jthis,
+                                              const iotjs_jargs_t* jargs) {
+  // Calls back the function.
+  bool throws;
+  jerry_value_t jres = iotjs_jhelper_call(jfunction, jthis, jargs, &throws);
+  if (throws) {
+    iotjs_uncaught_exception(jres);
+  }
+
+  // Calls the next tick callbacks.
+  iotjs_process_next_tick();
+
+  // Return value.
+  return jres;
+}
+
+
+int iotjs_process_exitcode() {
+  const jerry_value_t process = iotjs_module_get("process");
+
+  jerry_value_t jexitcode =
+      iotjs_jval_get_property(process, IOTJS_MAGIC_STRING_EXITCODE);
+  IOTJS_ASSERT(jerry_value_is_number(jexitcode));
+
+  const int exitcode = (int)iotjs_jval_as_number(jexitcode);
+  jerry_release_value(jexitcode);
+
+  return exitcode;
+}
+
+
+void iotjs_set_process_exitcode(int code) {
+  const jerry_value_t process = iotjs_module_get("process");
+  iotjs_jval_set_property_number(process, IOTJS_MAGIC_STRING_EXITCODE, code);
+}

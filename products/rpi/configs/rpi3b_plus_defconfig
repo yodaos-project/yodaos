@@ -48,12 +48,12 @@ CONFIG_PACKAGE_flora-dispatcher=y
 # CONFIG_PACKAGE_gxnpu is not set
 # CONFIG_PACKAGE_gxomx is not set
 CONFIG_PACKAGE_hciattach=y
-CONFIG_PACKAGE_httpdns=y
+# CONFIG_PACKAGE_httpdns is not set
 CONFIG_PACKAGE_httpsession=y
 CONFIG_PACKAGE_i2c-tools=y
 CONFIG_PACKAGE_input-event=y
 CONFIG_PACKAGE_iperf=y
-CONFIG_PACKAGE_jsruntime=y
+# CONFIG_PACKAGE_jsruntime is not set
 CONFIG_PACKAGE_kmod-ac97=y
 CONFIG_PACKAGE_kmod-crypto-hash=y
 CONFIG_PACKAGE_kmod-i2c-bcm2835=y
@@ -83,7 +83,7 @@ CONFIG_PACKAGE_librplayer=y
 CONFIG_PACKAGE_libssp=y
 CONFIG_PACKAGE_libusb-1.0=y
 CONFIG_PACKAGE_lumenlight=y
-CONFIG_PACKAGE_mutils=y
+CONFIG_PACKAGE_mingutils=y
 CONFIG_PACKAGE_net_manager=y
 CONFIG_PACKAGE_ota_unpack=y
 # CONFIG_PACKAGE_poco-1.7.8p2-all is not set
@@ -95,14 +95,14 @@ CONFIG_PACKAGE_pulseaudio-profiles=y
 CONFIG_PACKAGE_pulseaudio-tools=y
 CONFIG_PACKAGE_pulseaudio_enable_bluez=y
 CONFIG_PACKAGE_python-crypto=y
-CONFIG_PACKAGE_rkamsex=y
+# CONFIG_PACKAGE_rkamsex is not set
 CONFIG_PACKAGE_rklog=y
 # CONFIG_PACKAGE_rtl8192cu-firmware is not set
 CONFIG_PACKAGE_seeed=y
 # CONFIG_PACKAGE_senseflow is not set
 CONFIG_PACKAGE_shadow-node=y
-CONFIG_PACKAGE_speech=y
-CONFIG_PACKAGE_speech-service=y
+# CONFIG_PACKAGE_speech is not set
+# CONFIG_PACKAGE_speech-service is not set
 # CONFIG_PACKAGE_sptk-3.9 is not set
 CONFIG_PACKAGE_tinyalsa=y
 CONFIG_PACKAGE_uWS=y
@@ -112,7 +112,7 @@ CONFIG_PACKAGE_wget=y
 CONFIG_PACKAGE_wpa-cli=y
 CONFIG_PACKAGE_wpa_ctrl=y
 CONFIG_PACKAGE_zlib-dev=y
-CONFIG_PRODUCT_NAME="Rokid-RBPI-3B-Plus"
+CONFIG_PRODUCT_NAME="Raspberry-pi-plus"
 CONFIG_PRODUCT_OS_NAME="yodaos"
 CONFIG_PRODUCT_PATHNAME="rpi"
 CONFIG_ROKIDOS_BOARDCONFIG_CAPTURE_DEVICEID=0

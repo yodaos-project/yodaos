@@ -1,0 +1,23 @@
+{
+  "name": "ShadowNode",
+  "version": "0.11.0",
+  "description": "Use Node.js in your embeddable devices",
+  "scripts": {
+    "lint": "tools/check_tidy.py && eslint .",
+    "test": "npm run lint && npm run test-jerry && npm run test-iotjs",
+    "test-jerry": "deps/jerry/tools/run-tests.py --unittests --jerry-test-suite",
+    "test-iotjs": "tools/build.py --run-test --no-check-valgrind",
+    "build": "tools/build.py",
+    "rebuild": "tools/build.py --clean"
+  },
+  "author": "Yazhong Liu <yazhong.liu@rokid.com>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "babel-eslint": "^8.2.3",
+    "es-feature-detection": "^2.0.1",
+    "eslint": "^4.7.2",
+    "eslint-plugin-markdown": "^1.0.0-beta.6",
+    "node-gyp": "^3.8.0",
+    "nodemon": "^1.12.1"
+  }
+}

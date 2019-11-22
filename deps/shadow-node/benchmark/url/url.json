@@ -1,0 +1,9 @@
+{
+  "protocol": "https",
+  "hostname": "example.com",
+  "pathname": "/foobar",
+  "query": {
+    "foo": "bar",
+    "query": "string"
+  }
+}

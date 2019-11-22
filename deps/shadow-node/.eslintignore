@@ -1,0 +1,8 @@
+/build/**
+/deps/**
+**/node_modules/**
+/src/js/ble*
+
+test/addons-napi
+test/run_fail/test_shebang_fail.js
+test/run_fail/test_iotjs_syntax_error.js

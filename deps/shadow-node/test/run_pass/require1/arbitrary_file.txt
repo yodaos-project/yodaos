@@ -1,0 +1,1 @@
+This is an arbitrary file yet shall be treated as a JS file if enforced to load.

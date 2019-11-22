@@ -1,0 +1,11 @@
+# cmakefile
+*.node
+*.cmake
+
+CMakeFiles/
+CMakeCache.txt
+Makefile
+
+# nodejs
+node_modules/
+iotjs_modules/

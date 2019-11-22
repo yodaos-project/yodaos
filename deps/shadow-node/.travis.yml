@@ -1,0 +1,93 @@
+stages:
+- test
+- deploy
+
+language: c
+os: linux
+dist: trusty
+sudo: required
+
+cache:
+  yarn: true
+  directories:
+  - node_modules/
+  - $HOME/.nvm/
+
+git:
+  depth: false
+
+addons:
+  hosts:
+  - example.com
+
+before_install:
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then tools/apt-get-install-deps.sh; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then tools/brew-install-deps.sh; fi
+
+install:
+- git fetch origin $TRAVIS_BRANCH
+- nvm install 10.8.0
+- nvm use 10.8.0
+- travis_retry yarn
+- ls node_modules/.bin
+
+script:
+- npm run lint
+# start http & https service
+- sudo $(which node) tools/http_server.js --port 80 &
+- sudo $(which node) tools/http_server.js --ssl --port 443 &
+# start websocket & mqtt service for testsets
+- yarn install --cwd test/deps
+- node test/deps/websocket-server.js --port 8080 &
+- node test/deps/websocket-server.js --ssl --port 8088 &
+- node test/deps/mqtt-server.js --port 9080 &
+- node test/deps/mqtt-server.js --ssl --port 9088 &
+# start dbus service
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export $(dbus-launch); fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew services start dbus; fi
+# check the environment
+- export
+- tools/travis_script.py
+
+fast_finish: true
+
+.deploy_job_template: &deploy_job_template
+  script:
+  - tools/build.py --buildtype release --clean --static --napi --install --install-prefix $(pwd)/build/usr
+  - tar -czf shadow-node-${TRAVIS_TAG}-$(uname)-$(uname -m).tar.gz -C build ./usr
+  deploy:
+    provider: releases
+    api_key:
+      secure: fq+ko/mApKwBbHVunN+pSEmCIiQ+x1IPn1Y5KLE1lG1yuGPFXxqQCB/qEzlqZHS3eb6I0sI09U+fd1f8cE+7hSwai52nf+OiMDD0oPLAok8L2D1pnEgAUcugHpx+Asixyp6BRgg1pfQ0wKhd5K526pi3ddvGBifgx4Dxr0P4C0pb6H51Z9aNIue88UV62HYdzM3GWu4X87oZlzqV7y4qUbUScRicfC4KNEh4XLZTzzqpnfgnyrSWEjPZ4riMHEy2Pz+rcP6/zLOh4f4s/BYnc6r7kIfOs65+OTjbW1O1yDyKzb+20djOXiJRigYzIlu7QOUsPIpGTBqPuRigAaSPYzWj8kcjZ37ITLGc95vKGu7ueau3IAaCYFz8CNE9J899robigfCrSYXy8Mv1uk1SWmJDOLBF9GA/DN8utf5nwu+nNHMWOR1p+YLTc4XyAe5w/vX+jhmt/pBou8wfhDNl3f5p8jPUcR481CM27nQH6/1Q1Covy0xZ+M0bgIXgc21tXtvrmHIbi9wv9Lj9Wcq5a64aBQAQpJqAj2O8Z9uN32exVjTLPdWC521l8EfwgojGZG7jdRBk/WWu0DWzji6RkRSheRf5GDNXPXdmJn7rLSyJYJhkihGymINAnywQA1R+2zAbXw7k2uX5EkmLJBCF/JyMKQqI7W0Y1iCjo74353s=
+    file_glob: true
+    skip_cleanup: true
+    file: "./shadow-node-*.tar.gz"
+    on:
+      repo: yodaos-project/ShadowNode
+      tags: true
+
+jobs:
+  include:
+  - stage: test
+    env:
+    - JOBNAME="Linux/x86-64 Build & Correctness Tests"
+    - OPTS="host-linux"
+  - stage: test
+    env:
+    - JOBNAME="Linux/x86-64 without snapshot Build & Correctness Tests"
+    - OPTS="no-snapshot"
+  - stage: test
+    env:
+    - JOBNAME="Linux/x86-64 with N-API Build & Correctness Tests"
+    - OPTS="napi"
+  - stage: test
+    env:
+    - JOBNAME="OSX/x86-64 Build & Correctness Tests"
+    - OPTS="host-darwin"
+    os: osx
+
+  - stage: deploy
+    <<: *deploy_job_template
+  - stage: deploy
+    <<: *deploy_job_template
+    os: osx
