@@ -26,6 +26,8 @@ For MacOS, you need to install some GNU tools which the openwrt is required:
 $ brew install gnu-tar gnu-getopt findutils m4
 ```
 
+> Linux source tree requires a case-sensitive file system, make sure your workspace is APFS (case-sensitive) before you start.
+
 The openwrt [check gnu-getopt version](./openwrt/include/prereq-build.mk) via the `gnugetopt` command name, so the following link is also required:
 
 ```sh
