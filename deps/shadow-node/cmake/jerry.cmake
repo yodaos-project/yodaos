@@ -14,43 +14,47 @@
 
 cmake_minimum_required(VERSION 2.8)
 
-# Host jerry for snapshot generation
-set(DEPS_HOST_JERRY deps/jerry-host)
-ExternalProject_Add(hostjerry
-  PREFIX ${DEPS_HOST_JERRY}
-  SOURCE_DIR ${ROOT_DIR}/deps/jerry/
-  BUILD_IN_SOURCE 0
-  BINARY_DIR ${DEPS_HOST_JERRY}
-  CMAKE_ARGS
-    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-    -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${DEPS_HOST_JERRY}
-    -DENABLE_ALL_IN_ONE=ON
-    -DENABLE_LTO=${ENABLE_LTO}
-    -DJERRY_CMDLINE=OFF
-    -DJERRY_CMDLINE_SNAPSHOT=ON
-    -DJERRY_EXT=ON
-    -DFEATURE_LOGGING=ON
-    -DFEATURE_SNAPSHOT_SAVE=${ENABLE_SNAPSHOT}
-    -DFEATURE_PROFILE=${FEATURE_PROFILE}
-    ${EXTRA_JERRY_CMAKE_PARAMS}
+if(EXTERNAL_SNAPSHOT_TOOL)
+  message("use ${EXTERNAL_SNAPSHOT_TOOL}, skip host-jerry")
+else()
+  # Host jerry for snapshot generation
+  set(DEPS_HOST_JERRY deps/jerry-host)
+  ExternalProject_Add(hostjerry
+    PREFIX ${DEPS_HOST_JERRY}
+    SOURCE_DIR ${ROOT_DIR}/deps/jerry/
+    BUILD_IN_SOURCE 0
+    BINARY_DIR ${DEPS_HOST_JERRY}
+    CMAKE_ARGS
+      -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+      -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${DEPS_HOST_JERRY}
+      -DENABLE_ALL_IN_ONE=ON
+      -DENABLE_LTO=${ENABLE_LTO}
+      -DJERRY_CMDLINE=OFF
+      -DJERRY_CMDLINE_SNAPSHOT=ON
+      -DJERRY_EXT=ON
+      -DFEATURE_LOGGING=ON
+      -DFEATURE_SNAPSHOT_SAVE=${ENABLE_SNAPSHOT}
+      -DFEATURE_PROFILE=${FEATURE_PROFILE}
+      ${EXTRA_JERRY_CMAKE_PARAMS}
 
-    # The snapshot tool does not require the system allocator
-    # turn it off by default.
-    #
-    # Additionally this is required if one compiles on a
-    # 64bit system to a 32bit system with system allocator
-    # enabled. This is beacuse on 64bit the system allocator
-    # should not be used as it returns 64bit pointers which
-    # can not be represented correctly in the JerryScript engine
-    # currently.
-    -DFEATURE_SYSTEM_ALLOCATOR=OFF
-)
-set(JERRY_HOST_SNAPSHOT
-    ${CMAKE_BINARY_DIR}/${DEPS_HOST_JERRY}/bin/jerry-snapshot)
-add_executable(jerry-snapshot IMPORTED)
-add_dependencies(jerry-snapshot hostjerry)
-set_property(TARGET jerry-snapshot PROPERTY
-  IMPORTED_LOCATION ${JERRY_HOST_SNAPSHOT})
+      # The snapshot tool does not require the system allocator
+      # turn it off by default.
+      #
+      # Additionally this is required if one compiles on a
+      # 64bit system to a 32bit system with system allocator
+      # enabled. This is beacuse on 64bit the system allocator
+      # should not be used as it returns 64bit pointers which
+      # can not be represented correctly in the JerryScript engine
+      # currently.
+      -DFEATURE_SYSTEM_ALLOCATOR=OFF
+  )
+  set(JERRY_HOST_SNAPSHOT
+      ${CMAKE_BINARY_DIR}/${DEPS_HOST_JERRY}/bin/jerry-snapshot)
+  add_executable(jerry-snapshot IMPORTED)
+  add_dependencies(jerry-snapshot hostjerry)
+  set_property(TARGET jerry-snapshot PROPERTY
+    IMPORTED_LOCATION ${JERRY_HOST_SNAPSHOT})
+endif()
 
 # Utility method to add -D<KEY>=<KEY_Value>
 macro(add_cmake_arg TARGET_ARG KEY)

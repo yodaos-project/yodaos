@@ -305,8 +305,16 @@ endforeach()
 iotjs_add_compile_flags(-Wall -Wextra -Werror -Wno-unused-parameter)
 iotjs_add_compile_flags(-Wsign-conversion -std=gnu99)
 
-if(ENABLE_SNAPSHOT)
+set(JS2C_DEPENDS
+  ${ROOT_DIR}/tools/js2c.py
+  ${IOTJS_SOURCE_DIR}/js/*.js
+)
+
+if(EXTERNAL_SNAPSHOT_TOOL)
+  set(JS2C_SNAPSHOT_ARG --snapshot-tool=${EXTERNAL_SNAPSHOT_TOOL})
+elseif(ENABLE_SNAPSHOT)
   set(JS2C_SNAPSHOT_ARG --snapshot-tool=${JERRY_HOST_SNAPSHOT})
+  list(APPEND JS2C_DEPENDS jerry-snapshot)
   iotjs_add_compile_flags(-DENABLE_SNAPSHOT)
 endif()
 
@@ -327,9 +335,7 @@ add_custom_command(
   ARGS --buildtype=${JS2C_RUN_MODE}
        --modules '${IOTJS_JS_MODULES}'
        ${JS2C_SNAPSHOT_ARG}
-  DEPENDS ${ROOT_DIR}/tools/js2c.py
-          jerry-snapshot
-          ${IOTJS_SOURCE_DIR}/js/*.js
+  DEPENDS ${JS2C_DEPENDS}
 )
 
 set(IOTJS_NAPI_SRC)

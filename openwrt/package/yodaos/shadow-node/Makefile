@@ -56,6 +56,7 @@ CMAKE_OPTIONS += \
 	-DEXTERNAL_COMPILE_FLAGS='' \
 	-DEXTERNAL_LINKER_FLAGS='' \
 	-DEXTERNAL_INCLUDE_DIR='' \
+	-DEXTERNAL_SNAPSHOT_TOOL='$(HOST_BUILD_DIR)/usr/bin/jerry-snapshot' \
 	-DINSTALL_PREFIX='/usr'
 
 define Package/shadow-node
