@@ -312,6 +312,7 @@ set(JS2C_DEPENDS
 
 if(EXTERNAL_SNAPSHOT_TOOL)
   set(JS2C_SNAPSHOT_ARG --snapshot-tool=${EXTERNAL_SNAPSHOT_TOOL})
+  iotjs_add_compile_flags(-DENABLE_SNAPSHOT)
 elseif(ENABLE_SNAPSHOT)
   set(JS2C_SNAPSHOT_ARG --snapshot-tool=${JERRY_HOST_SNAPSHOT})
   list(APPEND JS2C_DEPENDS jerry-snapshot)

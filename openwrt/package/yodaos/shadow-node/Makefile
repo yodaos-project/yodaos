@@ -18,6 +18,8 @@ SHADOW_NODE_TARGET_ARCH:=$(shell echo ${CONFIG_ARCH})
 SHADOW_NODE_TARGET_BOARD:=$(shell echo ${CONFIG_TARGET_BOARD})
 
 CMAKE_HOST_OPTIONS += \
+  -B$(HOST_BUILD_DIR)/out \
+  -H$(HOST_BUILD_DIR) \
 	-DTARGET_ARCH=$(HOST_ARCH) \
 	-DTARGET_OS=$(HOST_OS) \
 	-DTARGET_BOARD=None \
@@ -35,6 +37,8 @@ CMAKE_HOST_OPTIONS += \
 	-DINSTALL_PREFIX='$(STAGING_DIR_HOSTPKG)/usr'
 
 CMAKE_OPTIONS += \
+  -B$(PKG_BUILD_DIR)/out \
+  -H$(PKG_BUILD_DIR) \
 	-DTARGET_ARCH=$(CONFIG_ARCH) \
 	-DTARGET_OS=linux \
 	-DTARGET_BOARD=$(SHADOW_NODE_TARGET_BOARD) \
@@ -56,14 +60,24 @@ CMAKE_OPTIONS += \
 	-DEXTERNAL_COMPILE_FLAGS='' \
 	-DEXTERNAL_LINKER_FLAGS='' \
 	-DEXTERNAL_INCLUDE_DIR='' \
-	-DEXTERNAL_SNAPSHOT_TOOL='$(HOST_BUILD_DIR)/usr/bin/jerry-snapshot' \
+	-DEXTERNAL_SNAPSHOT_TOOL='$(HOST_BUILD_DIR)/out/deps/jerry-host/bin/jerry-snapshot' \
 	-DINSTALL_PREFIX='/usr'
+
+HOST_MAKE_FLAGS += -C $(HOST_BUILD_DIR)/out
+MAKE_FLAGS += -C $(PKG_BUILD_DIR)/out
 
 define Package/shadow-node
   SECTION:=libs
   CATEGORY:=rokid
   TITLE:=shadow-node
   DEPENDS:=+libstdcpp +dbus +zlib +librt
+endef
+
+define Host/Prepare
+	$(CP) $(PKG_SOURCE_DIR)/* $(HOST_BUILD_DIR)
+	$(RM) $(HOST_BUILD_DIR)/deps/jerry/jerry-core/include/jerryscript-snapshot.h.rej
+	$(RM) $(HOST_BUILD_DIR)/deps/jerry/tests/unit-core/test-snapshot.c.rej
+	$(call Host/Prepare/Default,)
 endef
 
 define Build/Prepare
@@ -95,12 +109,6 @@ define Package/shadow-node/install
 	$(CP) $(PKG_INSTALL_DIR)/usr/bin/iotjs $(1)/usr/bin/node
 endef
 
-define Host/Prepare
-	$(CP) $(PKG_SOURCE_DIR)/* $(HOST_BUILD_DIR)
-	$(RM) $(HOST_BUILD_DIR)/deps/jerry/jerry-core/include/jerryscript-snapshot.h.rej
-	$(RM) $(HOST_BUILD_DIR)/deps/jerry/tests/unit-core/test-snapshot.c.rej
-	$(call Host/Prepare/Default,)
-endef
 
 $(eval $(call BuildPackage,shadow-node))
 $(eval $(call HostBuild))

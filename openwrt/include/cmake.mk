@@ -41,7 +41,7 @@ define Build/Configure/Default
 		CFLAGS="$(TARGET_CFLAGS) $(EXTRA_CFLAGS)" \
 		CXXFLAGS="$(TARGET_CFLAGS) $(EXTRA_CFLAGS)" \
 		LDFLAGS="$(TARGET_LDFLAGS) $(EXTRA_LDFLAGS)" \
-		cmake \
+		cmake $(CMAKE_SOURCE_DIR) \
 			-DCMAKE_SYSTEM_NAME=Linux \
 			-DCMAKE_SYSTEM_VERSION=1 \
 			-DCMAKE_SYSTEM_PROCESSOR=$(ARCH) \
@@ -70,7 +70,6 @@ define Build/Configure/Default
 			-DCMAKE_PREFIX_PATH=$(STAGING_DIR) \
 			-DCMAKE_SKIP_RPATH=TRUE  \
 			$(CMAKE_OPTIONS) \
-		$(CMAKE_SOURCE_DIR) \
 	)
 endef
 
@@ -86,7 +85,7 @@ define Host/Configure/Default
 		CFLAGS="$(HOST_CFLAGS)" \
 		CXXFLAGS="$(HOST_CFLAGS)" \
 		LDFLAGS="$(HOST_LDFLAGS)" \
-		cmake \
+		cmake $(CMAKE_SOURCE_DIR) \
 			-DCMAKE_BUILD_TYPE=Release \
 			-DCMAKE_C_FLAGS_RELEASE="-DNDEBUG" \
 			-DCMAKE_CXX_FLAGS_RELEASE="-DNDEBUG" \
@@ -102,6 +101,5 @@ define Host/Configure/Default
 			-DCMAKE_PREFIX_PATH=$(HOST_BUILD_PREFIX) \
 			-DCMAKE_SKIP_RPATH=TRUE  \
 			$(CMAKE_HOST_OPTIONS) \
-		$(CMAKE_SOURCE_DIR) \
 	)
 endef
