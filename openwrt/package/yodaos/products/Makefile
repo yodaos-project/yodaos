@@ -34,9 +34,9 @@ endif
 
 define Package/products
 	SECTION:=libs
-	CATEGORY:=rokid
+	CATEGORY:=yodaos
 	TITLE:=products
-	DEPENDS:= +!PRODUCT_WITHOUT_JS:jsruntime +ai-libs-common
+	DEPENDS:= +ai-libs-common
 endef
 
 define Package/products/config

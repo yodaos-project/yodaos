@@ -26,7 +26,7 @@ CMAKE_OPTIONS += -DCMAKE_INSTALL_DIR=$(NODE_MODULE_DIR)
 
 define Package/node-flora
 	SECTION:=libs
-	CATEGORY:=node_modules
+	CATEGORY:=nodejs
 	TITLE:=node-flora
 	DEPENDS:=+libstdcpp +shadow-node +flora
 endef

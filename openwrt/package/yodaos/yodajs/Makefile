@@ -64,7 +64,7 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/usr/include/yodaos_*.h $(1)/usr/include
 endef
 
-define Package/jsruntime/install
+define Package/yodajs/install
 	$(INSTALL_DIR) $(1)/etc
 	$(CP) $(PKG_INSTALL_DIR)/etc/manifest.json $(1)/etc
 	$(CP) $(PKG_INSTALL_DIR)/etc/hotplug.d $(1)/etc
@@ -88,4 +88,4 @@ define Package/jsruntime/install
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/node_modules/* $(1)/usr/lib/node_modules/
 endef
 
-$(eval $(call BuildPackage,jsruntime))
+$(eval $(call BuildPackage,yodajs))

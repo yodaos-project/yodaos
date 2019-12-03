@@ -24,7 +24,7 @@ CMAKE_OPTIONS += -DCMAKE_INSTALL_DIR=$(NODE_MODULE_DIR)
 
 define Package/node-flock
 	SECTION:=libs
-	CATEGORY:=node_modules
+	CATEGORY:=nodejs
 	TITLE:=node-flock
 	DEPENDS:=+libstdcpp +shadow-node
 endef
