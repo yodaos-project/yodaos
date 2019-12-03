@@ -17,8 +17,8 @@ include $(INCLUDE_DIR)/cmake.mk
 
 define Package/mingutils
   SECTION:=libs
-  CATEGORY:=rokid
-  TITLE:=mutils
+  CATEGORY:=yodaos
+  TITLE:=mingutils
   DEPENDS:=+libstdcpp +libpthread
 endef
 
@@ -40,7 +40,7 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.a $(1)/usr/lib/
 endef
 
-define Package/mutils/install
+define Package/mingutils/install
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib*.so $(1)/usr/lib/
 endef

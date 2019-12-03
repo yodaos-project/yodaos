@@ -26,7 +26,7 @@ define Package/node-caps
 	SECTION:=libs
 	CATEGORY:=node_modules
 	TITLE:=node-caps
-	DEPENDS:=+libstdcpp +shadow-node +mutils
+	DEPENDS:=+libstdcpp +shadow-node +mingutils
 endef
 
 define Build/InstallDev

@@ -2,24 +2,22 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=flora
-PKG_VERSION:=
+PKG_VERSION:=master
 PKG_RELEASE:=1
 
-PKG_SOURCE_DIR:=$(ROKID_DIR)/frameworks/allspark/flora
-
-PKG_FIXUP:=libtool
-PKG_INSTALL:=1
-PKG_BUILD_PARALLEL:=1
-PKG_LICENSE:=GPL-2.0+
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://github.com/yodaos-project/flora.git
+PKG_SOURCE_VERSION:=$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
 define Package/flora
   SECTION:=libs
-  CATEGORY:=rokid
+  CATEGORY:=yodaos
   TITLE:=flora
-  DEPENDS:=+mutils +libncursesw
+  DEPENDS:=+libstdcpp +mingutils +libncursesw
 endef
 
 define Package/flora/description
@@ -27,15 +25,10 @@ define Package/flora/description
 endef
 
 CMAKE_OPTIONS += \
-				 -DCUSTOM_CMAKE_MODULES=${PKG_SOURCE_DIR}/../cmake-modules \
+				 -DCUSTOM_CMAKE_MODULES=$(ROKID_DIR)/framework/cmake-modules \
 				 -DCLI_LOGLEVEL=warning \
 				 -DDEBUG_FOR_YODAV8=ON
 CMAKE_FIND_ROOT_PATH := ${CMAKE_FIND_ROOT_PATH};${STAGING_DIR}
-
-define Build/Prepare
-	$(CP) $(PKG_SOURCE_DIR)/* $(PKG_BUILD_DIR)
-	$(call Build/Prepare/Default,)
-endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include
