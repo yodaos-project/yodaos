@@ -2,11 +2,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=node-flock
+PKG_VERSION:=1.0.1
 PKG_RELEASE:=1
-PKG_SOURCE_DIR:=$(ROKID_DIR)/frameworks/node_modules/flock
+
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE:=$(PKG_NAME)-v$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://github.com/yodaos-project/node-flock.git
+PKG_SOURCE_VERSION:=$(PKG_VERSION)
+
 PKG_FIXUP:=libtool
+PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
-PKG_LICENSE:=
+PKG_LICENSE:=MIT
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
@@ -20,11 +27,6 @@ define Package/node-flock
 	CATEGORY:=node_modules
 	TITLE:=node-flock
 	DEPENDS:=+libstdcpp +shadow-node
-endef
-
-define Build/Prepare
-	$(CP) $(PKG_SOURCE_DIR)/* $(PKG_BUILD_DIR)
-	$(call Build/Prepare/Default,)
 endef
 
 define Build/InstallDev

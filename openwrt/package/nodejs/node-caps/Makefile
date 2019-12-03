@@ -2,11 +2,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=node-caps
+PKG_VERSION:=master
 PKG_RELEASE:=1
-PKG_SOURCE_DIR:=$(ROKID_DIR)/frameworks/node_modules/@yoda/caps
+
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://github.com/yodaos-project/node-caps.git
+PKG_SOURCE_VERSION:=$(PKG_VERSION)
+
 PKG_FIXUP:=libtool
+PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
-PKG_LICENSE:=
+PKG_LICENSE:=MIT
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
@@ -20,11 +27,6 @@ define Package/node-caps
 	CATEGORY:=node_modules
 	TITLE:=node-caps
 	DEPENDS:=+libstdcpp +shadow-node +mutils
-endef
-
-define Build/Prepare
-	$(CP) $(PKG_SOURCE_DIR)/* $(PKG_BUILD_DIR)
-	$(call Build/Prepare/Default,)
 endef
 
 define Build/InstallDev

@@ -2,11 +2,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=node-flora
+PKG_VERSION:=master
 PKG_RELEASE:=1
-PKG_SOURCE_DIR:=$(ROKID_DIR)/frameworks/node_modules/@yoda/flora
+
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE:=$(PKG_NAME)-v$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://github.com/yodaos-project/node-flora.git
+PKG_SOURCE_VERSION:=$(PKG_VERSION)
+
 PKG_FIXUP:=libtool
+PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
-PKG_LICENSE:=
+PKG_LICENSE:=MIT
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
@@ -22,11 +29,6 @@ define Package/node-flora
 	CATEGORY:=node_modules
 	TITLE:=node-flora
 	DEPENDS:=+libstdcpp +shadow-node +flora
-endef
-
-define Build/Prepare
-	$(CP) $(PKG_SOURCE_DIR)/* $(PKG_BUILD_DIR)
-	$(call Build/Prepare/Default,)
 endef
 
 define Build/InstallDev
