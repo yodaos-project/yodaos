@@ -7,8 +7,8 @@
   <img src="https://img.shields.io/badge/build-openwrt-blue.svg" />
 </p>
 
-This is a modern operating system for next generation interactive device, and it embraces Web community,
-uses JavaScript as the application language.
+YodaOS is Yet another Linux Distribution for voice-enabled IoT and embrace Web standards, and it uses
+JavaScript as the main application/scripting language.
 
 ## Get Started
 
