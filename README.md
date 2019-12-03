@@ -49,10 +49,10 @@ $ make -C openwrt # build under the openwrt directory
 
 The `configure` command is to select which board that you were to build:
 
-| board             | product               | config  |
-|-------------------|-----------------------|---------|
-| Raspberry 3b plus | [raspberry][] | products/yodaos/rbpi-3b-plus/configs/broadcom_bcm2710_rpi3b_plus_defconfig |
-| Kamino18          | [kamino18][]  | products/rokid/dev3.3/configs/leo_k18_dev33_defconfig |
+| board             | product       |
+|-------------------|---------------|
+| Raspberry 3b plus | [raspberry][] |
+| Kamino18          | [kamino18][]  |
 
 Go [compile & run](https://yodaos-project.github.io/yoda-book/en-us/yodaos-source/system/compile-run.html) for more details.
 
@@ -82,5 +82,6 @@ Apache 2.0
 [Semver 2.0]: https://semver.org/
 [ShadowNode]: https://github.com/yodaos-project/ShadowNode
 [Node.js]: https://github.com/nodejs/node
-[raspberry]: https://github.com/yodaos-project/product-raspberry
-[kamino18]: https://github.com/yodaos-project/product-kamino18
+[raspberry]: ./products/rpi
+[kamino18]: ./products/k18
+
