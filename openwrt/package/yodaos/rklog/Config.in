@@ -1,0 +1,9 @@
+menu "Configuration"
+
+config ROKIDOS_BOARDCONFIG_LOG_LEVEL
+	int "log level"
+	default 1
+	help
+		log level
+
+endmenu
