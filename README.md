@@ -7,7 +7,7 @@
   <img src="https://img.shields.io/badge/build-openwrt-blue.svg" />
 </p>
 
-YodaOS is Yet another Linux Distribution for voice-enabled IoT and embrace Web standards, and it uses
+YodaOS is Yet another Linux Distribution for voice-enabled IoT and embrace Web standards, thus it uses
 JavaScript as the main application/scripting language.
 
 ## Get Started
