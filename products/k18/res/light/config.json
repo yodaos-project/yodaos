@@ -1,0 +1,11 @@
+{
+  "setVolume.js": 0,
+  "setMuted.js": 1,
+  "awake.js": 2,
+  "longPressMic.js": 2,
+  "loading.js": 3,
+  "setPickup.js": 3,
+  "setSpeaking.js": 4,
+  "bluetoothOpen.js": 3,
+  "bluetoothConnect.js": 3
+}
