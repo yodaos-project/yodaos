@@ -1,6 +1,6 @@
 menu "Configuration"
 
-config ROKIDOS_BOARDCONFIG_LOG_LEVEL
+config YODAOS_LOG_LEVEL
 	int "log level"
 	default 1
 	help
