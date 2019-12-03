@@ -5,7 +5,7 @@ PKG_NAME:=android-system-core
 PKG_VERSION:=
 PKG_RELEASE:=1
 
-PKG_SOURCE_DIR:=$(ROKID_DIR)/3rd/android_lib/system/core
+PKG_SOURCE_DIR:=$(ROKID_DIR)/framework/libs/android-corelibs
 
 PKG_FIXUP:=libtool
 PKG_INSTALL:=1

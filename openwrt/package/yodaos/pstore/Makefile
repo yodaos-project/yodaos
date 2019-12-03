@@ -7,7 +7,6 @@ PKG_RELEASE:=1
 
 #PKG_SOURCE_DIR:=$(ROKID_DIR)/frameworks/native/services/****
 
-
 include $(INCLUDE_DIR)/package.mk
 
 define Package/pstore

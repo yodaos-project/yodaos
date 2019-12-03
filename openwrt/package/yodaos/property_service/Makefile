@@ -5,7 +5,7 @@ PKG_NAME:=property_service
 PKG_VERSION:=
 PKG_RELEASE:=1
 
-PKG_SOURCE_DIR:=$(ROKID_DIR)/3rd/android_lib/bionic/property_service
+PKG_SOURCE_DIR:=$(ROKID_DIR)/framework/services/property
 
 PKG_FIXUP:=libtool
 PKG_INSTALL:=1

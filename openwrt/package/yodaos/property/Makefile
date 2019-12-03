@@ -5,7 +5,7 @@ PKG_NAME:=property
 PKG_VERSION:=
 PKG_RELEASE:=1
 
-PKG_SOURCE_DIR:=$(ROKID_DIR)/3rd/android_lib/bionic/property
+PKG_SOURCE_DIR:=$(ROKID_DIR)/framework/libs/property
 
 PKG_FIXUP:=libtool
 PKG_INSTALL:=1
@@ -35,10 +35,6 @@ define Build/Prepare
 	$(call Build/Prepare/Default,)
 endef
 
-define BuildProp
-	$(ROKID_DIR)/products/rokid/common/buildprop.sh $1 $2
-endef
-
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include
 	$(CP) $(PKG_INSTALL_DIR)/usr/include/* $(1)/usr/include/
@@ -60,46 +56,29 @@ define Package/property/install
 	if [ $(CONFIG_TARGET_leo_gx8010_rkd_2v) = y ]; then \
 		   $(SED) "s#xxxxxxxx#kamino#g" $(1)/default.prop; \
 	fi
-
 	if [ $(CONFIG_TARGET_leo_gx8010_rkd_3v) = y ]; then \
 		   $(SED) "s#xxxxxxxx#kamino_me#g" $(1)/default.prop; \
 	fi
-
 	if [ $(CONFIG_TARGET_leo_gx8010_ssd_1v) = y ]; then \
 		   $(SED) "s#xxxxxxxx#kamino_ssd#g" $(1)/default.prop; \
 	fi
-
 	if [ $(CONFIG_TARGET_leo_gx8010_rkd_naboo) = y ]; then \
 		   $(SED) "s#xxxxxxxx#kamino_naboo#g" $(1)/default.prop; \
 	fi
-
 	if [ $(CONFIG_TARGET_leo_k18_universal) = y ]; then \
 		   $(SED) "s#xxxxxxxx#kamino_universal#g" $(1)/default.prop; \
 	fi
-
 	if [ ! -z $(CONFIG_PRODUCT_OS_NAME) ]; then \
-		echo "ro.rokid.build.os=$(CONFIG_PRODUCT_OS_NAME)" >> $(1)/default.prop; \
+		echo "ro.yodaos.build.os=$(CONFIG_PRODUCT_OS_NAME)" >> $(1)/default.prop; \
 	fi
-
 	if [ ! -z $(CONFIG_PRODUCT_NAME) ]; then \
-		echo "ro.rokid.build.productname=$(CONFIG_PRODUCT_NAME)" >> $(1)/default.prop; \
+		echo "ro.yodaos.build.productname=$(CONFIG_PRODUCT_NAME)" >> $(1)/default.prop; \
 	fi
-
-	if [ $(CONFIG_PRODUCT_NAME) = "Rokid-Me" ]; then \
-		   $(SED) "s#xxxxxxxx#rokid_me#g" $(1)/default.prop; \
-	fi
-
-	if [ $(CONFIG_PRODUCT_NAME) = "Rokid-mini" ]; then \
-		   $(SED) "s#xxxxxxxx#rokid_mini#g" $(1)/default.prop; \
-	fi
-
 	if [ $(CONFIG_AUDIO_LINK_CUT) = y ]; then \
 		echo "persist.player.awake.holdcon=0" >> $(1)/default.prop; \
 		echo "persist.player.sound.holdcon=0" >> $(1)/default.prop; \
 		echo "persist.player.ttsd.holdcon=0" >> $(1)/default.prop; \
 	fi
-
-	$(call BuildProp,$(1),$(TOPDIR))
 endef
 
 $(eval $(call BuildPackage,property))

@@ -5,7 +5,7 @@ PKG_NAME:=android-kernel-headers
 PKG_VERSION:=
 PKG_RELEASE:=1
 
-PKG_SOURCE_DIR:=$(TOPDIR)/../3rd/android_lib/external/android-kernel-headers
+PKG_SOURCE_DIR:=$(TOPDIR)/../framework/libs/android-kernel-headers
 
 PKG_FIXUP:=libtool
 PKG_BUILD_PARALLEL:=1
