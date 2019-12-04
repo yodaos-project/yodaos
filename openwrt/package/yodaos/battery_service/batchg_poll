@@ -1,0 +1,27 @@
+#!/bin/sh /etc/rc.common
+
+START=90
+USE_PROCD=1
+
+chg_detect() {
+    CHG_FLAG=`getprop | grep "persist.sys.charger.mode" | awk  '{print $2}'`
+    CHG_FLAG=${CHG_FLAG:1}
+    CHG_FLAG=${CHG_FLAG%?}
+
+    if [ "$CHG_FLAG" != "1" ]; then
+        echo "persist.sys.charger.mode is $CHG_FLAG" > /dev/console
+    else
+        while true; do
+            sleep 10
+            echo "Enter charging mode" > /dev/console
+        done
+    fi
+}
+
+start_service() {
+    procd_open_instance
+    procd_set_param stdout 1
+    procd_set_param stderr 1
+    chg_detect
+    procd_close_instance
+}

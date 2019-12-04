@@ -45,11 +45,7 @@ static int logPort()
 }
 
 int RKDLog::mOutputFd = 1;
-#ifdef ROKID_LOG_LEVEL
-int RKDLog::mLevel = ROKID_LOG_LEVEL;
-#else
 int RKDLog::mLevel = RKDLog::DEFAULT;
-#endif
 
 std::mutex RKDLog::mMutex;
 char RKDLog::mBuffer[LOG_SIZE];

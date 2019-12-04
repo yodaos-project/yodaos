@@ -17,10 +17,10 @@ CMAKE_OPTIONS += -H$(PKG_BUILD_DIR)
 CMAKE_OPTIONS += -DCMAKE_INCLUDE_DIR='$(STAGING_DIR)'
 # CMAKE_OPTIONS += -DHOST_NODEJS_BIN='$(TOPDIR)/package/rokid/jsruntime/node'
 
-define Package/jsruntime
+define Package/yodajs
   SECTION:=libs
   CATEGORY:=yodaos
-  TITLE:=yodajs
+  TITLE:=yoda.js the application framework at YodaOS
   DEPENDS:=+libstdcpp \
   	+android-system-core \
   	+shadow-node \
@@ -38,9 +38,6 @@ define Package/jsruntime
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/rklogger $(1)/usr/bin/rklogger
-
 	$(INSTALL_DIR) $(1)/etc
 	$(CP) $(PKG_INSTALL_DIR)/etc/manifest.json $(1)/etc
 	$(CP) $(PKG_INSTALL_DIR)/etc/hotplug.d $(1)/etc
@@ -74,9 +71,6 @@ define Package/yodajs/install
 
 	$(INSTALL_DIR) $(1)/etc/init.d/
 	$(CP) ./files/* $(1)/etc/init.d/
-
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/rklogger $(1)/usr/bin/rklogger
 
 	$(INSTALL_DIR) $(1)/opt
 	$(CP) $(PKG_INSTALL_DIR)/opt/* $(1)/opt/

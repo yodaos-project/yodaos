@@ -1,11 +1,11 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=rklog
+PKG_NAME:=logging
 PKG_VERSION:=
 PKG_RELEASE:=1
 
-PKG_SOURCE_DIR:=$(ROKID_DIR)/framework/libs/log
+PKG_SOURCE_DIR:=$(ROKID_DIR)/framework/libs/logging
 PKG_FIXUP:=libtool
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -14,19 +14,19 @@ PKG_LICENSE:=GPL-2.0+
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
-define Package/rklog
+define Package/logging
   SECTION:=libs
   CATEGORY:=yodaos
-  TITLE:=rklog
+  TITLE:=logging
   DEPENDS:=+libstdcpp +android-system-core +cJSON +flora +mutils +ubox +ubus +libubox
 endef
 
-define Package/rklog/config
+define Package/logging/config
 	source "$(SOURCE)/Config.in"
 endef
 
-define Package/rklog/description
-	rklog lib
+define Package/logging/description
+	logging lib
 endef
 
 TARGET_CFLAGS += $(FPIC)
@@ -51,7 +51,7 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib*.so $(1)/usr/lib/
 endef
 
-define Package/rklog/install
+define Package/logging/install
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib*.so $(1)/usr/lib/
 	$(INSTALL_DIR) $(1)/usr/bin
@@ -60,4 +60,4 @@ define Package/rklog/install
 	$(INSTALL_DIR) $(1)/etc/init.d/
 endef
 
-$(eval $(call BuildPackage,rklog))
+$(eval $(call BuildPackage,logging))

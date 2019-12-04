@@ -81,7 +81,20 @@ define Package/android-hardware
   SECTION:=libs
   CATEGORY:=rokid
   TITLE:=android-hardware
-  DEPENDS:=+libstdcpp +rklog +tinyalsa +android-system-core +libjson-c +libpthread +libusb-1.0 +wpa-supplicant +wpa_ctrl +libffmpeg-audio-dec +pulseaudio +PACKAGE_bsa_server:bsa_server +PACKAGE_vsp:vsp +PACKAGE_vsp_firmware:vsp_firmware +rklog
+  DEPENDS:=+libstdcpp \
+    +logging \
+    +tinyalsa \
+    +android-system-core \
+    +libjson-c \
+    +libpthread \
+    +libusb-1.0 \
+    +wpa-supplicant \
+    +wpa_ctrl \
+    +libffmpeg-audio-dec \
+    +pulseaudio \
+    +PACKAGE_bsa_server:bsa_server \
+    +PACKAGE_vsp:vsp \
+    +PACKAGE_vsp_firmware:vsp_firmware
 endef
 
 define Package/android-hardware/description
