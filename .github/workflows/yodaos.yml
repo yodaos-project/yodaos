@@ -18,7 +18,7 @@ jobs:
         key: ${{ runner.OS }}
         path: openwrt/dl
     - name: install dependencies for ubuntu
-      run: apt-get install build-essential libncurses5-dev
+      run: sudo apt-get install build-essential libncurses5-dev
     - name: configure
       run: ./configure -p rpi -c rpi3b_plus
     - name: make image
