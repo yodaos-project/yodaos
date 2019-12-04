@@ -1,0 +1,12 @@
+#!/bin/sh /etc/rc.common
+
+START=01
+
+mount_data() {
+  vold
+}
+
+start() {
+  mount_data
+  mkdir -p /data/upgrade
+}

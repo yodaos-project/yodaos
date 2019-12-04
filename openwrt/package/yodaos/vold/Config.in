@@ -1,0 +1,6 @@
+config FSTAB_SUBNAME
+    string "yodabase.($CONFIG_FSTAB_SUBNAME).fstab will be copyed to /etc/yodabase.recovery.fstab"
+
+config ETC_INITD_MOUNT
+    bool "Copy mount_data script file to /etc/init.d/ for vold mount in rootfs"
+    default y
