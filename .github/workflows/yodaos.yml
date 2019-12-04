@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-rpi3-on-ubuntu:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     steps:
     - uses: actions/checkout@v1
     - name: cache openwrt download files
