@@ -2,11 +2,15 @@ cmake_minimum_required(VERSION 2.8)
 project(unpack)
 
 INCLUDE(GNUInstallDirs)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I..   -Iinclude -std=c++11 -O2 -g \
--DROKIDOS_BOARDCONFIG_STORAGE_DEVICETYPE=1 -DADB_HOST=0 -Wall -Wno-unused-parameter -D_XOPEN_SOURCE -D_GNU_SOURCE")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I.. -Iinclude -std=c++11 -O2 -g \
+  -DROKIDOS_BOARDCONFIG_STORAGE_DEVICETYPE=1 \
+  -DADB_HOST=0 -Wall -Wno-unused-parameter \
+  -D_XOPEN_SOURCE -D_GNU_SOURCE")
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -I..   -Iinclude  -O2 -g -DADB_HOST=0 \
--DROKIDOS_BOARDCONFIG_STORAGE_DEVICETYPE=1  -Wall -Wno-unused-parameter -D_XOPEN_SOURCE -D_GNU_SOURCE")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -I.. -Iinclude -O2 -g -DADB_HOST=0 \
+  -DROKIDOS_BOARDCONFIG_STORAGE_DEVICETYPE=1 \
+  -Wall -Wno-unused-parameter \
+  -D_XOPEN_SOURCE -D_GNU_SOURCE")
 
 MESSAGE(STATUS "This is BINARY dir " ${CMAKE_C_FLAGS})
 
@@ -28,7 +32,7 @@ add_executable(unpack_cli ./demo/ota_demo.c)
 add_library(recovery SHARED ./recovery/recovery.c)
 add_library(libunpack SHARED ./unpack.c ./sha1.c)
 
-target_link_libraries(libunpack recovery signv)
+target_link_libraries(libunpack recovery)
 target_link_libraries(unpack recovery libunpack)
 target_link_libraries(unpack_cli recovery libunpack)
 
