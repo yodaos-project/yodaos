@@ -1,0 +1,26 @@
+name: YodaOS Build System
+on:
+  push:
+    branches: 
+      - v9.x
+  pull_request:
+    branches:
+      - v9.x
+
+jobs:
+  build-rpi3-on-ubuntu:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+    - uses: actions/checkout@v1
+    - name: cache openwrt download files
+      uses: actions/cache@v1
+      with:
+        key: ${{ runner.OS }}
+        path: openwrt/dl
+    - name: configure
+      run: ./configure -p rpi -c rpi3b_plus
+    - name: make image
+      run: make -j1 V=s
