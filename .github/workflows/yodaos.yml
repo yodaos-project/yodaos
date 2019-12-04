@@ -9,10 +9,7 @@ on:
 
 jobs:
   build-rpi3-on-ubuntu:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - name: cache openwrt download files
@@ -20,6 +17,8 @@ jobs:
       with:
         key: ${{ runner.OS }}
         path: openwrt/dl
+    - name: install dependencies for ubuntu
+      run: apt-get install build-essential libncurses5-dev
     - name: configure
       run: ./configure -p rpi -c rpi3b_plus
     - name: make image
