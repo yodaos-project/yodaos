@@ -4,7 +4,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=libeloop_mini
 PKG_VERSION:=
 PKG_RELEASE:=1
-PKG_SOURCE_DIR:=$(ROKID_DIR)/framework/libs/libeloop
+PKG_SOURCE_DIR:=$(ROKID_DIR)/frameworks/native/libs/libeloop_mini
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 PKG_LICENSE:=GPL-2.0+

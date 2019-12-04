@@ -5,7 +5,7 @@ PKG_NAME:=flora-dispatcher
 PKG_VERSION:=
 PKG_RELEASE:=1
 
-PKG_SOURCE_DIR:=$(ROKID_DIR)/frameworks/allspark/flora-dispatcher
+PKG_SOURCE_DIR:=$(ROKID_DIR)/framework/services/flora-dispatcher
 
 PKG_FIXUP:=libtool
 PKG_INSTALL:=1
@@ -19,7 +19,7 @@ define Package/flora-dispatcher
   SECTION:=libs
   CATEGORY:=rokid
   TITLE:=flora-dispatcher
-  DEPENDS:=+flora +mutils
+  DEPENDS:=+flora +mingutils
 endef
 
 define Package/flora-dispatcher/config
@@ -36,7 +36,7 @@ define Build/Prepare
 endef
 
 CMAKE_OPTIONS += \
-				 -DCUSTOM_CMAKE_MODULES=${PKG_SOURCE_DIR}/../cmake-modules \
+				 -DCUSTOM_CMAKE_MODULES=${ROKID_DIR}/framework/cmake-modules \
 				 -DOVERRIDE_SOURCE_DIR=${PKG_SOURCE_DIR}
 CMAKE_FIND_ROOT_PATH := ${CMAKE_FIND_ROOT_PATH};${STAGING_DIR}
 
