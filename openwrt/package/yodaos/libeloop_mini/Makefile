@@ -12,15 +12,14 @@ PKG_LICENSE:=GPL-2.0+
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
-
-define Package/libeloop_mini
+define Package/libeloop
   SECTION:=libs
   CATEGORY:=rokid
   DEPENDS+= +libpthread
-  TITLE:=libeloop_mini
+  TITLE:=libeloop
 endef
 
-define Package/libeloop_mini/description
+define Package/libeloop/description
 	eloop_run lib
 endef
 
@@ -38,12 +37,10 @@ define Build/InstallDev
 	$(CP) $(PKG_BUILD_DIR)/include/eloop.h $(1)/usr/include/eloop_mini/
 endef
 
-
-
-define Package/libeloop_mini/install
+define Package/libeloop/install
 	echo "zpershuai build adfadfasdf"
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(CP) $(PKG_BUILD_DIR)/build/*.so $(1)/usr/lib
 endef
 
-$(eval $(call BuildPackage,libeloop_mini))
+$(eval $(call BuildPackage,libeloop))
